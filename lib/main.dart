@@ -1,3 +1,14 @@
+///
+/// Project Apraxia
+/// A flutter application for clinicians to measure WSD of patients
+///
+/// Project Folders
+/// page - all the "Pages" which are widgets that have a Scaffold widget
+/// widget - the helper widgets
+/// controller - the logic controllers
+///
+
+
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 
