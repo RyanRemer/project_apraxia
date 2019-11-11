@@ -1,10 +1,13 @@
-class WSDCalculator {
+import 'package:flutter/services.dart';
 
-  double calculateWSD(String filename){
-    return null;
+class WSDCalculator {
+  static const channel = const MethodChannel("wsdCalculator");
+
+  Future<double> calculateWSD(String filename) async {
+    return await channel.invokeMethod("calculateWSD", [filename]);
   }
 
-  List<double> calculateAmplitude(String filename){
-    return null;
+  Future<List<double>> getAmplitude(String filename) async {
+    return await channel.invokeMethod("getAmplitude", [filename]);
   }
 }
