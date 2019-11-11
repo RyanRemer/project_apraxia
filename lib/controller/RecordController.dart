@@ -1,18 +1,24 @@
 import 'package:recorder_wav/recorder_wav.dart';
 
 class RecordController {
+  RecorderWav recorder;
+
+  RecordController({this.recorder}){
+    recorder ??= new RecorderWav();
+  }
+
   Future startRecording() async {
-    RecorderWav.startRecorder();
+    await recorder.startRecorder();
   }
 
   /// returns the file uri of the WAV recording
   Future<String> stopRecording() async {
-    String filename = await RecorderWav.StopRecorder();
-    print("Saved to:" + filename);
+    String filename = await recorder.stopRecorder();
+    print("Saved to: " + filename);
     return filename;
   }
 
   Future removeFile(String filename) async {
-    await RecorderWav.removeRecorderFile(filename);
+    await recorder.removeRecorderFile(filename);
   }
 }
