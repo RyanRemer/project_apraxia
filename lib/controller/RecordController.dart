@@ -7,6 +7,12 @@ class RecordController {
 
   /// returns the file uri of the WAV recording
   Future<String> stopRecording() async {
-    return await RecorderWav.StopRecorder();
+    String filename = await RecorderWav.StopRecorder();
+    print("Saved to:" + filename);
+    return filename;
+  }
+
+  Future removeFile(String filename) async {
+    await RecorderWav.removeRecorderFile(filename);
   }
 }
