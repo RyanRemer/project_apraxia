@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
-import 'package:recorder_wav/recorder_wav.dart';
+import 'package:project_apraxia/custom_libs/recorder_wav.dart';
+
 
 class MockRecorder extends Mock implements RecorderWav{}
 

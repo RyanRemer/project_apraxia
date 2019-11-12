@@ -1,4 +1,4 @@
-import 'package:recorder_wav/recorder_wav.dart';
+import 'package:project_apraxia/custom_libs/recorder_wav.dart';
 
 class RecordController {
   RecorderWav recorder;
