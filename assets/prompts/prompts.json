@@ -1,0 +1,53 @@
+[
+    {
+        "word" : "Gingerbread",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/gingerbread.wav"
+    },
+    {
+        "word" : "Constitution",
+        "syllableCount" : 4,
+        "soundUri" : null
+    },
+    {
+        "word" : "Flattering",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Harmonica",
+        "syllableCount" : 4,
+        "soundUri" : null
+    },
+    {
+        "word" : "Jabbering",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Spaghetti",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Stethoscope",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Thickening",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Volcano",
+        "syllableCount" : 3,
+        "soundUri" : null
+    },
+    {
+        "word" : "Zippering",
+        "syllableCount" : 3,
+        "soundUri" : null
+    }
+    
+]
