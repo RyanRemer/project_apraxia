@@ -3,21 +3,21 @@ import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/page/PromptPage.dart';
 
-/// [PromptPages] is a widget that uses a [PageView] to build a [PromptPage] for each [Prompt]
-class PromptPages extends StatefulWidget {
+/// [PromptPageBuilder] is a widget that uses a [PageView] to build a [PromptPage] for each [Prompt]
+class PromptPageBuilder extends StatefulWidget {
   List<Prompt> prompts;
-  PromptPages(this.prompts, {Key key}) : super(key: key);
+  PromptPageBuilder(this.prompts, {Key key}) : super(key: key);
 
   @override
-  _PromptPagesState createState() => _PromptPagesState(this.prompts);
+  _PromptPageBuilderState createState() => _PromptPageBuilderState(this.prompts);
 }
 
-class _PromptPagesState extends State<PromptPages> {
+class _PromptPageBuilderState extends State<PromptPageBuilder> {
   PageController pageController;
   List<Prompt> prompts;
   PromptController promptController;
 
-  _PromptPagesState(this.prompts) {
+  _PromptPageBuilderState(this.prompts) {
     pageController = new PageController();
     promptController = new PromptController();
   }

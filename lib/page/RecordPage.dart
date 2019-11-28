@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
-import 'package:project_apraxia/page/PromptPages.dart';
-import 'package:project_apraxia/widget/RecordButton.dart';
+import 'package:project_apraxia/page/PromptPageBuilder.dart';
+
 
 class RecordPage extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _RecordPageState extends State<RecordPage> {
         } else if (snapshot.connectionState != ConnectionState.done) {
           return _buildPromptsLoading();
         } else {
-          return PromptPages(snapshot.data);
+          return PromptPageBuilder(snapshot.data);
         }
       },
     );
