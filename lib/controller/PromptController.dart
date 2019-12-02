@@ -50,10 +50,10 @@ class PromptController {
     }
   }
 
-  // load all of the prompts specified in the assets/prompts/prompts.json file
+  // load all of the prompts specified in the assets/prompts/local_prompts.json file
   Future<List<Prompt>> _getPromptAssets() async {
     String promptJson =
-        await assetBundle.loadString("assets/prompts/prompts.json");
+        await assetBundle.loadString("assets/prompts/local_prompts.json");
     var jsonMap = json.decode(promptJson);
 
     return List.generate(jsonMap.length, (int i) {
