@@ -9,7 +9,8 @@ class Conditional extends StatelessWidget {
     @required this.condition,
     @required this.childIfTrue,
     @required this.childIfFalse,
-  }) : super(key: ObjectKey(condition));
+    Key key
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
