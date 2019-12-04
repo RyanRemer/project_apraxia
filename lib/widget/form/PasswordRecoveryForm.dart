@@ -55,7 +55,20 @@ class PasswordRecoveryForm extends StatelessWidget {
 
       try {
         await _auth.confirmNewPassword(_passwordRecoveryRequest.verificationCode, _passwordRecoveryRequest.newPassword);
-        Navigator.pop(context);
+        showDialog (
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title: Text("Success"),
+                content: Text("You have successfully changed your password."),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Return to sign in"),
+                    onPressed: () => returnToSignIn(context),
+                  )
+                ],
+              )
+        );
       } on CognitoClientException catch (error) {
         showDialog(
           context: context,
@@ -73,5 +86,10 @@ class PasswordRecoveryForm extends StatelessWidget {
         );
       }
     }
+  }
+
+  void returnToSignIn(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

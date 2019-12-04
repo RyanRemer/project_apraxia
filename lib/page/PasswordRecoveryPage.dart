@@ -17,17 +17,9 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
             children: <Widget>[
               Container(
                 child: PasswordRecoveryForm(),
-              ),
-              FlatButton(
-                child: Text("Back to Sign In"),
-                onPressed: () => goToSignIn(context),
               )
             ],
           ),
         ));
-  }
-
-  void goToSignIn(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
   }
 }

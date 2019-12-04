@@ -75,4 +75,8 @@ class Auth {
   Future<bool> confirmNewPassword(String verificationCode, String newPassword) async {
     return await this._cognitoUser.confirmPassword(verificationCode, newPassword);
   }
+
+  void instantiateUser(String email) {
+    this._cognitoUser = new CognitoUser(email, _userPool);
+  }
 }

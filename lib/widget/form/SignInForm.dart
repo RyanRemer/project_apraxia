@@ -1,5 +1,6 @@
 import 'package:amazon_cognito_identity_dart/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
@@ -109,9 +110,9 @@ class SignInForm extends StatelessWidget {
   Future sendForgotPassword(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      _auth.instantiateUser(signInRequest.email);
       try {
-//        String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
-        String emailSentTo = "sample@gmail.com";
+        String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
         showDialog(
           context: context,
           builder: (context) =>
@@ -142,12 +143,12 @@ class SignInForm extends StatelessWidget {
               ),
         );
       }
-      Navigator.pop(context);
     }
   }
 
   void goToPasswordRecovery(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PasswordRecoveryPage()));
+    Navigator.pop(context);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => PasswordRecoveryPage()));
   }
 
   void resendAuthentication(BuildContext context) {
