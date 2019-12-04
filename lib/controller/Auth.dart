@@ -1,21 +1,24 @@
 import 'dart:async';
 import 'package:amazon_cognito_identity_dart/cognito.dart';
 
-enum authProblems { UserNotFound, PasswordNotValid, NetworkError, UnknownError }
-
 class Auth {
   static Auth _instance = new Auth._();
-  static final String _userPoolId = "us-west-2_B5Jb6rdZT";
-  static final String _clientId = "4b499j87fnc1u5tpvok17r8jq3";
+  static String _userPoolId = "us-west-2_B5Jb6rdZT";
+  static String _clientId = "4b499j87fnc1u5tpvok17r8jq3";
   CognitoUserPool _userPool = new CognitoUserPool(_userPoolId, _clientId);
   CognitoUser _cognitoUser;
   AuthenticationDetails _authDetails;
   CognitoUserSession _session;
-  String _jwtToken;
+//  String _jwtToken;
 
   Auth._();
 
-  factory Auth.instance() {
+  factory Auth.instance({String userPoolId, String clientId}) {
+    if (userPoolId != null && clientId != null) {
+      _userPoolId = userPoolId;
+      _clientId = clientId;
+      _instance._userPool = new CognitoUserPool(userPoolId, clientId);
+    }
     return _instance;
   }
 
@@ -23,7 +26,7 @@ class Auth {
     this._cognitoUser = new CognitoUser(email, this._userPool);
     this._authDetails = new AuthenticationDetails(username: email, password: password);
     this._session = await this._cognitoUser.authenticateUser(this._authDetails);
-    this._jwtToken = this._session.getAccessToken().getJwtToken();
+//    this._jwtToken = this._session.getAccessToken().getJwtToken();
   }
 
   Future<void> signUp(String email, String password, String name, String address, String phone) async {
@@ -34,22 +37,19 @@ class Auth {
       new AttributeArg(name: "phone_number", value: phone)
     ];
     CognitoUserPoolData data = await this._userPool.signUp(email, password, userAttributes: userAttributes);
-    this._cognitoUser = new CognitoUser(email, this._userPool);
+    instantiateUser(email);
     this._authDetails = new AuthenticationDetails(username: email, password: password);
     this._session = await this._cognitoUser.authenticateUser(this._authDetails);
-    this._jwtToken = this._session.getAccessToken().getJwtToken();
+//    this._jwtToken = this._session.getAccessToken().getJwtToken();
   }
 
   Future<void> signOut() async {
     await this._cognitoUser.globalSignOut();
-    this._cognitoUser = null;
-    this._authDetails = null;
-    this._session = null;
-    this._jwtToken = null;
+    clearAuth();
   }
 
   Future<void> resendAuthentication(String email) async {
-    this._cognitoUser = new CognitoUser(email, this._userPool);
+    instantiateUser(email);
     await this._cognitoUser.resendConfirmationCode();
   }
 
@@ -67,7 +67,7 @@ class Auth {
   }
 
   Future<String> sendForgotPassword(String email) async {
-    this._cognitoUser = new CognitoUser(email, _userPool);
+    instantiateUser(email);
     Map<String, dynamic> data = await this._cognitoUser.forgotPassword();
     return data["CodeDeliveryDetails"]["Destination"];
   }
@@ -79,4 +79,22 @@ class Auth {
   void instantiateUser(String email) {
     this._cognitoUser = new CognitoUser(email, _userPool);
   }
+
+  Future<bool> deleteUser(String email) async {
+    CognitoUser cognitoUser = new CognitoUser(email, _userPool);
+    return await cognitoUser.deleteUser();
+  }
+
+  Future<bool> confirmUser(String email, String confirmationCode) async {
+    CognitoUser cognitoUser = new CognitoUser(email, _userPool);
+    return await cognitoUser.confirmRegistration(confirmationCode);
+  }
+
+  void clearAuth() {
+    this._cognitoUser = null;
+    this._authDetails = null;
+    this._session = null;
+//    this._jwtToken = null;
+  }
+
 }

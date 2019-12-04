@@ -27,14 +27,14 @@ class FormValidator {
   }
 
   static String isValidEmail(String s) {
-    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(s)) {
+    if (s == null || !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(s)) {
       return "Invalid email address.";
     }
     return null;
   }
 
   static String isValidName(String s) {
-    if (s.isEmpty) {
+    if (s == null || s.isEmpty) {
       return "Name must not be empty.";
     }
     return null;
@@ -42,8 +42,11 @@ class FormValidator {
 
   static String isValidPassword(String s) {
     String output = "";
-    if (s.length < 8) {
+    if (s == null || s.length < 8) {
       output += "<8 characters.";
+      if (s == null) {
+        return output;
+      }
     }
     bool containsUpper = false;
     bool containsLower = false;
@@ -85,15 +88,18 @@ class FormValidator {
 
   static String isValidPhoneNumber(String s) {
     String output = "";
-    if (s.length != 10) {
-      output += "Not 10 digits.";
+    if (s == null || s.length != 10) {
+      output += "Must be 10 digits.";
     }
-    for (int i = 0; i < s.length; i++) {
-      if (!isNumeric(s[i])) {
-        if (output.length > 0) {
-          output += " ";
+    else {
+      for (int i = 0; i < s.length; i++) {
+        if (!isNumeric(s[i])) {
+          if (output.length > 0) {
+            output += " ";
+          }
+          output += "Must not contain any characters besides digits.";
+          break;
         }
-        output += "Must not contain any characters besides digits.";
       }
     }
     if (output.length == 0) {
@@ -103,7 +109,7 @@ class FormValidator {
   }
 
   static String isValidAddress(String s) {
-    if (s.isEmpty) {
+    if (s == null || s.isEmpty) {
       return "Address must not be empty.";
     }
     return null;

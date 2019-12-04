@@ -11,7 +11,7 @@ class UpdateUserForm extends StatelessWidget {
 
   UpdateUserForm({Key key}) : super(key: key) {
     auth.getUserAttributes().then(
-      (userAttributes) => {this.attributes = new UserAttributes(attributes: userAttributes)}
+      (userAttributes) {this.attributes = new UserAttributes(attributes: userAttributes);}
     );
   }
 
