@@ -1,4 +1,3 @@
-import 'package:amazon_cognito_identity_dart/cognito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 
@@ -16,50 +15,69 @@ Future<bool> performSignUp(Auth auth) async {
     await auth.signUp(DummyUser.email, DummyUser.password, DummyUser.name,
         DummyUser.address, DummyUser.phoneNumber);
     return true;
-  } on CognitoClientException catch (e) {
-    if (e.name == "UserNotConfirmedException") {
-      return true;
-    }
-    return false;
   } on Exception catch (e) {
     print(e);
     return false;
-  }
-}
-
-Future<void> performConfirmUser(Auth auth) async {
-  String confirmationCode = "123456";
-  try {
-    await auth.confirmUser(DummyUser.email, confirmationCode);
-  } on CognitoClientException catch (e) {
-    print(e);
   }
 }
 
 Future<bool> performDeleteUser(Auth auth) async {
   try {
-    auth.deleteUser(DummyUser.email);
-    return true;
-  } on CognitoClientException {
+    return await auth.deleteUser(DummyUser.email, DummyUser.password);
+  } on Exception catch (e) {
+    print(e);
+    return false;
+  }
+}
+
+Future<bool> performLogout(Auth auth) async {
+  try {
+    await auth.signOut();
     return true;
   } on Exception catch (e) {
-    if (e.toString() == "User is not authenticated") {
-      return true;
-    }
+    print(e);
+    return false;
+  }
+}
+
+Future<bool> performSignIn(Auth auth) async {
+  try {
+    await auth.signIn(DummyUser.email, DummyUser.password);
+    return true;
+  } on Exception catch (e) {
+    print(e);
     return false;
   }
 }
 
 
 void main() {
-  Auth auth = Auth.instance(userPoolId: "us-west-2_3ECfcartt", clientId: "5tpn2ujes5chjlrlo92ge9po1i");
+  Auth auth;
 
-//  setUp(() {
-//    expect(performDeleteUser(auth), isException);
-//  });
+  setUp(() async {
+    auth = Auth.instance(userPoolId: "us-west-2_3ECfcartt", clientId: "5tpn2ujes5chjlrlo92ge9po1i");
+  });
+
+  test("Auth can get user attributes", () async {
+    performSignUp(auth);
+//    auth.instantiateUser(DummyUser.email, password: DummyUser.password);
+    expect(await auth.getUserAttributes(), isList);
+  });
+
+  test("Auth can delete a user", () async {
+    expect(await performDeleteUser(auth), anyOf(isTrue, isFalse));
+  });
 
   test("Auth can sign up a test user", () async {
+    await performDeleteUser(auth);
     expect(await performSignUp(auth), isTrue);
+  });
+
+  test("Auth can sign in an existing user", () async {
+    await performDeleteUser(auth);
+    await performSignUp(auth);
+    await performLogout(auth);
+    expect(await performSignIn(auth), isTrue);
   });
 
 

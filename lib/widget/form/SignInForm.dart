@@ -110,7 +110,7 @@ class SignInForm extends StatelessWidget {
   Future sendForgotPassword(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      _auth.instantiateUser(signInRequest.email);
+      await _auth.instantiateUser(signInRequest.email);
       try {
         String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
         showDialog(
