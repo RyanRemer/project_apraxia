@@ -5,7 +5,7 @@ class SignInRequest {
   SignInRequest();
 
   SignInRequest.test(){
-    email = "example@example.com";
-    password = "Password";
+    email = "drakebwade@gmail.com";
+    password = "Password1";
   }
 }
