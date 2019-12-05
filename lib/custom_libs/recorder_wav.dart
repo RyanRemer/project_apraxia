@@ -1,6 +1,6 @@
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
@@ -16,34 +16,23 @@ class RecorderWav {
   }
 
   Future<String> stopRecorder() async {
-    // var channel = const MethodChannel("wsdCalculator");
-    // var file = await _channel.invokeMethod("stopRecorder");
-    print("in the dart file recorder_wav stop recorder before");
-    // await calculateWSDChannel.invokeMethod("stopRecorder");
-    // var file = await calculateWSDChannel.invokeMethod("stopRecord");
-    var file = await calculateWSDChannel.invokeMethod("stopRecorder");
-    print("in the dart file recorder_wav stop recorder after");
-    // return "thisIsATest";
-    return file;
-  }
-
-  Future<String> stopRecord() async {
-    try {
-      final String result = await calculateWSDChannel.invokeMethod('stopRecord');
-      print('stopRecord: ' + result);
-      return result;
-    } catch (e) {
-      print('stopRecord: fail');
-      return 'fail';
+    String uri;
+    if (Platform.isAndroid){
+      uri = await _channel.invokeMethod("stopRecorder");
     }
+    else if (Platform.isAndroid){
+      uri = await calculateWSDChannel.invokeMethod("stopRecord");
+    }
+    return uri;
   }
 
   void startRecorder() async {
-    // var channel = const MethodChannel("wsdCalculator");
-    print("in the start of start recorder before");
-    await calculateWSDChannel.invokeMethod("startRecorder");
-    print("in the dart file recorder_wav start recorder");
-    // await _channel.invokeMethod("startRecorder");
+    if (Platform.isAndroid){
+      await _channel.invokeMethod("startRecorder");
+    }
+    else if(Platform.isIOS){
+      await calculateWSDChannel.invokeMethod("startRecorder");
+    }
   }
 
   removeRecorderFile(String fileName) async{

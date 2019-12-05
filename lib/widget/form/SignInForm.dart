@@ -1,6 +1,5 @@
 import 'package:amazon_cognito_identity_dart/cognito.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
