@@ -12,7 +12,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           SignUpForm(),
           FlatButton(
