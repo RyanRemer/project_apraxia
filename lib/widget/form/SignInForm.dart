@@ -7,7 +7,7 @@ import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 
 class SignInForm extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = new GlobalKey();
+  static GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth _auth = new Auth.instance();
   final SignInRequest signInRequest = new SignInRequest.test();
 

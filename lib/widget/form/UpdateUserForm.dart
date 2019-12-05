@@ -5,7 +5,7 @@ import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/UserAttributes.dart';
 
 class UpdateUserForm extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = new GlobalKey();
+  static GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth auth = new Auth.instance();
   UserAttributes attributes;
 

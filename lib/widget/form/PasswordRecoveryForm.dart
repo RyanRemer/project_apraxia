@@ -5,7 +5,7 @@ import 'package:project_apraxia/model/PasswordRecoveryRequest.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 
 class PasswordRecoveryForm extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = new GlobalKey();
+  static GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth _auth = new Auth.instance();
   final PasswordRecoveryRequest _passwordRecoveryRequest = new PasswordRecoveryRequest();
 
