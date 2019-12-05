@@ -56,11 +56,11 @@ import AVFoundation
 				RecordManager.sharedInstance.beginRecord(recordType: RecordType.Wav)
 			} else if call.method == "calculateAmbience" {
 //				print("IN THE AMBIENCE CALCULATING")
-				if let fileNameArray = call.arguments as? [String] {
-//					print("this is here 10 \(fileNameArray)")
-					let calculateWSD = CalculateWSD()
-//					result(calculateWSD.getAmbienceFileThreshold(fileName: fileNameArray[0]))
-				}
+//				if let fileNameArray = call.arguments as? [String] {
+////					print("this is here 10 \(fileNameArray)")
+//					let calculateWSD = CalculateWSD()
+////					result(calculateWSD.getAmbienceFileThreshold(fileName: fileNameArray[0]))
+//				}
 			}
 		}
 		
