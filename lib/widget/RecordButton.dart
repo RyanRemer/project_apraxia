@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
+import 'package:project_apraxia/controller/WSDCalculator.dart';
 import 'package:project_apraxia/widget/Conditional.dart';
 
 class RecordButton extends StatefulWidget {
@@ -9,7 +12,10 @@ class RecordButton extends StatefulWidget {
 
 class _RecordButtonState extends State<RecordButton> {
   RecordController recordController = new RecordController();
+  WSDCalculator wsdCalculator = new WSDCalculator();
   bool isRecording = false;
+  bool isAmbience = true;
+  double ambienceThreshold = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +43,11 @@ class _RecordButtonState extends State<RecordButton> {
       this.isRecording = false;
     });
     String fileURI = await recordController.stopRecording();
-    print(fileURI);
+    // if (this.isAmbience) {
+    //   ambienceThreshold = await wsdCalculator.calculateAmbience(fileURI);
+    //   this.isAmbience = false;
+    // } else {
+      wsdCalculator.calculateWSD(fileURI, ambienceThreshold);
+    // }
   }
 }
