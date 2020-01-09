@@ -1,20 +1,21 @@
+import 'dart:developer';
 import 'package:project_apraxia/custom_libs/recorder_wav.dart';
 
 class RecordController {
-  RecorderWav recorder;
+  RecorderWav recorder = new RecorderWav();
 
   RecordController({this.recorder}){
     recorder ??= new RecorderWav();
   }
 
-  Future startRecording() async {
-    await recorder.startRecorder();
+  void startRecording() async {
+    recorder.startRecorder();
   }
 
   /// returns the file uri of the WAV recording
   Future<String> stopRecording() async {
     String filename = await recorder.stopRecorder();
-    print("Saved to: " + filename);
+    log("Saved to: " + filename);
     return filename;
   }
 

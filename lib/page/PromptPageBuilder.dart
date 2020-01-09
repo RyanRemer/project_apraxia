@@ -5,7 +5,7 @@ import 'package:project_apraxia/page/PromptPage.dart';
 
 /// [PromptPageBuilder] is a widget that uses a [PageView] to build a [PromptPage] for each [Prompt]
 class PromptPageBuilder extends StatefulWidget {
-  List<Prompt> prompts;
+  final List<Prompt> prompts;
   PromptPageBuilder(this.prompts, {Key key}) : super(key: key);
 
   @override

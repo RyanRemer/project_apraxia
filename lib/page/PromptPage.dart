@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
@@ -32,7 +34,9 @@ class _PromptPageState extends State<PromptPage> {
           PromptTile(prompt),
           Expanded(
             child: Center(
-              child: RecordButton(),
+              child: RecordButton(onRecord: (File soundFile) {
+                print(soundFile.path);
+              },),
             ),
           ),
           PageNavigation(
