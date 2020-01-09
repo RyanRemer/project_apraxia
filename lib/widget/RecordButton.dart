@@ -22,15 +22,20 @@ class _RecordButtonState extends State<RecordButton> {
     return GestureDetector(
       child: Conditional(
         condition: this.isRecording,
-        childIfTrue: Icon(Icons.mic, size: 64, color: Colors.blue,),
-        childIfFalse: Icon(Icons.mic_none, size: 64, color: Colors.lightBlueAccent),
+        childIfTrue: Icon(
+          Icons.mic,
+          size: 64,
+          color: Colors.blue,
+        ),
+        childIfFalse:
+            Icon(Icons.mic_none, size: 64, color: Colors.lightBlueAccent),
       ),
       onTapDown: startRecording,
       onLongPressEnd: stopRecording,
     );
   }
 
-  void startRecording(TapDownDetails details){
+  void startRecording(TapDownDetails details) {
     recordController.startRecording();
     Feedback.forLongPress(context);
     setState(() {
@@ -43,11 +48,6 @@ class _RecordButtonState extends State<RecordButton> {
       this.isRecording = false;
     });
     String fileURI = await recordController.stopRecording();
-    // if (this.isAmbience) {
-    //   ambienceThreshold = await wsdCalculator.calculateAmbience(fileURI);
-    //   this.isAmbience = false;
-    // } else {
-      wsdCalculator.calculateWSD(fileURI, ambienceThreshold);
-    // }
+    wsdCalculator.calculateWSD(fileURI);
   }
 }
