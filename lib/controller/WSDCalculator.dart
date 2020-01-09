@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class WSDCalculator {
   static const channel = const MethodChannel("wsdCalculator");
-
+  
   Future<double> calculateWSD(String filename, {double ambienceThreshold}) async {
     if (Platform.isAndroid){
       return await channel.invokeMethod("calculateWSD", [filename]); 
