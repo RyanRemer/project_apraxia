@@ -6,6 +6,7 @@ import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/widget/PageNavigation.dart';
 import 'package:project_apraxia/widget/PromptTile.dart';
 import 'package:project_apraxia/widget/RecordButton.dart';
+import 'package:project_apraxia/widget/RecordingsTable.dart';
 
 class PromptPage extends StatefulWidget {
   final Prompt prompt;
@@ -32,6 +33,11 @@ class _PromptPageState extends State<PromptPage> {
       body: Column(
         children: <Widget>[
           PromptTile(prompt),
+          const Divider(),
+          Expanded(
+            flex: 2,
+            child: RecordingsTable(),
+          ),
           Expanded(
             child: Center(
               child: RecordButton(onRecord: (File soundFile) {
