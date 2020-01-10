@@ -60,7 +60,6 @@ class _RecordButtonState extends State<RecordButton> {
 
   Future recordAudio() async {
     try {
-
       if (isRecording) {
         String fileUri = await recordController.stopRecording();
         widget.onRecord(File(fileUri)); //send the file to the callback function

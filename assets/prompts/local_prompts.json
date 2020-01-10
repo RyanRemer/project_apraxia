@@ -2,52 +2,52 @@
     {
         "word" : "Gingerbread",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/gingerbread.wav"
+        "soundUri" : "assets/prompts/GingerbreadPrompt.wav"
     },
     {
         "word" : "Constitution",
         "syllableCount" : 4,
-        "soundUri" : "assets/prompts/constitution.wav"
+        "soundUri" : "assets/prompts/ConstitutionPrompt.wav"
     },
     {
         "word" : "Flattering",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/flattering.wav"
+        "soundUri" : "assets/prompts/FlatteringPrompt.wav"
     },
     {
         "word" : "Harmonica",
         "syllableCount" : 4,
-        "soundUri" : "assets/prompts/harmonica.wav"
+        "soundUri" : "assets/prompts/HarmonicaPrompt.wav"
     },
     {
         "word" : "Jabbering",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/jabbering.wav"
+        "soundUri" : "assets/prompts/JabberingPrompt.wav"
     },
     {
         "word" : "Spaghetti",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/spaghetti.wav"
+        "soundUri" : "assets/prompts/SpaghettiPrompt.wav"
     },
     {
         "word" : "Stethoscope",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/stethoscope.wav"
+        "soundUri" : "assets/prompts/StethoscopePrompt.wav"
     },
     {
         "word" : "Thickening",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/thickening.wav"
+        "soundUri" : "assets/prompts/ThickeningPrompt.wav"
     },
     {
         "word" : "Volcano",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/volcano.wav"
+        "soundUri" : "assets/prompts/VolcanoPrompt.wav"
     },
     {
         "word" : "Zippering",
         "syllableCount" : 3,
-        "soundUri" : "assets/prompts/zippering.wav"
+        "soundUri" : "assets/prompts/ZipperingPrompt.wav"
     }
     
 ]
