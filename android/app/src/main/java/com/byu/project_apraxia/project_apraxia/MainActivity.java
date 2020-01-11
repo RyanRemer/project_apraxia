@@ -16,9 +16,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "wsdCalculator";
-    private WavFile speechFile = null;
-    private List<Long> speechAmplitudeList = new ArrayList<>();
-    private Long threshold = 100L;
+    private Double threshold = 0.0040517578125;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +29,13 @@ public class MainActivity extends FlutterActivity {
                     public void onMethodCall(MethodCall call, Result result) {
                         // Note: this method is invoked on the main thread.
                         switch (call.method) {
-                            case "calculateThreshold":
+                            case "calculateAmbiance":
                                 String ambianceFileName = (String) ((ArrayList) call.arguments()).get(0);
 
                                 try {
                                     WavFile ambianceFile = WavFile.openWavFile(new File(ambianceFileName));
-                                    List<Long> ambianceAmplitudeList = getAmplitudeList(ambianceFile);
-                                    long threshold = getAmbianceThreshold(ambianceAmplitudeList);
+                                    List<Double> ambianceAmplitudeList = getAmplitudeList(ambianceFile);
+                                    double threshold = getAmbianceThreshold(ambianceAmplitudeList);
                                     result.success(threshold);
                                 } catch (Exception e) {
                                     result.error("418", e.getMessage(), null);
@@ -47,9 +45,9 @@ public class MainActivity extends FlutterActivity {
                                 String speechFileName = (String) ((ArrayList) call.arguments()).get(0);
 
                                 try {
-                                    speechFile = WavFile.openWavFile(new File(speechFileName));
-                                    speechAmplitudeList = getAmplitudeList(speechFile);
-                                    float WSD = getWSD(speechAmplitudeList, 3, threshold, speechFile.getSampleRate());
+                                    WavFile speechFile = WavFile.openWavFile(new File(speechFileName));
+                                    List<Double> speechAmplitudeList = getAmplitudeList(speechFile);
+                                    double WSD = getWSD(speechAmplitudeList, 3, threshold, speechFile.getSampleRate());
                                     result.success(WSD);
                                 } catch (Exception e) {
                                     System.err.println(e.getMessage());
@@ -57,7 +55,14 @@ public class MainActivity extends FlutterActivity {
                                 }
                                 break;
                             case "getAmplitude":
-                                result.success(speechAmplitudeList);
+                                String fileName = (String) ((ArrayList) call.arguments()).get(0);
+                                try {
+                                    WavFile wavFile = WavFile.openWavFile(new File(fileName));
+                                    result.success(getAmplitudeList(wavFile));
+                                } catch (Exception e) {
+                                    System.err.println(e.getMessage());
+                                    result.error("418", e.getMessage(), null);
+                                }
                                 break;
                             default:
                                 result.notImplemented();
@@ -66,16 +71,16 @@ public class MainActivity extends FlutterActivity {
                 });
     }
 
-    private static List<Long> getAmplitudeList(WavFile file) {
-        List<Long> amplitudeList = new ArrayList<>();
+    private static List<Double> getAmplitudeList(WavFile file) {
+        List<Double> amplitudeList = new ArrayList<>();
 
         final int BUF_SIZE = 100;
-        long[][] buffer = new long[file.getNumChannels()][BUF_SIZE];
+        double[][] buffer = new double[file.getNumChannels()][BUF_SIZE];
         try {
             int framesRead = 0;
             do {
                 framesRead = file.readFrames(buffer, BUF_SIZE);
-                for (long d : buffer[0]) amplitudeList.add(d);
+                for (double d : buffer[0]) amplitudeList.add(d);
             } while (framesRead != 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,23 +89,23 @@ public class MainActivity extends FlutterActivity {
         return amplitudeList;
     }
 
-    private static Long getAmbianceThreshold(List<Long> amplitudeList) {
-        List<Long> list = getAbsoluteValueList(amplitudeList);
+    private static Double getAmbianceThreshold(List<Double> amplitudeList) {
+        List<Double> list = getAbsoluteValueList(amplitudeList);
         Collections.sort(list);
 
         return list.get((int) (0.999 * list.size()));
     }
 
-    public static float getWSD(List<Long> amplitudeList, int syllables, long threshold, long sampleRate) {
-        List<Long> list = getSmoothedList(getAbsoluteValueList(amplitudeList));
+    public static double getWSD(List<Double> amplitudeList, int syllables, double threshold, long sampleRate) {
+        List<Double> list = getSmoothedList(getAbsoluteValueList(amplitudeList));
         list.removeIf(s -> s < threshold);
 
-        float word_duration = ((float) list.size() / (float) sampleRate) * 1000;
+        double word_duration = ((double) list.size() / (double) sampleRate) * 1000;
         return word_duration / syllables;
     }
 
-    private static List<Long> getAbsoluteValueList(List<Long> amplitudeList) {
-        List<Long> absoluteList = new ArrayList<>();
+    private static List<Double> getAbsoluteValueList(List<Double> amplitudeList) {
+        List<Double> absoluteList = new ArrayList<>();
         absoluteList.addAll(amplitudeList);
 
         for (int i = 0; i < amplitudeList.size(); i++) {
@@ -110,12 +115,12 @@ public class MainActivity extends FlutterActivity {
         return absoluteList;
     }
 
-    private static List<Long> getSmoothedList(List<Long> amplitudeList) {
-        List<Long> smoothedList = new ArrayList<>();
+    private static List<Double> getSmoothedList(List<Double> amplitudeList) {
+        List<Double> smoothedList = new ArrayList<>();
         smoothedList.addAll(amplitudeList);
 
         for (int i = 20; i < smoothedList.size() - 20; i++) {
-            List<Long> subList = new ArrayList<>();
+            List<Double> subList = new ArrayList<>();
             subList.addAll(amplitudeList.subList(i - 20, i + 20));
             smoothedList.set(i, Collections.max(subList));
         }
