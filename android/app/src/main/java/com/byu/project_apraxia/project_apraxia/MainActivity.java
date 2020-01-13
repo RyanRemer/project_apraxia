@@ -16,7 +16,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "wsdCalculator";
-    private Double threshold = 0.0040517578125;
+    private Double threshold = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +35,18 @@ public class MainActivity extends FlutterActivity {
                                 try {
                                     WavFile ambianceFile = WavFile.openWavFile(new File(ambianceFileName));
                                     List<Double> ambianceAmplitudeList = getAmplitudeList(ambianceFile);
-                                    double threshold = getAmbianceThreshold(ambianceAmplitudeList);
+                                    threshold = getAmbianceThreshold(ambianceAmplitudeList);
                                     result.success(threshold);
                                 } catch (Exception e) {
                                     result.error("418", e.getMessage(), null);
                                 }
                                 break;
                             case "calculateWSD":
-                                String speechFileName = (String) ((ArrayList) call.arguments()).get(0);
+                                if (threshold == null) {
+                                    result.error("418", "Ambiance threshold not set", null);
+                                }
 
+                                String speechFileName = (String) ((ArrayList) call.arguments()).get(0);
                                 try {
                                     WavFile speechFile = WavFile.openWavFile(new File(speechFileName));
                                     List<Double> speechAmplitudeList = getAmplitudeList(speechFile);
