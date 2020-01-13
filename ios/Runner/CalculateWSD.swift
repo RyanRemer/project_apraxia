@@ -11,8 +11,32 @@ import AVFoundation
 
 class CalculateWSD {
 	
+	var ambianceThreshold: Float = -1.0
+	
+	static let sharedInstance = CalculateWSD()
+	
+	private init() {
+		
+	}
+	
+	func getAmplitudes(fileName: String) -> [Double] {
+		////get multisyllabic word array and rate
+		
+		let currentWordResponse = getCurrentWordArrayAndRate(for: fileName)
+		let currentWordArray = currentWordResponse.0
+		
+		var doubleArray: [Double] {
+			currentWordArray.map {Double($0)}
+		}
+		
+		return doubleArray
+	}
+	
 //	func calculateWSD(fileName: String, threshold: Float) {
 	func calculateWSD(fileName: String) {
+		
+//		print("THIS IS THE AMBIANCE THRESHOLD: \(ambianceThreshold)")
+		
 		print("in calculate WSD \(fileName)")
 		
 		////get multisyllabic word array and rate
@@ -27,25 +51,22 @@ class CalculateWSD {
 		////get absolute value of multisyllabic word array
 		
 		let currentWordArrayAbsValue = getAbsoluteValueArray(for: currentWordArray)
-
-		//		print("response part 1: \(absArray)")
 		
-		let threshold = getAmbienceFileThreshold()
-		
-		////		get the count of items in gingerbread word array that are above the threshold - should be around 5280
+//		let threshold = getAmbienceFileThreshold()
+		let threshold = ambianceThreshold
 
 		let leveledOutCurrentWordArray = levelArrayOut(array: currentWordArrayAbsValue)
 
-		//		let countAboveThreshold = getCountAboveThreshold(array: gingerbreadArrayAbsValue, threshold: threshold)
 		let countAboveThreshold = getCountAboveThreshold(for: leveledOutCurrentWordArray, with: threshold)
 
 //		print("COUNT ABOVE THRESHOLD IS: \(countAboveThreshold)")
 
 		let speechInMS = (Double(countAboveThreshold) / currentWordRate) * 1000
-		//
+		
 		print("SPEECH IN MS: \(speechInMS)")
-		//
+		
 		print("WSD: \(speechInMS / 3)")
+		//TODO: change the three to the num syllables in the word
 	}
 	
 	func loadAudioSignal(audioURL: URL) -> (signal: [Float], rate: Double, frameCount: Int) {
@@ -61,7 +82,7 @@ class CalculateWSD {
 	}
 	
 	func getCurrentWordArrayAndRate(for fileName: String) -> ([Float], Double) {
-		
+
 		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 		
 		let wavFile = String(fileName.split(separator: "/").last!)
@@ -70,22 +91,18 @@ class CalculateWSD {
 		
 		let soundURL = documentDirectory.appendingPathComponent(wavFile)
 		
-		print("sound url is: \(soundURL)")
-		
 		let currentMultisyllabicWordResponse = loadAudioSignal(audioURL: soundURL)
 		
-//		return ([],0.0)
 		return (currentMultisyllabicWordResponse.signal, currentMultisyllabicWordResponse.rate)
 	}
 	
-	func getAmbienceFileThreshold() -> Float {
-//		for ambienceThreshold file
-//	func getAmbienceFileThreshold(fileName: String) -> Float {
+//	func getAmbienceFileThreshold() -> Float {
+	func getAmbienceFileThreshold(fileName: String) -> Float {
 		////get ambient array
 		
-		let ambienceFileArray = getAmbienceFileArray()
+//		let ambienceFileArray = getAmbienceFileArray()
 //		for ambienceThreshold file
-//		let ambienceArray = getThresholdFileArray(fileName: fileName)
+		let ambienceFileArray = getThresholdFileArray(fileName: fileName)
 		
 		////get threshold from the ambience array
 		
@@ -94,20 +111,18 @@ class CalculateWSD {
 		//		for ambienceThreshold file
 		
 		print("THRESHOLD IS: \(threshold)")
+		//Set the ambiance threshold in the singleton to the calculated one
+		ambianceThreshold = threshold
 		return threshold
 	}
 	
-//		for ambienceThreshold file
-//	func getThresholdFileArray(fileName: String) -> [Float] {
-	func getAmbienceFileArray() -> [Float] {
-		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
-//		let response = getGingerbreadArrayAndRate(fileName: fileName)
-//		for ambienceThreshold file
+	func getThresholdFileArray(fileName: String) -> [Float] {
+//		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
+		let response = getCurrentWordArrayAndRate(for: fileName)
 		
-		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
-		
-		return ambienceResponse.signal
-//		return response.0
+//		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
+//		return ambienceResponse.signal
+		return response.0
 //		for ambienceThreshold file
 	}
 	

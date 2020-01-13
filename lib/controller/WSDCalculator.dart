@@ -9,11 +9,12 @@ class WSDCalculator {
       return await channel.invokeMethod("calculateWSD", [filename]); 
     }
     else if (Platform.isIOS){
-      ambienceThreshold ??= await calculateAmbience(filename);
-      return await channel.invokeMethod("calculateWSD", <String, dynamic>{
-        'fileName': filename,
-        'ambienceThreshold': ambienceThreshold,
-      });
+      // ambienceThreshold ??= await calculateAmbience(filename);
+      return await channel.invokeMethod("calculateWSD", [filename]); 
+      // return await channel.invokeMethod("calculateWSD", <String, dynamic>{
+      //   'fileName': filename,
+      //   'ambienceThreshold': ambienceThreshold,
+      // });
     }
 
     throw PlatformException(message: "Platform Not Supported", code: null);
