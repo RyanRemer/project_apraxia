@@ -22,7 +22,7 @@ class Auth {
   }
 
   Future<void> signIn(String email, String password) async {
-    instantiateUser(email, password: password);
+    await instantiateUser(email, password: password);
   }
 
   Future<void> signUp(String email, String password, String name, String address, String phone) async {
@@ -83,7 +83,7 @@ class Auth {
   Future<void> instantiateUser(String email, {String password}) async {
     this._cognitoUser = new CognitoUser(email, _userPool);
     if (password != null) {
-      authenticateUser(email, password);
+      await authenticateUser(email, password);
     }
   }
 
@@ -93,7 +93,7 @@ class Auth {
   }
 
   Future<bool> deleteUser(String email, String password) async {
-    instantiateUser(email, password: password);
+    await instantiateUser(email, password: password);
     return await this._cognitoUser.deleteUser();
   }
 
