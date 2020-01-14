@@ -1,64 +1,66 @@
+import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
+import 'package:project_apraxia/widget/PlayButton.dart';
 
 class RecordingsTable extends StatefulWidget {
-  const RecordingsTable({Key key}) : super(key: key);
+  final List<Recording> recordings;
+  final Recording selectedRecording;
+  const RecordingsTable({
+    @required this.recordings,
+    @required this.selectedRecording,
+    Key key,
+  }) : super(key: key);
 
   @override
-  _RecordingsTableState createState() => _RecordingsTableState();
+  _RecordingsTableState createState() =>
+      _RecordingsTableState(recordings, selectedRecording);
 }
 
 class _RecordingsTableState extends State<RecordingsTable> {
-  Prompt prompt = Prompt(word: "Gingerbread", syllableCount: 3);
-  List<Recording> recordings = [
-    Recording(name: "Recording-1"),
-    Recording(name: "Recording-2"),
-    Recording(name: "Recording-3")
-  ];
+  List<Recording> recordings;
   Recording selectedRecording;
+  AudioPlayer audioPlayer;
+
+  _RecordingsTableState(this.recordings, this.selectedRecording);
 
   @override
   Widget build(BuildContext context) {
-    return _buildOption2();
-  }
+    _setDefaultSelection();
 
-  Widget _buildOption1() {
     return ListView.builder(
       itemCount: recordings.length,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          leading: Radio(
-            activeColor: Colors.blue,
-            value: recordings[index],
-            groupValue: recordings[0], onChanged: (Recording value) {},
-          ),
-          title: Text(recordings[index].name),
-          trailing: IconButton(icon: Icon(Icons.play_arrow), onPressed: (){},),
-        );
+        Recording recording = recordings[index];
+        return _buildRecording(recording);
       },
     );
   }
 
-  Widget _buildOption2() {
-    return ListView.builder(
-      itemCount: recordings.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-          Checkbox(
-            value: index == 0,
-            activeColor: Colors.blue, onChanged: (bool value) {},
-          ),
-          Text(recordings[index].name),
-          Text("WSD: 320"),
-          IconButton(icon: Icon(Icons.play_arrow), onPressed: (){},),
-          ],
-        );
-      },
-    );
+  void _setDefaultSelection() {
+    if (recordings.isNotEmpty && selectedRecording == null){
+      setState(() {
+        selectedRecording = recordings.first;
+      });
+    }
   }
 
-  
+  ListTile _buildRecording(Recording recording) {
+    return ListTile(
+      leading: Radio(
+        activeColor: Colors.blue,
+        value: recording,
+        groupValue: selectedRecording,
+        onChanged: (Recording value) {
+          setState(() {
+            selectedRecording = value;
+          });
+        },
+      ),
+      title: Text(recording.name),
+      trailing: PlayButton(
+        filepath: recording.soundFile.path,
+      ),
+    );
+  }
 }
