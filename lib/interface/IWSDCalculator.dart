@@ -21,7 +21,7 @@ abstract class IWSDCalculator {
   * @param syllableCount: The number of syllables in the word
   * @param evaluationId: The ID tied to the ambiance evaluation. Returned from setAmbiance()
   *
-  * @return [int attemptID, double WSD]: A tuple list, with the attemptId and the WSD, i.e. [42, 310.448]
+  * @return [String attemptID, double WSD]: A tuple list, with the attemptId and the WSD, i.e. [42, 310.448]
   *
   */
   Future<List> addAttempt(String fileName, String word, int syllableCount, String evaluationId);
