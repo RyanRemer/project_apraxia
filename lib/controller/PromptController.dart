@@ -60,24 +60,4 @@ class PromptController {
       return Prompt.fromMap(jsonMap[i]);
     });
   }
-
-  Future playPrompt(Prompt prompt) async {
-    if (prompt.soundUri != null){
-      await audioPlayer.play(prompt.soundUri);
-    } else {
-      print("Prompt has no soundUri, cannot play it");
-    }
-  }
-
-  Future stopPrompt() async {
-    await audioPlayer.stop();
-  }
-
-  bool isFirst(Prompt prompt){
-    return prompt == prompts.first;
-  }
-
-  bool isLast(Prompt prompt){
-    return prompt == prompts.last;
-  }
 }

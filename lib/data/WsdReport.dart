@@ -7,4 +7,8 @@ class WsdReport {
   void selectRecording(Prompt prompt, Recording recording){
     selectedRecordingMap[prompt] = recording;
   }
+
+  Recording getRecording(Prompt prompt){
+    return selectedRecordingMap[prompt];
+  }
 }

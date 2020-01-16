@@ -3,30 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 
+typedef RecordingSelected = void Function(Recording);
+
 class RecordingsTable extends StatefulWidget {
   final List<Recording> recordings;
   final Recording selectedRecording;
+  final RecordingSelected onSelectRecording;
+
   const RecordingsTable({
     @required this.recordings,
     @required this.selectedRecording,
+    @required this.onSelectRecording,
     Key key,
   }) : super(key: key);
 
   @override
-  _RecordingsTableState createState() =>
-      _RecordingsTableState(recordings, selectedRecording);
+  _RecordingsTableState createState() => _RecordingsTableState(recordings);
 }
 
 class _RecordingsTableState extends State<RecordingsTable> {
   List<Recording> recordings;
-  Recording selectedRecording;
   AudioPlayer audioPlayer;
 
-  _RecordingsTableState(this.recordings, this.selectedRecording);
+  _RecordingsTableState(this.recordings);
 
   @override
   Widget build(BuildContext context) {
-    _setDefaultSelection();
+    if (recordings.isEmpty){
+      return Center(child: Text("Record at least one attempt to continue."),);
+    }
 
     return ListView.builder(
       itemCount: recordings.length,
@@ -37,24 +42,14 @@ class _RecordingsTableState extends State<RecordingsTable> {
     );
   }
 
-  void _setDefaultSelection() {
-    if (recordings.isNotEmpty && selectedRecording == null){
-      setState(() {
-        selectedRecording = recordings.first;
-      });
-    }
-  }
-
   ListTile _buildRecording(Recording recording) {
     return ListTile(
       leading: Radio(
         activeColor: Colors.blue,
         value: recording,
-        groupValue: selectedRecording,
+        groupValue: widget.selectedRecording,
         onChanged: (Recording value) {
-          setState(() {
-            selectedRecording = value;
-          });
+          widget.onSelectRecording(value);
         },
       ),
       title: Text(recording.name),
