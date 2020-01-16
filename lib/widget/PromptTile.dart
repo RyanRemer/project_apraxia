@@ -2,12 +2,12 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
+import 'package:project_apraxia/widget/PlayButton.dart';
 
 import 'Conditional.dart';
 
 class PromptTile extends StatefulWidget {
-  Prompt prompt;
-
+  final Prompt prompt;
   PromptTile(this.prompt, {Key key}) : super(key: key);
 
   @override
@@ -20,6 +20,10 @@ class _PromptTileState extends State<PromptTile> {
   AudioPlayerState playerState = AudioPlayerState.STOPPED;
 
   _PromptTileState(this.prompt){
+    if (prompt == null){
+      throw ArgumentError.notNull("prompt must not be null");
+    }
+
     promptController.audioPlayer.onPlayerStateChanged.listen((state){
       setState(() {
         this.playerState = state;
@@ -32,17 +36,7 @@ class _PromptTileState extends State<PromptTile> {
     return ListTile(
       title: Text(prompt.word),
       subtitle: Text("Syllables: ${prompt.syllableCount}"),
-      trailing: Conditional(
-        condition: playerState == AudioPlayerState.PLAYING,
-        childIfTrue: IconButton(
-          icon: Icon(Icons.stop),
-          onPressed: promptController.stopPrompt,
-        ),
-        childIfFalse: IconButton(
-          icon: Icon(Icons.play_arrow),
-          onPressed: () => promptController.playPrompt(prompt),
-        ),
-      ),
+      trailing:PlayButton(filepath: prompt.soundUri,)
     );
   }
 }
