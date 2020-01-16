@@ -19,11 +19,33 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		B7092563F66649939CA2B486 /* Pods_project_apraxiaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987B45221F734BB408777E85 /* Pods_project_apraxiaTests.framework */; };
 		B8072CDF23861F82003F85D6 /* FlutterChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8072CDE23861F82003F85D6 /* FlutterChannelManager.swift */; };
-		B889E5BF2387363F00BA6AED /* CalculateWSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B889E5BE2387363F00BA6AED /* CalculateWSD.swift */; };
 		B889E5C12387372D00BA6AED /* RecorderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B889E5C02387372D00BA6AED /* RecorderManager.swift */; };
+		B8C874BA23CD315C004829EC /* project_apraxiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87DB62F239AC30000A5D66D /* project_apraxiaTests.swift */; };
+		B8C874BB23CD315F004829EC /* CalculateWSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B889E5BE2387363F00BA6AED /* CalculateWSD.swift */; };
+		B8DE144623CD299100AFB26D /* gingerbread_amb_CT.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8DE144523CD299100AFB26D /* gingerbread_amb_CT.wav */; };
+		B8DE144C23CD29AE00AFB26D /* gingerbread_speech_CT.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8DE144B23CD29AE00AFB26D /* gingerbread_speech_CT.wav */; };
+		B8DE146023CD308500AFB26D /* CalculateWSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = B889E5BE2387363F00BA6AED /* CalculateWSD.swift */; };
 		B8F51C622397381800FE4654 /* ambience.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8F51C612397381800FE4654 /* ambience.wav */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B87DB632239AC30000A5D66D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
+			remoteInfo = Runner;
+		};
+		B8DE145623CD2F3600AFB26D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
+			remoteInfo = Runner;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
@@ -58,12 +80,22 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		987B45221F734BB408777E85 /* Pods_project_apraxiaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_project_apraxiaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8072CDE23861F82003F85D6 /* FlutterChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterChannelManager.swift; sourceTree = "<group>"; };
+		B87DB62D239AC30000A5D66D /* project_apraxiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = project_apraxiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B87DB62F239AC30000A5D66D /* project_apraxiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = project_apraxiaTests.swift; sourceTree = "<group>"; };
+		B87DB631239AC30000A5D66D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B889E5BE2387363F00BA6AED /* CalculateWSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateWSD.swift; sourceTree = "<group>"; };
 		B889E5C02387372D00BA6AED /* RecorderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderManager.swift; sourceTree = "<group>"; };
+		B8DE144523CD299100AFB26D /* gingerbread_amb_CT.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gingerbread_amb_CT.wav; sourceTree = "<group>"; };
+		B8DE144B23CD29AE00AFB26D /* gingerbread_speech_CT.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gingerbread_speech_CT.wav; sourceTree = "<group>"; };
+		B8DE145123CD2F3600AFB26D /* project_apraxiaTestsTwo.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = project_apraxiaTestsTwo.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8F51C612397381800FE4654 /* ambience.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ambience.wav; sourceTree = "<group>"; };
+		D40868182834B9F96114E1C4 /* Pods-project_apraxiaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-project_apraxiaTests.debug.xcconfig"; path = "Target Support Files/Pods-project_apraxiaTests/Pods-project_apraxiaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D49DA2090EA90AC3BFAEF3C1 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		EB8EF1BB97B36044712FF230 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		EF50553A25FD9B48DE36CE42 /* Pods-project_apraxiaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-project_apraxiaTests.release.xcconfig"; path = "Target Support Files/Pods-project_apraxiaTests/Pods-project_apraxiaTests.release.xcconfig"; sourceTree = "<group>"; };
+		F2EE5970C749392E342F7BD7 /* Pods-project_apraxiaTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-project_apraxiaTests.profile.xcconfig"; path = "Target Support Files/Pods-project_apraxiaTests/Pods-project_apraxiaTests.profile.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +109,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B87DB62A239AC30000A5D66D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7092563F66649939CA2B486 /* Pods_project_apraxiaTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8DE144E23CD2F3600AFB26D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -86,6 +133,9 @@
 				D49DA2090EA90AC3BFAEF3C1 /* Pods-Runner.debug.xcconfig */,
 				91FB44A5940F02F761E064B6 /* Pods-Runner.release.xcconfig */,
 				EB8EF1BB97B36044712FF230 /* Pods-Runner.profile.xcconfig */,
+				D40868182834B9F96114E1C4 /* Pods-project_apraxiaTests.debug.xcconfig */,
+				EF50553A25FD9B48DE36CE42 /* Pods-project_apraxiaTests.release.xcconfig */,
+				F2EE5970C749392E342F7BD7 /* Pods-project_apraxiaTests.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -108,6 +158,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				B87DB62E239AC30000A5D66D /* project_apraxiaTests */,
 				97C146EF1CF9000F007C117D /* Products */,
 				52F3F8C31F15D43BD04987E3 /* Pods */,
 				CBCA9CCCF7DFC21009E79B01 /* Frameworks */,
@@ -118,6 +169,8 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				B87DB62D239AC30000A5D66D /* project_apraxiaTests.xctest */,
+				B8DE145123CD2F3600AFB26D /* project_apraxiaTestsTwo.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,10 +202,30 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		B87DB62E239AC30000A5D66D /* project_apraxiaTests */ = {
+			isa = PBXGroup;
+			children = (
+				B8DE144923CD299C00AFB26D /* CT */,
+				B87DB62F239AC30000A5D66D /* project_apraxiaTests.swift */,
+				B87DB631239AC30000A5D66D /* Info.plist */,
+			);
+			path = project_apraxiaTests;
+			sourceTree = "<group>";
+		};
+		B8DE144923CD299C00AFB26D /* CT */ = {
+			isa = PBXGroup;
+			children = (
+				B8DE144B23CD29AE00AFB26D /* gingerbread_speech_CT.wav */,
+				B8DE144523CD299100AFB26D /* gingerbread_amb_CT.wav */,
+			);
+			name = CT;
+			sourceTree = "<group>";
+		};
 		CBCA9CCCF7DFC21009E79B01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				3A9110AF4E44E9254B3B4B96 /* Pods_Runner.framework */,
+				987B45221F734BB408777E85 /* Pods_project_apraxiaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -182,12 +255,50 @@
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B87DB62C239AC30000A5D66D /* project_apraxiaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B87DB637239AC30000A5D66D /* Build configuration list for PBXNativeTarget "project_apraxiaTests" */;
+			buildPhases = (
+				235F9D8CE3C20BC98BA2C72D /* [CP] Check Pods Manifest.lock */,
+				B87DB629239AC30000A5D66D /* Sources */,
+				B87DB62A239AC30000A5D66D /* Frameworks */,
+				B87DB62B239AC30000A5D66D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B87DB633239AC30000A5D66D /* PBXTargetDependency */,
+			);
+			name = project_apraxiaTests;
+			productName = project_apraxiaTests;
+			productReference = B87DB62D239AC30000A5D66D /* project_apraxiaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B8DE145023CD2F3600AFB26D /* project_apraxiaTestsTwo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B8DE145823CD2F3600AFB26D /* Build configuration list for PBXNativeTarget "project_apraxiaTestsTwo" */;
+			buildPhases = (
+				B8DE144D23CD2F3600AFB26D /* Sources */,
+				B8DE144E23CD2F3600AFB26D /* Frameworks */,
+				B8DE144F23CD2F3600AFB26D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B8DE145723CD2F3600AFB26D /* PBXTargetDependency */,
+			);
+			name = project_apraxiaTestsTwo;
+			productName = project_apraxiaTestsTwo;
+			productReference = B8DE145123CD2F3600AFB26D /* project_apraxiaTestsTwo.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1110;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "The Chromium Authors";
 				TargetAttributes = {
@@ -195,6 +306,18 @@
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 94M7KLHQRT;
 						LastSwiftMigration = 0910;
+					};
+					B87DB62C239AC30000A5D66D = {
+						CreatedOnToolsVersion = 11.1;
+						DevelopmentTeam = 94M7KLHQRT;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 97C146ED1CF9000F007C117D;
+					};
+					B8DE145023CD2F3600AFB26D = {
+						CreatedOnToolsVersion = 11.1;
+						DevelopmentTeam = 94M7KLHQRT;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 97C146ED1CF9000F007C117D;
 					};
 				};
 			};
@@ -212,6 +335,8 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				B87DB62C239AC30000A5D66D /* project_apraxiaTests */,
+				B8DE145023CD2F3600AFB26D /* project_apraxiaTestsTwo */,
 			);
 		};
 /* End PBXProject section */
@@ -230,9 +355,47 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B87DB62B239AC30000A5D66D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B8DE144623CD299100AFB26D /* gingerbread_amb_CT.wav in Resources */,
+				B8DE144C23CD29AE00AFB26D /* gingerbread_speech_CT.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8DE144F23CD2F3600AFB26D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		235F9D8CE3C20BC98BA2C72D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-project_apraxiaTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,13 +470,42 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				B889E5C12387372D00BA6AED /* RecorderManager.swift in Sources */,
-				B889E5BF2387363F00BA6AED /* CalculateWSD.swift in Sources */,
 				B8072CDF23861F82003F85D6 /* FlutterChannelManager.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				B8C874BB23CD315F004829EC /* CalculateWSD.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B87DB629239AC30000A5D66D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B8C874BA23CD315C004829EC /* project_apraxiaTests.swift in Sources */,
+				B8DE146023CD308500AFB26D /* CalculateWSD.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8DE144D23CD2F3600AFB26D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B87DB633239AC30000A5D66D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97C146ED1CF9000F007C117D /* Runner */;
+			targetProxy = B87DB632239AC30000A5D66D /* PBXContainerItemProxy */;
+		};
+		B8DE145723CD2F3600AFB26D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97C146ED1CF9000F007C117D /* Runner */;
+			targetProxy = B8DE145623CD2F3600AFB26D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -392,8 +584,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 94M7KLHQRT;
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -526,8 +720,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 94M7KLHQRT;
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -554,8 +750,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 94M7KLHQRT;
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -573,6 +771,159 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
+		};
+		B87DB634239AC30000A5D66D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D40868182834B9F96114E1C4 /* Pods-project_apraxiaTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Debug;
+		};
+		B87DB635239AC30000A5D66D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EF50553A25FD9B48DE36CE42 /* Pods-project_apraxiaTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Release;
+		};
+		B87DB636239AC30000A5D66D /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F2EE5970C749392E342F7BD7 /* Pods-project_apraxiaTests.profile.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Profile;
+		};
+		B8DE145923CD2F3600AFB26D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTestsTwo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTestsTwo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Debug;
+		};
+		B8DE145A23CD2F3600AFB26D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTestsTwo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTestsTwo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Release;
+		};
+		B8DE145B23CD2F3600AFB26D /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94M7KLHQRT;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = project_apraxiaTestsTwo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.project-apraxiaTestsTwo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
+			};
+			name = Profile;
 		};
 /* End XCBuildConfiguration section */
 
@@ -593,6 +944,26 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B87DB637239AC30000A5D66D /* Build configuration list for PBXNativeTarget "project_apraxiaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B87DB634239AC30000A5D66D /* Debug */,
+				B87DB635239AC30000A5D66D /* Release */,
+				B87DB636239AC30000A5D66D /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B8DE145823CD2F3600AFB26D /* Build configuration list for PBXNativeTarget "project_apraxiaTestsTwo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8DE145923CD2F3600AFB26D /* Debug */,
+				B8DE145A23CD2F3600AFB26D /* Release */,
+				B8DE145B23CD2F3600AFB26D /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
