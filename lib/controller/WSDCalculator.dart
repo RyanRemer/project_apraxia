@@ -1,21 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
+import 'dart:io' show Platform;
 
 class WSDCalculator extends IWSDCalculator {
   static const channel = const MethodChannel("wsdCalculator");
   
   Future<double> calculateWSD(String filename, {double ambienceThreshold}) async {
-    if (Platform.isAndroid){
       return await channel.invokeMethod("calculateWSD", [filename]); 
-    }
-    else if (Platform.isIOS){
-      // ambienceThreshold ??= await calculateAmbience(filename);
-      return await channel.invokeMethod("calculateWSD", [filename]); 
-      // return await channel.invokeMethod("calculateWSD", <String, dynamic>{
-      //   'fileName': filename,
-      //   'ambienceThreshold': ambienceThreshold,
-      // });
-    }
   }
 
   @override

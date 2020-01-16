@@ -9,11 +9,11 @@
 import Foundation
 import AVFoundation
 
-class CalculateWSD {
+class WSDCalculator {
 	
 	var ambianceThreshold: Float = -1.0
 	
-	static let sharedInstance = CalculateWSD()
+	static let sharedInstance = WSDCalculator()
 	
 	private init() {
 		
@@ -32,8 +32,8 @@ class CalculateWSD {
 		return doubleArray
 	}
 	
-	// Calculates the WSD of the given file
-	func calculateWSD(fileName: String, syllableCount: Int) {
+	// Calculates the WSD of the given file with syllable count
+	func calculateWSD(for fileName: String, with syllableCount: Int) -> Double {
 		
 		print("in calculate WSD \(fileName)")
 		
@@ -63,8 +63,11 @@ class CalculateWSD {
 		
 		print("SPEECH IN MS: \(speechInMS)")
 		
-		print("WSD: \(speechInMS / 3)")
-		//TODO: change the three to the num syllables in the word
+		let calculatedWSD = speechInMS / Double(syllableCount)
+		
+		print("WSD: \(calculatedWSD)")
+		
+		return calculatedWSD
 	}
 	
 	// Takes in the audio file URL and returns the array of floats, rate, and frame count
