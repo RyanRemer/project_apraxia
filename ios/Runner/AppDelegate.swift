@@ -18,6 +18,7 @@ import AVFoundation
 		
 		methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: FlutterResult) -> Void in
 			if call.method == "calculateWSD" {
+//				[fileName, syllableCount, evaluationId]
 				if let fileNameArray = call.arguments as? [String] {
 					let calculateWSD = CalculateWSD.sharedInstance
 					calculateWSD.calculateWSD(fileName: fileNameArray[0])
@@ -28,10 +29,11 @@ import AVFoundation
 
 			} else if call.method == "startRecorder" {
 				RecordManager.sharedInstance.beginRecord(recordType: RecordType.Wav)
-			} else if call.method == "calculateAmbience" {
+			} else if call.method == "calculateAmbiance" {
+				// the file name is coming in and storing ambiance in swift
 				if let fileNameArray = call.arguments as? [String] {
 					let calculateWSD = CalculateWSD.sharedInstance
-					result(calculateWSD.getAmbienceFileThreshold(fileName: fileNameArray[0]))
+					result(calculateWSD.getAmbianceFileThreshold(fileName: fileNameArray[0]))
 				}
 			} else if call.method == "getAmplitude" {
 				if let fileNameArray = call.arguments as? [String] {

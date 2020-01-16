@@ -32,10 +32,8 @@ class CalculateWSD {
 		return doubleArray
 	}
 	
-//	func calculateWSD(fileName: String, threshold: Float) {
-	func calculateWSD(fileName: String) {
-		
-//		print("THIS IS THE AMBIANCE THRESHOLD: \(ambianceThreshold)")
+	// Calculates the WSD of the given file
+	func calculateWSD(fileName: String, syllableCount: Int) {
 		
 		print("in calculate WSD \(fileName)")
 		
@@ -69,18 +67,20 @@ class CalculateWSD {
 		//TODO: change the three to the num syllables in the word
 	}
 	
+	// Takes in the audio file URL and returns the array of floats, rate, and frame count
 	func loadAudioSignal(audioURL: URL) -> (signal: [Float], rate: Double, frameCount: Int) {
 		let file = try! AVAudioFile(forReading: audioURL)
 		let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: file.fileFormat.sampleRate, channels: file.fileFormat.channelCount, interleaved: false)!
 		let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: UInt32(file.length))
 		
 		try? file.read(into: buf!)
-//		print("buffer \(buf)")
 		
 		let floatArray = Array(UnsafeBufferPointer(start: buf?.floatChannelData![0], count:Int(buf!.frameLength)))
 		return (signal: floatArray, rate: file.fileFormat.sampleRate, frameCount: Int(file.length))
 	}
 	
+	// Takes in the file name and finds it in the system and then returns
+	// the array of floats and rate for the word
 	func getCurrentWordArrayAndRate(for fileName: String) -> ([Float], Double) {
 
 		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -96,19 +96,15 @@ class CalculateWSD {
 		return (currentMultisyllabicWordResponse.signal, currentMultisyllabicWordResponse.rate)
 	}
 	
-//	func getAmbienceFileThreshold() -> Float {
-	func getAmbienceFileThreshold(fileName: String) -> Float {
-		////get ambient array
+	// Takes in the ambiance recording file and returns the threshold for the ambiance
+	func getAmbianceFileThreshold(fileName: String) -> Float {
+		////get ambiance array
 		
-//		let ambienceFileArray = getAmbienceFileArray()
-//		for ambienceThreshold file
-		let ambienceFileArray = getThresholdFileArray(fileName: fileName)
+		let ambianceFileArray = getThresholdFileArray(fileName: fileName)
 		
-		////get threshold from the ambience array
+		////get threshold from the ambiance array
 		
-		let threshold = getThreshold(for: getAbsoluteValueArray(for: ambienceFileArray))
-		//		let threshold = getThreshold(array: ambienceArray)
-		//		for ambienceThreshold file
+		let threshold = getThreshold(for: getAbsoluteValueArray(for: ambianceFileArray))
 		
 		print("THRESHOLD IS: \(threshold)")
 		//Set the ambiance threshold in the singleton to the calculated one
@@ -116,6 +112,7 @@ class CalculateWSD {
 		return threshold
 	}
 	
+	//
 	func getThresholdFileArray(fileName: String) -> [Float] {
 //		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
 		let response = getCurrentWordArrayAndRate(for: fileName)
@@ -123,15 +120,14 @@ class CalculateWSD {
 //		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
 //		return ambienceResponse.signal
 		return response.0
-//		for ambienceThreshold file
 	}
 	
 	func getAbsoluteValueArray(for originalArray: [Float]) -> [Float] {
 		return originalArray.map { abs($0) }
 	}
 	
+	// Levels out the float array
 	func levelArrayOut(array: [Float]) -> [Float] {
-		//		var leveledOutArray = array.copy()
 		var leveledOutArray = array.map { $0 }
 		
 		for i in 20..<(array.count - 20) {
@@ -143,15 +139,14 @@ class CalculateWSD {
 		return leveledOutArray
 	}
 	
+	// Gets the threshold of the array that is passed in
 	func getThreshold(for array: [Float]) -> Float {
 		var arrayHere = array
 		arrayHere.sort()
-		//		return array.max()!
 		return arrayHere[Int(0.992 * Double(arrayHere.count))]
-		//		return arrayHere[arrayHere.count - 10]
-		//		return arrayHere.max()!
 	}
 	
+	// Gets the count of items in the array above the given threshold
 	func getCountAboveThreshold(for array: [Float], with threshold: Float) -> Int {
 		var count = 0
 		for item in array {
@@ -159,7 +154,6 @@ class CalculateWSD {
 				count += 1
 			}
 		}
-//		print("THRESHOLD IN THIS IS \(threshold)")
 		return count
 	}
 	
