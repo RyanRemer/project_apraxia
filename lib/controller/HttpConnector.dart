@@ -61,17 +61,3 @@ class HttpConnector extends IWSDCalculator {
     return await client.send(request);
   }
 }
-
-
-void main() async {
-  HttpConnector connector = new HttpConnector();
-  String path1 = "/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/ConstitutionPrompt.wav";
-  String path2 = "/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/FlatteringPrompt.wav";
-  String evalID = await connector.setAmbiance(path1);
-
-  var result = await connector.addAttempt(path2, "gingerbread", 3, evalID);
-  print(result);
-}
-
-
-//EV-f387a73b-20b0-44d3-a3ce-e7d748c43891

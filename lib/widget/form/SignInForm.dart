@@ -114,6 +114,9 @@ class SignInForm extends StatelessWidget {
       await _auth.instantiateUser(signInRequest.email);
       try {
         String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
+        if (emailSentTo == null) {
+          throw new CognitoClientException("Failed to send the forgotten password notification to the server.");
+        }
         showDialog(
           context: context,
           builder: (context) =>

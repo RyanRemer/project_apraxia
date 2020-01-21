@@ -6,7 +6,7 @@ class Auth {
   static String _userPoolId = "us-west-2_B5Jb6rdZT";
   static String _clientId = "4b499j87fnc1u5tpvok17r8jq3";
   CognitoUserPool _userPool = new CognitoUserPool(_userPoolId, _clientId);
-  CognitoUser _cognitoUser;
+  CognitoUser _user;
   CognitoUserSession _session;
 
   Auth._();
@@ -22,7 +22,6 @@ class Auth {
 
   Future<void> signIn(String email, String password) async {
     await instantiateUser(email, password: password);
-    print(this._session.getAccessToken().getJwtToken());
   }
 
   Future<void> signUp(String email, String password, String name, String address, String phone) async {
@@ -37,62 +36,70 @@ class Auth {
   }
 
   Future<void> signOut() async {
-    if (this._cognitoUser != null) {
-      await this._cognitoUser.globalSignOut();
+    if (this._user != null) {
+      await this._user.globalSignOut();
     }
     clearAuth();
   }
 
   Future<void> resendAuthentication(String email) async {
-    await instantiateUser(email);
-    await this._cognitoUser.resendConfirmationCode();
+    if (this._user != null) {
+      await this._user.resendConfirmationCode();
+    }
   }
 
   Future<List<CognitoUserAttribute>> getUserAttributes() async {
-    if (this._cognitoUser != null) {
-      return await this._cognitoUser.getUserAttributes();
+    if (this._user != null) {
+      return await this._user.getUserAttributes();
     }
     return new List<CognitoUserAttribute>();
   }
 
   Future<void> updateUserAttributes(String email, String address, String phoneNumber, String name) async {
-    if (this._cognitoUser != null) {
+    if (this._user != null) {
       List<CognitoUserAttribute> attributes = [];
       attributes.add(new CognitoUserAttribute(name: 'phone_number', value: phoneNumber));
       attributes.add(new CognitoUserAttribute(name: 'email', value: email));
       attributes.add(new CognitoUserAttribute(name: 'address', value: address));
       attributes.add(new CognitoUserAttribute(name: 'name', value: name));
-      await this._cognitoUser.updateAttributes(attributes);
+      await this._user.updateAttributes(attributes);
     }
   }
 
   Future<String> sendForgotPassword(String email) async {
-    Map<String, dynamic> data = await this._cognitoUser.forgotPassword();
-    return data["CodeDeliveryDetails"]["Destination"];
+    if (this._user != null) {
+      Map<String, dynamic> data = await this._user.forgotPassword();
+      return data["CodeDeliveryDetails"]["Destination"];
+    }
+    return null;
   }
 
   Future<bool> confirmNewPassword(String verificationCode, String newPassword) async {
-    if (this._cognitoUser == null) {
+    if (this._user == null) {
       return false;
     }
-    return await this._cognitoUser.confirmPassword(verificationCode, newPassword);
+    return await this._user.confirmPassword(verificationCode, newPassword);
   }
 
   Future<void> instantiateUser(String email, {String password}) async {
-    this._cognitoUser = new CognitoUser(email, _userPool);
+    this._user = new CognitoUser(email, _userPool);
     if (password != null) {
       await authenticateUser(email, password);
     }
   }
 
   Future<void> authenticateUser(String email, String password) async {
-    AuthenticationDetails authDetails = new AuthenticationDetails(username: email, password: password);
-    this._session = await this._cognitoUser.authenticateUser(authDetails);
+    if (this._user != null) {
+      AuthenticationDetails authDetails = new AuthenticationDetails(username: email, password: password);
+      this._session = await this._user.authenticateUser(authDetails);
+    }
   }
 
   Future<bool> deleteUser(String email, String password) async {
-    await instantiateUser(email, password: password);
-    return await this._cognitoUser.deleteUser();
+    if (this._user != null) {
+      return await this._user.deleteUser();
+    }
+    return false;
   }
 
   Future<String> getJWT() async {
@@ -134,7 +141,7 @@ class Auth {
   }
 
   void clearAuth() {
-    this._cognitoUser = null;
+    this._user = null;
     this._session = null;
   }
 }
