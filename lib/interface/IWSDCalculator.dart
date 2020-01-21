@@ -1,3 +1,5 @@
+import 'package:project_apraxia/model/Attempt.dart';
+
 abstract class IWSDCalculator {
 
   /*
@@ -24,7 +26,7 @@ abstract class IWSDCalculator {
   * @return [String attemptID, double WSD]: A tuple list, with the attemptId and the WSD, i.e. [42, 310.448]
   *
   */
-  Future<List> addAttempt(String fileName, String word, int syllableCount, String evaluationId);
+  Future<Attempt> addAttempt(String fileName, String word, int syllableCount, String evaluationId);
 
   /*
   * This returns a list that represents amplitude values for the given filename

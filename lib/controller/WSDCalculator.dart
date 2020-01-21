@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
-import 'dart:io' show Platform;
+import 'package:project_apraxia/model/Attempt.dart';
 
 class WSDCalculator extends IWSDCalculator {
   static const channel = const MethodChannel("wsdCalculator");
@@ -15,8 +15,8 @@ class WSDCalculator extends IWSDCalculator {
   }
 
   @override
-  Future<List> addAttempt(String fileName, String word, int syllableCount, String evaluationId) async {
-    return ["", await channel.invokeMethod("calculateWSD", [fileName, syllableCount, evaluationId])];
+  Future<Attempt> addAttempt(String fileName, String word, int syllableCount, String evaluationId) async {
+    return Attempt("", await channel.invokeMethod("calculateWSD", [fileName, syllableCount, evaluationId]));
   }
 
   @override
