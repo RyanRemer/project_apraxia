@@ -47,10 +47,12 @@ public class MainActivity extends FlutterActivity {
                                 }
 
                                 String speechFileName = (String) ((ArrayList) call.arguments()).get(0);
+                                int syllableCount = (int) ((ArrayList) call.arguments()).get(1);
+
                                 try {
                                     WavFile speechFile = WavFile.openWavFile(new File(speechFileName));
                                     List<Double> speechAmplitudeList = getAmplitudeList(speechFile);
-                                    double WSD = getWSD(speechAmplitudeList, 3, threshold, speechFile.getSampleRate());
+                                    double WSD = getWSD(speechAmplitudeList, syllableCount, threshold, speechFile.getSampleRate());
                                     result.success(WSD);
                                 } catch (Exception e) {
                                     System.err.println(e.getMessage());
