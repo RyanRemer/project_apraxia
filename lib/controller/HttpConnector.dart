@@ -61,3 +61,4 @@ class HttpConnector extends IWSDCalculator {
     return await client.send(request);
   }
 }
+
