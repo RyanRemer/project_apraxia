@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   recorder_wav: ^0.1.0
-  amazon_cognito_identity_dart: ^0.0.22
+  amazon_cognito_identity_dart_2: ^0.1.6
   path_provider:
   audioplayer: ^0.5.2
   http: ^0.12.0+2
