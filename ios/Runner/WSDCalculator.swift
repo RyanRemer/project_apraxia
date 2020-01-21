@@ -9,10 +9,32 @@
 import Foundation
 import AVFoundation
 
-class CalculateWSD {
+class WSDCalculator {
 	
-//	func calculateWSD(fileName: String, threshold: Float) {
-	func calculateWSD(fileName: String) {
+	var ambianceThreshold: Float = -1.0
+	
+	static let sharedInstance = WSDCalculator()
+	
+	private init() {
+		
+	}
+	
+	func getAmplitudes(fileName: String) -> [Double] {
+		////get multisyllabic word array and rate
+		
+		let currentWordResponse = getCurrentWordArrayAndRate(for: fileName)
+		let currentWordArray = currentWordResponse.0
+		
+		var doubleArray: [Double] {
+			currentWordArray.map {Double($0)}
+		}
+		
+		return doubleArray
+	}
+	
+	// Calculates the WSD of the given file with syllable count
+	func calculateWSD(for fileName: String, with syllableCount: Int) -> Double {
+		
 		print("in calculate WSD \(fileName)")
 		
 		////get multisyllabic word array and rate
@@ -27,41 +49,43 @@ class CalculateWSD {
 		////get absolute value of multisyllabic word array
 		
 		let currentWordArrayAbsValue = getAbsoluteValueArray(for: currentWordArray)
-
-		//		print("response part 1: \(absArray)")
 		
-		let threshold = getAmbienceFileThreshold()
-		
-		////		get the count of items in gingerbread word array that are above the threshold - should be around 5280
+//		let threshold = getAmbienceFileThreshold()
+		let threshold = ambianceThreshold
 
 		let leveledOutCurrentWordArray = levelArrayOut(array: currentWordArrayAbsValue)
 
-		//		let countAboveThreshold = getCountAboveThreshold(array: gingerbreadArrayAbsValue, threshold: threshold)
 		let countAboveThreshold = getCountAboveThreshold(for: leveledOutCurrentWordArray, with: threshold)
 
 //		print("COUNT ABOVE THRESHOLD IS: \(countAboveThreshold)")
 
 		let speechInMS = (Double(countAboveThreshold) / currentWordRate) * 1000
-		//
+		
 		print("SPEECH IN MS: \(speechInMS)")
-		//
-		print("WSD: \(speechInMS / 3)")
+		
+		let calculatedWSD = speechInMS / Double(syllableCount)
+		
+		print("WSD: \(calculatedWSD)")
+		
+		return calculatedWSD
 	}
 	
+	// Takes in the audio file URL and returns the array of floats, rate, and frame count
 	func loadAudioSignal(audioURL: URL) -> (signal: [Float], rate: Double, frameCount: Int) {
 		let file = try! AVAudioFile(forReading: audioURL)
 		let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: file.fileFormat.sampleRate, channels: file.fileFormat.channelCount, interleaved: false)!
 		let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: UInt32(file.length))
 		
 		try? file.read(into: buf!)
-//		print("buffer \(buf)")
 		
 		let floatArray = Array(UnsafeBufferPointer(start: buf?.floatChannelData![0], count:Int(buf!.frameLength)))
 		return (signal: floatArray, rate: file.fileFormat.sampleRate, frameCount: Int(file.length))
 	}
 	
+	// Takes in the file name and finds it in the system and then returns
+	// the array of floats and rate for the word
 	func getCurrentWordArrayAndRate(for fileName: String) -> ([Float], Double) {
-		
+
 		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 		
 		let wavFile = String(fileName.split(separator: "/").last!)
@@ -70,53 +94,43 @@ class CalculateWSD {
 		
 		let soundURL = documentDirectory.appendingPathComponent(wavFile)
 		
-		print("sound url is: \(soundURL)")
-		
 		let currentMultisyllabicWordResponse = loadAudioSignal(audioURL: soundURL)
 		
-//		return ([],0.0)
 		return (currentMultisyllabicWordResponse.signal, currentMultisyllabicWordResponse.rate)
 	}
 	
-	func getAmbienceFileThreshold() -> Float {
-//		for ambienceThreshold file
-//	func getAmbienceFileThreshold(fileName: String) -> Float {
-		////get ambient array
+	// Takes in the ambiance recording file and returns the threshold for the ambiance
+	func getAmbianceFileThreshold(fileName: String) -> Float {
+		////get ambiance array
 		
-		let ambienceFileArray = getAmbienceFileArray()
-//		for ambienceThreshold file
-//		let ambienceArray = getThresholdFileArray(fileName: fileName)
+		let ambianceFileArray = getThresholdFileArray(fileName: fileName)
 		
-		////get threshold from the ambience array
+		////get threshold from the ambiance array
 		
-		let threshold = getThreshold(for: getAbsoluteValueArray(for: ambienceFileArray))
-		//		let threshold = getThreshold(array: ambienceArray)
-		//		for ambienceThreshold file
+		let threshold = getThreshold(for: getAbsoluteValueArray(for: ambianceFileArray))
 		
 		print("THRESHOLD IS: \(threshold)")
+		//Set the ambiance threshold in the singleton to the calculated one
+		ambianceThreshold = threshold
 		return threshold
 	}
 	
-//		for ambienceThreshold file
-//	func getThresholdFileArray(fileName: String) -> [Float] {
-	func getAmbienceFileArray() -> [Float] {
-		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
-//		let response = getGingerbreadArrayAndRate(fileName: fileName)
-//		for ambienceThreshold file
+	//
+	func getThresholdFileArray(fileName: String) -> [Float] {
+//		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
+		let response = getCurrentWordArrayAndRate(for: fileName)
 		
-		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
-		
-		return ambienceResponse.signal
-//		return response.0
-//		for ambienceThreshold file
+//		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
+//		return ambienceResponse.signal
+		return response.0
 	}
 	
 	func getAbsoluteValueArray(for originalArray: [Float]) -> [Float] {
 		return originalArray.map { abs($0) }
 	}
 	
+	// Levels out the float array
 	func levelArrayOut(array: [Float]) -> [Float] {
-		//		var leveledOutArray = array.copy()
 		var leveledOutArray = array.map { $0 }
 		
 		for i in 20..<(array.count - 20) {
@@ -128,15 +142,14 @@ class CalculateWSD {
 		return leveledOutArray
 	}
 	
+	// Gets the threshold of the array that is passed in
 	func getThreshold(for array: [Float]) -> Float {
 		var arrayHere = array
 		arrayHere.sort()
-		//		return array.max()!
 		return arrayHere[Int(0.992 * Double(arrayHere.count))]
-		//		return arrayHere[arrayHere.count - 10]
-		//		return arrayHere.max()!
 	}
 	
+	// Gets the count of items in the array above the given threshold
 	func getCountAboveThreshold(for array: [Float], with threshold: Float) -> Int {
 		var count = 0
 		for item in array {
@@ -144,7 +157,6 @@ class CalculateWSD {
 				count += 1
 			}
 		}
-//		print("THRESHOLD IN THIS IS \(threshold)")
 		return count
 	}
 	
