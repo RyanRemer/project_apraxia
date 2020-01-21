@@ -5,71 +5,71 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 import 'package:project_apraxia/controller/Auth.dart';
+import 'package:project_apraxia/interface/IWSDCalculator.dart';
+import 'package:project_apraxia/model/Attempt.dart';
 
 
-class HttpConnector {
+class HttpConnector extends IWSDCalculator {
   String serverURL = "https://44.229.253.49:8080";
   Auth auth = new Auth.instance();
-  HttpClient client;
-  IOClient ioClient;
+  IOClient client;
 
   HttpConnector() {
-    client = new HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
-    ioClient = new IOClient(client);
+    HttpClient baseClient = new HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    client = new IOClient(baseClient);
   }
 
-//  setAmbience(recording as file name) -> evaluationId: string (for native modules return fake evaluationId)
-  Future<String> setAmbience(String ambienceFileName) async {
+  Future<String> setAmbiance(String ambienceFileName) async {
     File ambienceFile = File(ambienceFileName);
     Uri uri = Uri.parse(serverURL + "/evaluation");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', ambienceFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
-    http.StreamedResponse response = await ioClient.send(request);
+    http.StreamedResponse response = await client.send(request);
     String responseBody = await response.stream.bytesToString();
     Map body = jsonDecode(responseBody);
     return body['evaluationId'];
   }
 
-//  addAttempt(recording as file name, word (e.g. “gingerbread”), syllableCount, evaluationId) -> attemptId: string, wsd: double (?)
-  Future<Map> addAttempt(String recordingFileName, String word, int syllableCount, String evaluationId) async {
+  Future<Attempt> addAttempt(String recordingFileName, String word, int syllableCount, String evaluationId) async {
     File recordingFile = File(recordingFileName);
     Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt?word=' + word + '&syllableCount=' + syllableCount.toString());
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', recordingFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
 //    request.fields.addEntries([MapEntry<String, String>('syllableCount', syllableCount.toString()), MapEntry<String, String>('word', word)]);
-    http.StreamedResponse response = await ioClient.send(request);
+    http.StreamedResponse response = await client.send(request);
     String responseBody = await response.stream.bytesToString();
     Map body = jsonDecode(responseBody);
-    return body;
+    Attempt attempt = Attempt(body['attemptId'], body['wsd']);
+    return attempt;
   }
 
-//  getReport(id) -> wsd’s: map<word:double>
-  Future<Map> getReport(String id) async {
-
+  Future<List<double>> getAmplitudes(String fileName) {
+    return null;
   }
-
 
   Future post(String path, body, headers) async {
-    return await ioClient.post(serverURL + path, body: utf8.encode(json.encode(body)), headers: headers);
+    return await client.post(serverURL + path, body: utf8.encode(json.encode(body)), headers: headers);
   }
 
   Future get(String path, headers) async {
-    return await ioClient.get(serverURL + path, headers: headers);
+    return await client.get(serverURL + path, headers: headers);
   }
 
   Future sendRequest(http.BaseRequest request) async {
-    return await ioClient.send(request);
+    return await client.send(request);
   }
 }
 
 
 void main() async {
   HttpConnector connector = new HttpConnector();
-  String path1 = "/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/zippering.wav";
-  String evalID = await connector.setAmbience(path1);
-  var result = await connector.addAttempt("/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/gingerbread.wav", "gingerbread", 3, evalID);
+  String path1 = "/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/ConstitutionPrompt.wav";
+  String path2 = "/Users/drake_wade/OneDrive - BYU Office 365/Winter 2020/CS 495/Project/project_apraxia/assets/prompts/FlatteringPrompt.wav";
+  String evalID = await connector.setAmbiance(path1);
+
+  var result = await connector.addAttempt(path2, "gingerbread", 3, evalID);
   print(result);
 }
 
