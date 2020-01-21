@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
-import 'package:project_apraxia/page/PromptPageBuilder.dart';
+import 'package:project_apraxia/page/PromptsPage.dart';
 
 
 class RecordPage extends StatefulWidget {
@@ -23,11 +23,11 @@ class _RecordPageState extends State<RecordPage> {
       future: promptsFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
-          return _buildErrorPage(snapshot.error);
+          return _buildErrorPage(snapshot.error.toString());
         } else if (snapshot.connectionState != ConnectionState.done) {
           return _buildPromptsLoading();
         } else {
-          return PromptPageBuilder(snapshot.data);
+          return PromptsPage(snapshot.data);
         }
       },
     );
@@ -53,7 +53,21 @@ class _RecordPageState extends State<RecordPage> {
   Widget _buildErrorPage(error) {
     return Scaffold(
       body: Center(
-        child: Text(error),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(error, style: TextStyle(color: Colors.red),),
+            FlatButton.icon(
+              icon: Icon(Icons.refresh),
+              label: Text("Retry"),
+              onPressed: (){
+                setState(() {
+                  promptsFuture = promptController.getPrompts();
+                });
+              },
+            )
+          ],
+        ),
       ),
     );
   }

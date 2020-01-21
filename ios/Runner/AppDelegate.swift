@@ -17,50 +17,39 @@ import AVFoundation
 		let methodChannel = FlutterMethodChannel(name: channelName, binaryMessenger: rootViewController.binaryMessenger)
 		
 		methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: FlutterResult) -> Void in
-//			print("call method is: \(call.method)")
 			if call.method == "calculateWSD" {
-//				print("this is here 4 \(call.arguments)")
-//				guard let args = call.arguments else { return }
-//				if let myArgs = args as? [String: Any] {
-//					print("args are good: \(myArgs)")
-//					if let fileName = myArgs["fileName"] as? String {
-//						print("file name is good: \(fileName)")
-////					let someInfo1 : String = args["filename"]
-//						if let ambienceThreshold = myArgs["ambienceThreshold"] as? Float {
-//
-//							print("fileName: \(fileName)")
-//							print("ambienceThreshold: \(ambienceThreshold)")
-//		//					if let fileName = myArgs["filename"] as? String,
-//		//					let ambienceThreshold = myArgs["ambienceThreshold"] as? Double {
-//							let calculateWSD = CalculateWSD()
-//							//					calculateWSD.calculate()
-//							calculateWSD.calculateWSD(fileName: fileName, threshold: ambienceThreshold)
-//						}
-//					}
-//	//					result("Params received on iOS = \(someInfo1), \(someInfo2)")
-//				}
-//				print("this is here 5 \(call.arguments as! String)")
-				if let fileNameArray = call.arguments as? [String] {
-					let calculateWSD = CalculateWSD()
-					calculateWSD.calculateWSD(fileName: fileNameArray[0])
+				if let fileNameArray = call.arguments as? [Any] {
+					let fileName = fileNameArray[0] as! String
+					let syllableCount = fileNameArray[1] as! Int
+//					print("file name is: \(fileName)")
+//					print("syllable count is: \(syllableCount)")
+					let wsdCalculator = WSDCalculator.sharedInstance
+					if wsdCalculator.ambianceThreshold == -1.0 {
+						result(FlutterError(code: "NO THRESHOLD",
+											message: "No ambiance threshold is set",
+											details: nil))
+					} else {
+						let calculatedWSD = wsdCalculator.calculateWSD(for: fileName, with: syllableCount)
+						result(calculatedWSD)
+					}
 				}
-//			}
 			} else if call.method == "stopRecord" {
-//				print("here it is stopping")
 				let fileName = RecordManager.sharedInstance.stopRecord()
-//				print("after stopped recording in swift \(fileName)")
 				result(fileName)
 
 			} else if call.method == "startRecorder" {
-//				print("in start recorder")
 				RecordManager.sharedInstance.beginRecord(recordType: RecordType.Wav)
-			} else if call.method == "calculateAmbience" {
-//				print("IN THE AMBIENCE CALCULATING")
-//				if let fileNameArray = call.arguments as? [String] {
-////					print("this is here 10 \(fileNameArray)")
-//					let calculateWSD = CalculateWSD()
-////					result(calculateWSD.getAmbienceFileThreshold(fileName: fileNameArray[0]))
-//				}
+			} else if call.method == "calculateAmbiance" {
+				// the file name is coming in and storing ambiance in swift
+				if let fileNameArray = call.arguments as? [String] {
+					let wsdCalculator = WSDCalculator.sharedInstance
+					result(wsdCalculator.getAmbianceFileThreshold(fileName: fileNameArray[0]))
+				}
+			} else if call.method == "getAmplitude" {
+				if let fileNameArray = call.arguments as? [String] {
+					let wsdCalculator = WSDCalculator.sharedInstance
+					result(wsdCalculator.getAmplitudes(fileName: fileNameArray[0]))
+				}
 			}
 		}
 		
