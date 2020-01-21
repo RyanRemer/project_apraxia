@@ -24,8 +24,14 @@ import AVFoundation
 //					print("file name is: \(fileName)")
 //					print("syllable count is: \(syllableCount)")
 					let wsdCalculator = WSDCalculator.sharedInstance
-					let calculatedWSD = wsdCalculator.calculateWSD(for: fileName, with: syllableCount)
-					result(calculatedWSD)
+					if wsdCalculator.ambianceThreshold == -1.0 {
+						result(FlutterError(code: "NO THRESHOLD",
+											message: "No ambiance threshold is set",
+											details: nil))
+					} else {
+						let calculatedWSD = wsdCalculator.calculateWSD(for: fileName, with: syllableCount)
+						result(calculatedWSD)
+					}
 				}
 			} else if call.method == "stopRecord" {
 				let fileName = RecordManager.sharedInstance.stopRecord()
