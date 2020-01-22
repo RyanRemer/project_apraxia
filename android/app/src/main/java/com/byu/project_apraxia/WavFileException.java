@@ -1,4 +1,4 @@
-package com.byu.project_apraxia.project_apraxia;
+package com.byu.project_apraxia;
 
 public class WavFileException extends Exception
 {
