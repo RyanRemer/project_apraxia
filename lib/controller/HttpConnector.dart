@@ -10,7 +10,7 @@ import 'package:project_apraxia/model/Attempt.dart';
 
 
 class HttpConnector extends IWSDCalculator {
-  String serverURL = "https://44.229.253.49:8080";
+  String serverURL = "https://52.41.34.29:8080";
   Auth auth = new Auth.instance();
   IOClient client;
 
