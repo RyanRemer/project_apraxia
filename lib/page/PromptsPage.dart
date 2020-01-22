@@ -88,7 +88,7 @@ class _PromptsPageState extends State<PromptsPage> {
   }
 
   void _moveToReportsPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage(wsdReport)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage(wsdReport, prompts)));
   }
 
 }
