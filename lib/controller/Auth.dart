@@ -113,19 +113,7 @@ class Auth {
   }
 
   Future<void> refreshSession() async {
-    final Map<String, String> authParameters = {
-      'REFRESH_TOKEN': this._session.getRefreshToken().getToken()
-    };
-    final Map<String, dynamic> params = {
-      'ClientId': _clientId,
-      'AuthFlow': 'REFRESH_TOKEN_AUTH',
-      'AuthParameters': authParameters
-    };
-
-    var response = await this._userPool.client.request('InitiateAuth', params);
-    var authResult = response['AuthenticationResult'];
-    this._session.accessToken = CognitoAccessToken(authResult['AccessToken']);
-    this._session.idToken = CognitoIdToken(authResult['IdToken']);
+    this._session = await this._user.refreshSession(this._session.getRefreshToken());
   }
 
   Future<bool> closeToRefresh() async {
