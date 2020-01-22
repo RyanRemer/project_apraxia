@@ -1,4 +1,4 @@
-package com.byu.project_apraxia.project_apraxia;// Wav file IO class
+package com.byu.project_apraxia;// Wav file IO class
 // A.Greensted
 // http://www.labbookpages.co.uk
 
