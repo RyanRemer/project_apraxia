@@ -11,7 +11,8 @@ class WSDCalculator extends IWSDCalculator {
 
   @override
   Future<String> setAmbiance(String fileName) async {
-    return await channel.invokeMethod("calculateAmbience", [fileName]);
+    double threshold = await channel.invokeMethod("calculateAmbiance", [fileName]);
+    return threshold.toString();
   }
 
   @override
