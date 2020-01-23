@@ -7,8 +7,8 @@ import 'package:project_apraxia/page/PromptsPage.dart';
 
 class RecordPage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
-
-  const RecordPage({Key key, @required this.wsdCalculator}) : super(key: key);
+  final String evaluationId;
+  const RecordPage({Key key, @required this.wsdCalculator, @required this.evaluationId}) : super(key: key);
 
   @override
   _RecordPageState createState() => _RecordPageState();
@@ -32,7 +32,7 @@ class _RecordPageState extends State<RecordPage> {
         } else if (snapshot.connectionState != ConnectionState.done) {
           return _buildPromptsLoading();
         } else {
-          return PromptsPage(snapshot.data, wsdCalculator: widget.wsdCalculator,);
+          return PromptsPage(snapshot.data, wsdCalculator: widget.wsdCalculator, evaluationId: widget.evaluationId,);
         }
       },
     );

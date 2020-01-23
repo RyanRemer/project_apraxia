@@ -1,4 +1,4 @@
-import 'package:amazon_cognito_identity_dart/cognito.dart';
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
@@ -114,6 +114,9 @@ class SignInForm extends StatelessWidget {
       await _auth.instantiateUser(signInRequest.email);
       try {
         String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
+        if (emailSentTo == null) {
+          throw new CognitoClientException("Failed to send the forgotten password notification to the server.");
+        }
         showDialog(
           context: context,
           builder: (context) =>

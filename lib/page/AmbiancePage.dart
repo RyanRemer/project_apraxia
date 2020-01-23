@@ -18,6 +18,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
   int seconds = 3;
   bool isRecording = false;
   bool ambienceRecorded = false;
+  String _evaluationId;
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +60,13 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   void startTest() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => RecordPage(wsdCalculator: widget.wsdCalculator,)));
+        context, MaterialPageRoute(builder: (context) => RecordPage(wsdCalculator: widget.wsdCalculator, evaluationId: _evaluationId,)));
   }
 
   Future<void> onTap() async {
     try {
       String fileUri = await recordAmbiance();
-      String evaluationId = await setAmbiance(fileUri);
-      // TODO: Figure out what to do with the evaluationId
+      _evaluationId = await setAmbiance(fileUri);
 
     } on PlatformException {
       ErrorDialog errorDialog = new ErrorDialog(context);
@@ -98,8 +98,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
   }
 
   Future<String> setAmbiance(String fileUri) async {
-    WSDCalculator wsdCalculator = new WSDCalculator();
-    String evaluationId = await wsdCalculator.setAmbiance(fileUri);
+    String evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
     print(evaluationId);
 
     setState(() {
