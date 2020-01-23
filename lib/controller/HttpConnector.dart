@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
+import 'package:project_apraxia/controller/WSDCalculator.dart';
 
 
 class HttpConnector extends IWSDCalculator {
@@ -52,7 +53,8 @@ class HttpConnector extends IWSDCalculator {
   }
 
   Future<List<double>> getAmplitudes(String fileName) {
-    return null;
+    IWSDCalculator calculator = new WSDCalculator();
+    return calculator.getAmplitudes(fileName);
   }
 }
 
