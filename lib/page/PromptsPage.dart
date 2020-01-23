@@ -4,6 +4,7 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/page/PromptArea.dart';
+import 'package:project_apraxia/page/ReportsPage.dart';
 
 /// [PromptsPage] is a screen that contains the logic for displaying each of the [Prompt] objects
 class PromptsPage extends StatefulWidget {
@@ -59,9 +60,9 @@ class _PromptsPageState extends State<PromptsPage> {
             onPressed: index > 0 ? _decrementIndex : null,
           ),
           RaisedButton(
-            child: Text("Next"),
+            child: Text(isLast() ? "Done" : "Next"),
             onPressed:
-                enableNext() ? _incrementIndex : null,
+                enableNext() ? isLast() ? _moveToReportsPage : _incrementIndex : null,
           )
         ],
       ),
@@ -69,8 +70,11 @@ class _PromptsPageState extends State<PromptsPage> {
   }
 
   bool enableNext() {
-    return index < prompts.length - 1 &&
-        wsdReport.getRecording(prompts[index]) != null;
+    return wsdReport.getRecording(prompts[index]) != null;
+  }
+
+  bool isLast() {
+    return index == prompts.length - 1;
   }
 
   void _decrementIndex() {
@@ -83,6 +87,10 @@ class _PromptsPageState extends State<PromptsPage> {
     setState(() {
       index++;
     });
+  }
+
+  void _moveToReportsPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage(wsdReport, prompts)));
   }
 
 }
