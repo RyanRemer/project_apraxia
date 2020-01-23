@@ -20,6 +20,9 @@ class HttpConnector extends IWSDCalculator {
   }
 
   Future<String> setAmbiance(String ambienceFileName) async {
+    if (ambienceFileName.startsWith('file://')) {
+      ambienceFileName = ambienceFileName.substring(6);
+    }
     File ambienceFile = File(ambienceFileName);
     Uri uri = Uri.parse(serverURL + "/evaluation");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
@@ -32,6 +35,9 @@ class HttpConnector extends IWSDCalculator {
   }
 
   Future<Attempt> addAttempt(String recordingFileName, String word, int syllableCount, String evaluationId) async {
+    if (recordingFileName.startsWith('file://')) {
+      recordingFileName = recordingFileName.substring(6);
+    }
     File recordingFile = File(recordingFileName);
     Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt?word=' + word + '&syllableCount=' + syllableCount.toString());
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);

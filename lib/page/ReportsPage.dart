@@ -10,11 +10,13 @@ class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
   final List<Prompt> prompts;
   final IWSDCalculator wsdCalculator;
+  final String evaluationId;
 
   ReportsPage(
       {@required this.wsdReport,
       @required this.prompts,
       @required this.wsdCalculator,
+      @required this.evaluationId,
       Key key})
       : super(key: key);
 
@@ -75,7 +77,7 @@ class _ReportsPageState extends State<ReportsPage> {
           wsdReport.getRecording(prompt).soundFile.path,
           prompt.word,
           prompt.syllableCount,
-          "");
+          widget.evaluationId);
       runningTotal += newAttempt.WSD;
       calculatedWSDs[prompt] = newAttempt;
     }

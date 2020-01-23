@@ -10,7 +10,8 @@ import 'package:project_apraxia/page/ReportsPage.dart';
 class PromptsPage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
   final List<Prompt> prompts;
-  PromptsPage(this.prompts, {@required this.wsdCalculator, Key key})
+  final String evaluationId;
+  PromptsPage(this.prompts, {@required this.wsdCalculator, Key key, @required this.evaluationId})
       : super(key: key);
 
   @override
@@ -97,6 +98,7 @@ class _PromptsPageState extends State<PromptsPage> {
         wsdReport: wsdReport,
         wsdCalculator: widget.wsdCalculator,
         prompts: prompts,
+        evaluationId: widget.evaluationId,
       );
     }));
   }

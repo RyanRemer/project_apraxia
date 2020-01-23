@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/WSDCalculator.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 
@@ -53,7 +54,7 @@ class _WaiverPageState extends State<WaiverPage> {
   void startRemoteTest() {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return AmbiancePage(
-        wsdCalculator: new WSDCalculator(), //TODO: add remote
+        wsdCalculator: new HttpConnector(),
       );
     }));
   }
