@@ -3,6 +3,7 @@ import 'package:project_apraxia/page/AmbiancePage.dart';
 
 import 'package:project_apraxia/page/UpdateUserPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
+import 'package:project_apraxia/page/WaiverPage.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -59,7 +60,7 @@ class LandingPage extends StatelessWidget {
 
 void goToRecordPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => AmbiancePage()));
+      .push(MaterialPageRoute(builder: (context) => WaiverPage()));
 }
 
 void goToSettingsPage(BuildContext context) {

@@ -64,9 +64,13 @@ class PromptAreaState extends State<PromptArea> {
       name: prompt.word + "-${_recordings.length + 1}",
     );
 
-    Directory directory = soundFile.parent;
-    recording.soundFile = File("${directory.path}/${recording.name}.wav");
-    soundFile.copySync(recording.soundFile.path);
+    if (Platform.isAndroid) {
+      Directory directory = soundFile.parent;
+      recording.soundFile = File("${directory.path}/${recording.name}.wav");
+      soundFile.copySync(recording.soundFile.path);
+    } else {
+      recording.soundFile = soundFile;
+    }
 
     setState(() {
       _recordings.add(recording);
