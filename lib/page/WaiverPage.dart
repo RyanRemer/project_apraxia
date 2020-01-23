@@ -45,7 +45,7 @@ class _WaiverPageState extends State<WaiverPage> {
   void startLocalTest() {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return AmbiancePage(
-        wsdCalculater: new WSDCalculator(),
+        wsdCalculator: new WSDCalculator(),
       );
     }));
   }
@@ -53,7 +53,7 @@ class _WaiverPageState extends State<WaiverPage> {
   void startRemoteTest() {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return AmbiancePage(
-        wsdCalculater: new WSDCalculator(), //TODO: add remote
+        wsdCalculator: new WSDCalculator(), //TODO: add remote
       );
     }));
   }

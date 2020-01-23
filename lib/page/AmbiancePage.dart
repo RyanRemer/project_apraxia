@@ -7,20 +7,17 @@ import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class AmbiancePage extends StatefulWidget {
-  IWSDCalculator wsdCalculater;
-  AmbiancePage({@required this.wsdCalculater, Key key}) : super(key: key);
+  final IWSDCalculator wsdCalculator;
+  AmbiancePage({@required this.wsdCalculator, Key key}) : super(key: key);
 
   @override
-  _AmbiancePageState createState() => _AmbiancePageState(this.wsdCalculater);
+  _AmbiancePageState createState() => _AmbiancePageState();
 }
 
 class _AmbiancePageState extends State<AmbiancePage> {
   int seconds = 3;
   bool isRecording = false;
   bool ambienceRecorded = false;
-  WSDCalculator wsdCalculator;
-
-  _AmbiancePageState(this.wsdCalculator);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +59,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   void startTest() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => RecordPage()));
+        context, MaterialPageRoute(builder: (context) => RecordPage(wsdCalculator: widget.wsdCalculator,)));
   }
 
   Future<void> onTap() async {

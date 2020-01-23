@@ -10,7 +10,8 @@ import 'package:project_apraxia/page/ReportsPage.dart';
 class PromptsPage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
   final List<Prompt> prompts;
-  PromptsPage(this.prompts, {@required this.wsdCalculator, Key key}) : super(key: key);
+  PromptsPage(this.prompts, {@required this.wsdCalculator, Key key})
+      : super(key: key);
 
   @override
   _PromptsPageState createState() => _PromptsPageState(this.prompts);
@@ -61,8 +62,9 @@ class _PromptsPageState extends State<PromptsPage> {
           ),
           RaisedButton(
             child: Text(isLast() ? "Done" : "Next"),
-            onPressed:
-                enableNext() ? isLast() ? _moveToReportsPage : _incrementIndex : null,
+            onPressed: enableNext()
+                ? isLast() ? _moveToReportsPage : _incrementIndex
+                : null,
           )
         ],
       ),
@@ -90,7 +92,12 @@ class _PromptsPageState extends State<PromptsPage> {
   }
 
   void _moveToReportsPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage(wsdReport, prompts)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ReportsPage(
+        wsdReport: wsdReport,
+        wsdCalculator: widget.wsdCalculator,
+        prompts: prompts,
+      );
+    }));
   }
-
 }
