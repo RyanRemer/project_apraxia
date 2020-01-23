@@ -48,17 +48,5 @@ class HttpConnector extends IWSDCalculator {
   Future<List<double>> getAmplitudes(String fileName) {
     return null;
   }
-
-  Future post(String path, body, headers) async {
-    return await client.post(serverURL + path, body: utf8.encode(json.encode(body)), headers: headers);
-  }
-
-  Future get(String path, headers) async {
-    return await client.get(serverURL + path, headers: headers);
-  }
-
-  Future sendRequest(http.BaseRequest request) async {
-    return await client.send(request);
-  }
 }
 
