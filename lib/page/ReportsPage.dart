@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/WSDCalculator.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
+import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
 import 'package:project_apraxia/model/Prompt.dart';
+import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
@@ -18,12 +21,16 @@ class _ReportsPageState extends State<ReportsPage> {
   bool loading;
   List<Prompt> prompts;
   Map<Prompt, Attempt> calculatedWSDs;
+  IWSDCalculator wsdCalculator;
+  double averageWSD;
 
   _ReportsPageState(WsdReport wsdReport, List<Prompt> prompts) {
     this.wsdReport = wsdReport;
     this.prompts = prompts;
     loading = false;
     calculatedWSDs = new Map();
+    wsdCalculator = new WSDCalculator();
+    averageWSD = 0.0;
 
     for (final prompt in prompts) {
       calculatedWSDs[prompt] = new Attempt("", 0.0);
@@ -33,16 +40,46 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   void initState() {
     super.initState();
-    calculateWSDs();
+    try {
+      calculateWSDs();
+    } catch (error) {
+      var dialog = new ErrorDialog(context);
+      dialog.show("WSD Calculation Error", error.toString());
+    }
   }
 
-  void calculateWSDs() {
+//  Future setTestAmbiance() async {
+//    LocalFileController localFileController = new LocalFileController();
+//
+//    String localUri = await localFileController.getLocalRef(
+//        "assets/prompts/amb.wav");
+//
+//    await wsdCalculator.setAmbiance(localUri);
+//  }
+
+  Future calculateWSDs() async {
     setState(() {
       loading = true;
     });
+
+    // For testing purposes
+//    await setTestAmbiance();
+
+    double runningTotal = 0.0;
+    for (final prompt in prompts) {
+      Attempt newAttempt = await wsdCalculator.addAttempt(wsdReport
+          .getRecording(prompt)
+          .soundFile
+          .path, prompt.word, prompt.syllableCount, "");
+      runningTotal += newAttempt.WSD;
+      calculatedWSDs[prompt] = newAttempt;
+    }
+
+    // For added dramatic effect
     Future.delayed(new Duration(seconds: 1), () {
-      setState(() {
+      this.setState(() {
         loading = false;
+        averageWSD = runningTotal / prompts.length;
       });
     });
   }
@@ -79,7 +116,7 @@ class _ReportsPageState extends State<ReportsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(prompts[position].word),
-                              Text(calculatedWSDs[prompts[position]].WSD.toString())
+                              Text(calculatedWSDs[prompts[position]].WSD.toStringAsFixed(2))
                             ],
                           ),
                         ),
@@ -98,15 +135,19 @@ class _ReportsPageState extends State<ReportsPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Average WSD", style: TextStyle(fontSize: 24)),
                         ),
-                        Text("320.0", style: TextStyle(fontSize: 36),),
+                        Text(averageWSD.toStringAsFixed(2), style: TextStyle(fontSize: 36),),
                       ],
                     )
                 ),
                 RaisedButton(
                   child: Text("Complete Test"),
-                  onPressed: null,
+                  onPressed: completeTest,
                 )
               ],
             ));
+  }
+
+  void completeTest() {
+
   }
 }
