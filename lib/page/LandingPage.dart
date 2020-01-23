@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/page/AmbiancePage.dart';
 
-import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/page/UpdateUserPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
 
@@ -59,7 +59,7 @@ class LandingPage extends StatelessWidget {
 
 void goToRecordPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => RecordPage()));
+      .push(MaterialPageRoute(builder: (context) => AmbiancePage()));
 }
 
 void goToSettingsPage(BuildContext context) {
