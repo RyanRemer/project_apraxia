@@ -36,7 +36,7 @@ public class MainActivity extends FlutterActivity {
                                     WavFile ambianceFile = WavFile.openWavFile(new File(ambianceFileName));
                                     List<Double> ambianceAmplitudeList = getAmplitudeList(ambianceFile);
                                     threshold = getAmbianceThreshold(ambianceAmplitudeList);
-                                    result.success(threshold);
+                                    result.success("");
                                 } catch (Exception e) {
                                     result.error("418", e.getMessage(), null);
                                 }
