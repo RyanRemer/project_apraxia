@@ -9,11 +9,18 @@ import 'package:project_apraxia/widget/ErrorDialog.dart';
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
   final List<Prompt> prompts;
+  final IWSDCalculator wsdCalculator;
 
-  ReportsPage(this.wsdReport, this.prompts, {Key key}) : super(key: key);
+  ReportsPage(
+      {@required this.wsdReport,
+      @required this.prompts,
+      @required this.wsdCalculator,
+      Key key})
+      : super(key: key);
 
   @override
-  _ReportsPageState createState() => _ReportsPageState(this.wsdReport, this.prompts);
+  _ReportsPageState createState() =>
+      _ReportsPageState(this.wsdReport, this.prompts, this.wsdCalculator);
 }
 
 class _ReportsPageState extends State<ReportsPage> {
@@ -24,12 +31,9 @@ class _ReportsPageState extends State<ReportsPage> {
   IWSDCalculator wsdCalculator;
   double averageWSD;
 
-  _ReportsPageState(WsdReport wsdReport, List<Prompt> prompts) {
-    this.wsdReport = wsdReport;
-    this.prompts = prompts;
+  _ReportsPageState(this.wsdReport, this.prompts, this.wsdCalculator) {
     loading = false;
     calculatedWSDs = new Map();
-    wsdCalculator = new WSDCalculator();
     averageWSD = 0.0;
 
     for (final prompt in prompts) {
@@ -67,10 +71,11 @@ class _ReportsPageState extends State<ReportsPage> {
 
     double runningTotal = 0.0;
     for (final prompt in prompts) {
-      Attempt newAttempt = await wsdCalculator.addAttempt(wsdReport
-          .getRecording(prompt)
-          .soundFile
-          .path, prompt.word, prompt.syllableCount, "");
+      Attempt newAttempt = await wsdCalculator.addAttempt(
+          wsdReport.getRecording(prompt).soundFile.path,
+          prompt.word,
+          prompt.syllableCount,
+          "");
       runningTotal += newAttempt.WSD;
       calculatedWSDs[prompt] = newAttempt;
     }
@@ -116,7 +121,9 @@ class _ReportsPageState extends State<ReportsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(prompts[position].word),
-                              Text(calculatedWSDs[prompts[position]].WSD.toStringAsFixed(2))
+                              Text(calculatedWSDs[prompts[position]]
+                                  .WSD
+                                  .toStringAsFixed(2))
                             ],
                           ),
                         ),
@@ -133,12 +140,15 @@ class _ReportsPageState extends State<ReportsPage> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Average WSD", style: TextStyle(fontSize: 24)),
+                          child: Text("Average WSD",
+                              style: TextStyle(fontSize: 24)),
                         ),
-                        Text(averageWSD.toStringAsFixed(2), style: TextStyle(fontSize: 36),),
+                        Text(
+                          averageWSD.toStringAsFixed(2),
+                          style: TextStyle(fontSize: 36),
+                        ),
                       ],
-                    )
-                ),
+                    )),
                 RaisedButton(
                   child: Text("Complete Test"),
                   onPressed: completeTest,
@@ -147,7 +157,5 @@ class _ReportsPageState extends State<ReportsPage> {
             ));
   }
 
-  void completeTest() {
-
-  }
+  void completeTest() {}
 }
