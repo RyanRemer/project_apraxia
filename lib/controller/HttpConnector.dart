@@ -56,5 +56,14 @@ class HttpConnector extends IWSDCalculator {
     IWSDCalculator calculator = new WSDCalculator();
     return calculator.getAmplitudes(fileName);
   }
+
+  Future<bool> serverConnected() async {
+    try {
+      http.Response response = await client.get(serverURL + '/healthcheck');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 

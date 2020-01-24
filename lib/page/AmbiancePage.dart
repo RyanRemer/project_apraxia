@@ -7,7 +7,7 @@ import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class AmbiancePage extends StatefulWidget {
-  final IWSDCalculator wsdCalculator;
+  IWSDCalculator wsdCalculator;
   AmbiancePage({@required this.wsdCalculator, Key key}) : super(key: key);
 
   @override
@@ -98,8 +98,18 @@ class _AmbiancePageState extends State<AmbiancePage> {
   }
 
   Future<String> setAmbiance(String fileUri) async {
-    String evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
-    print(evaluationId);
+    String evaluationId;
+    try {
+      evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
+      print(evaluationId);
+    } catch (error) {
+      widget.wsdCalculator = new WSDCalculator();
+      evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
+      print(evaluationId);
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Error Connecting to Server",
+          "The server is currently down. Switching to local processing.");
+    }
 
     setState(() {
       ambienceRecorded = true;
