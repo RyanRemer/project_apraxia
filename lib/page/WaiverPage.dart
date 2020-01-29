@@ -51,11 +51,21 @@ class _WaiverPageState extends State<WaiverPage> {
     }));
   }
 
-  void startRemoteTest() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new HttpConnector(),
-      );
-    }));
+  void startRemoteTest() async {
+    HttpConnector connector = new HttpConnector();
+    if (await connector.serverConnected()) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return AmbiancePage(
+          wsdCalculator: new HttpConnector(),
+        );
+      }));
+    }
+    else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return AmbiancePage(
+          wsdCalculator: new WSDCalculator(),
+        );
+      }));
+    }
   }
 }

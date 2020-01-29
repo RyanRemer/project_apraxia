@@ -9,7 +9,7 @@ import 'package:project_apraxia/widget/ErrorDialog.dart';
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
   final List<Prompt> prompts;
-  final IWSDCalculator wsdCalculator;
+  IWSDCalculator wsdCalculator;
   final String evaluationId;
 
   ReportsPage(
@@ -73,11 +73,25 @@ class _ReportsPageState extends State<ReportsPage> {
 
     double runningTotal = 0.0;
     for (final prompt in prompts) {
-      Attempt newAttempt = await wsdCalculator.addAttempt(
-          wsdReport.getRecording(prompt).soundFile.path,
-          prompt.word,
-          prompt.syllableCount,
-          widget.evaluationId);
+      Attempt newAttempt;
+      try {
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+      } catch (error) {
+        wsdCalculator = new WSDCalculator();
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Error Connecting to Server",
+            "The server is currently down. Switching to local processing.");
+      }
+
       runningTotal += newAttempt.WSD;
       calculatedWSDs[prompt] = newAttempt;
     }
