@@ -6,7 +6,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class SignaturePage extends StatefulWidget {
-  SignaturePage({Key key}) : super(key: key);
+  final String filePrefix;
+  SignaturePage({Key key, @required this.filePrefix}) : super(key: key);
 
   @override
   _SignaturePageState createState() => _SignaturePageState();
@@ -62,7 +63,7 @@ class _SignaturePageState extends State<SignaturePage> {
   Future<File> _saveSignature(Uint8List bytes) async {
     Directory directory = await getApplicationDocumentsDirectory();
     String dirPath = directory.path;
-    File file = new File('$dirPath/signature.png');
+    File file = new File(dirPath + '/' + widget.filePrefix + 'signature.png');
     return file.writeAsBytes(bytes);
   }
 
@@ -88,6 +89,6 @@ class _SignaturePageState extends State<SignaturePage> {
   }
 
   double _getCanvasHeight() {
-    return MediaQuery.of(context).size.height * 0.2;
+    return MediaQuery.of(context).size.height * 0.15;
   }
 }

@@ -11,164 +11,174 @@ import 'dart:io';
 import 'package:project_apraxia/page/SignaturePage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
-class WaiverForm extends StatelessWidget {
+class WaiverForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
-  final WaiverFormFields fields = new WaiverFormFields.test();
 
   WaiverForm({Key key}) : super(key: key);
 
   @override
+  _WaiverFormState createState() => _WaiverFormState();
+}
+
+class _WaiverFormState extends State<WaiverForm> {
+  final WaiverFormFields fields = new WaiverFormFields();
+
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
-            child: Text("Research Subject Info", style: Theme.of(context).textTheme.body2,),
-          ),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.researchSubjectName,
-              decoration: InputDecoration(labelText: "Research Subject Name"),
-              onSaved: (String name) {
-                fields.researchSubjectName = name;
-              },
+      key: WaiverForm._formKey,
+      child: Expanded(
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
+              child: Text("Research Subject Info (Required)", style: Theme.of(context).textTheme.title,),
             ),
-          ),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.researchSubjectEmail,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: "Research Subject Email"),
-              onSaved: (String email) {
-                fields.researchSubjectEmail = email;
-              },
-            ),
-          ),
-
-          const Divider(thickness: 1.5),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
-            child: Text("Research Subject Signature", style: Theme.of(context).textTheme.body2,),
-          ),
-          RaisedButton(
-            child: Text("Sign"),
-            onPressed: () async {
-              fields.researchSubjectSignatureFile = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return new SignaturePage();
-              }));
-            },
-          ),
-          _buildResearchSignature(context),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.researchSubjectDate,
-              decoration: InputDecoration(labelText: "Date"),
-              onSaved: (String date) {
-                fields.researchSubjectDate = date;
-              },
-            ),
-          ),
-
-          const Divider(thickness: 1.5),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
-            child: Text("For Personal Representative of the Research Participant (if applicable)", style: Theme.of(context).textTheme.body2,),
-          ),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.representativeName,
-              decoration: InputDecoration(labelText: "Personal Representative Name"),
-              onSaved: (String name) {
-                fields.representativeName = name;
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text("Please explain your authority to act on behalf of this Research Subject"),
-          ),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.representativeRelationship,
-              decoration: InputDecoration(labelText: "Relationship"),
-              onSaved: (String relationship) {
-                fields.representativeRelationship = relationship;
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text("I am giving this permission by signing this HIPAA Authorization on behalf of the Research Participant."),
-          ),
-          RaisedButton(
-            child: Text("Sign"),
-            onPressed: () async {
-              fields.representativeSignatureFile = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return new SignaturePage();
-              }));
-            },
-          ),
-          _buildRepresentativeSignature(context),
-          ListTile(
-            title: TextFormField(
-              initialValue: fields.representativeDate,
-              decoration: InputDecoration(labelText: "Date"),
-              onSaved: (String date) {
-                fields.representativeDate = date;
-              },
-            ),
-          ),
-
-          ButtonBar(
-            children: <Widget>[
-              RaisedButton(
-                child: Text("Skip Waiver - Basic Processing"),
-                onPressed: () => _startLocalTest(context),
+            ListTile(
+              title: TextFormField(
+                initialValue: fields.researchSubjectName,
+                decoration: InputDecoration(labelText: "Research Subject Name"),
+                onChanged: (String name) {
+                  fields.researchSubjectName = name;
+                },
               ),
-              RaisedButton(
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: fields.researchSubjectEmail,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(labelText: "Research Subject Email"),
+                onChanged: (String email) {
+                  fields.researchSubjectEmail = email;
+                },
+              ),
+            ),
+
+            const Divider(thickness: 3, color: Colors.black45),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
+              child: Text("Research Subject Signature (Option A)", style: Theme.of(context).textTheme.title,),
+            ),
+            Column(
+              children: <Widget> [
+                _buildResearchSignature(context),
+              ]
+            ),
+            ListTile(
+              title: Text(fields.getFormattedSubjectDate()),
+              trailing: IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () => _selectSubjectDate(context),
+              ),
+            ),
+
+            const Divider(thickness: 3, color: Colors.black45),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0, top: 4.0),
+              child: Text("Legal Representative (Option B)", style: Theme.of(context).textTheme.title,),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 4.0),
+              child: Text("For Personal Representative of the Research Participant (if applicable)", style: Theme.of(context).textTheme.subtitle,),
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: fields.representativeName,
+                decoration: InputDecoration(labelText: "Personal Representative Name"),
+                onChanged: (String name) {
+                  fields.representativeName = name;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Text("Please explain your authority to act on behalf of this Research Subject"),
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: fields.representativeRelationship,
+                decoration: InputDecoration(labelText: "Relationship"),
+                onChanged: (String relationship) {
+                  fields.representativeRelationship = relationship;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Text("I am giving this permission by signing this HIPAA Authorization on behalf of the Research Participant."),
+            ),
+            Column(
+              children: <Widget>[
+                _buildRepresentativeSignature(context),
+              ],
+            ),
+            ListTile(
+              title: Text(fields.getFormattedRepresentativeDate()),
+              trailing: IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () => _selectRepresentativeDate(context),
+              ),
+            ),
+            ButtonBar(
+              children: <Widget>[
+                RaisedButton(
                   child: new Text("Agree To Waiver"),
                   onPressed: () => _agreeToWaiver(context)
-              )
-            ],
-          )
-        ],
-      ),
+                )
+              ],
+            )
+          ],
+        ),
+      )
     );
   }
 
   Widget _buildResearchSignature(BuildContext context) {
     if (fields.researchSubjectSignatureFile == "") {
-      return new Container();
+      return RaisedButton(
+        child: Text("Sign"),
+        onPressed: () async {
+          String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return new SignaturePage(filePrefix: "research-subject");
+          }));
+          setState(() {
+            fields.researchSubjectSignatureFile = filePath;
+          });
+        },
+      );
+//      return new Container();
     }
     else {
-      return new FractionallySizedBox(
-          widthFactor: 0.8,
-          heightFactor: 0.15,
-          child: Image.file(new File(fields.researchSubjectSignatureFile))
-      );
+      return Image.file(new File(fields.researchSubjectSignatureFile));
     }
   }
 
   Widget _buildRepresentativeSignature(BuildContext context) {
     if (fields.representativeSignatureFile == "") {
-      return new Container();
+      return RaisedButton(
+        child: Text("Sign"),
+        onPressed: () async {
+          String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return new SignaturePage(filePrefix: "representative");
+          }));
+          setState(() {
+            fields.representativeSignatureFile = filePath;
+          });
+        },
+      );
+//      return new Container();
     }
     else {
-      return new FractionallySizedBox(
-          widthFactor: 0.8,
-          heightFactor: 0.15,
-          child: Image.file(new File(fields.representativeSignatureFile))
-      );
+      return new Image.file(new File(fields.representativeSignatureFile));
     }
   }
 
   void _agreeToWaiver(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (WaiverForm._formKey.currentState.validate()) {
+      WaiverForm._formKey.currentState.save();
       if (_isSigned()) {
         // TODO: Save that this user has agreed to the HIPAA waiver and save their signature
         _startRemoteTest(context);
@@ -178,14 +188,6 @@ class WaiverForm extends StatelessWidget {
         errorDialog.show("Incomplete Waiver", "Fill in required information and provide at least one signature.");
       }
     }
-  }
-
-  void _startLocalTest(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new LocalWSDCalculator(),
-      );
-    }));
   }
 
   void _startRemoteTest(BuildContext context) async {
@@ -201,6 +203,34 @@ class WaiverForm extends StatelessWidget {
         wsdCalculator: wsdCalculator,
       );
     }));
+  }
+
+  void _selectSubjectDate(BuildContext context) async {
+    DateTime now = new DateTime.now();
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: fields.researchSubjectDate,
+        firstDate: DateTime(now.year, 1),
+        lastDate: DateTime(now.year + 1));
+    if (picked != null && picked != fields.researchSubjectDate) {
+      setState(() {
+        fields.researchSubjectDate = picked;
+      });
+    }
+  }
+
+  void _selectRepresentativeDate(BuildContext context) async {
+    DateTime now = new DateTime.now();
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: fields.representativeDate,
+        firstDate: DateTime(now.year, 1),
+        lastDate: DateTime(now.year + 1));
+    if (picked != null && picked != fields.representativeDate) {
+      setState(() {
+        fields.representativeDate = picked;
+      });
+    }
   }
 
   bool _isSigned() {
@@ -226,5 +256,4 @@ class WaiverForm extends StatelessWidget {
     }
     return false;
   }
-
 }
