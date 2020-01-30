@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
+import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
@@ -103,7 +103,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
       evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
       print(evaluationId);
     } catch (error) {
-      widget.wsdCalculator = new WSDCalculator();
+      widget.wsdCalculator = new LocalWSDCalculator();
       evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
       print(evaluationId);
       ErrorDialog errorDialog = new ErrorDialog(context);

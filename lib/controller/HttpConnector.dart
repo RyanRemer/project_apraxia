@@ -3,21 +3,23 @@ import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
-
 import 'package:project_apraxia/controller/Auth.dart';
-import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
 
 
-class HttpConnector extends IWSDCalculator {
-  String serverURL = "https://52.41.34.29:8080";
-  Auth auth = new Auth.instance();
+class HttpConnector {
+  static HttpConnector _instance = HttpConnector._();
+  static String serverURL = "https://52.41.34.29:8080";
+  static Auth auth = new Auth.instance();
   IOClient client;
 
-  HttpConnector() {
+  HttpConnector._() {
     HttpClient baseClient = new HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     client = new IOClient(baseClient);
+  }
+
+  factory HttpConnector.instance() {
+    return _instance;
   }
 
   Future<String> setAmbiance(String ambienceFileName) async {
@@ -52,14 +54,9 @@ class HttpConnector extends IWSDCalculator {
     return attempt;
   }
 
-  Future<List<double>> getAmplitudes(String fileName) {
-    IWSDCalculator calculator = new WSDCalculator();
-    return calculator.getAmplitudes(fileName);
-  }
-
   Future<bool> serverConnected() async {
     try {
-      http.Response response = await client.get(serverURL + '/healthcheck');
+      await client.get(serverURL + '/healthcheck');
       return true;
     } catch (error) {
       return false;

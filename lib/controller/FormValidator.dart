@@ -114,4 +114,39 @@ class FormValidator {
     }
     return null;
   }
+
+  static String isValidDate(String s) {
+    if (s == null || s.isEmpty) {
+      return "Date must not be empty.";
+    }
+    if (s.length != 10) {
+      return "Date is in the wrong format.";
+    }
+    for (int i = 0; i < s.length; i++) {
+      if (i == 4 || i == 7) {
+        continue;
+      }
+      if (!isNumeric(s[i])) {
+        return "Date is in the wrong format.";
+      }
+    }
+    if (s[4] != "-" || s[7] != "-") {
+      return "Date is in the wrong format.";
+    }
+    return null;
+  }
+
+  static String isValidFile(String s) {
+    if (s == null || s.isEmpty) {
+      return "Must be a valid file name and path.";
+    }
+    return null;
+  }
+
+  static String isValidRelationship(String s) {
+    if (s == null || s.isEmpty) {
+      return "Must be a valid relationship.";
+    }
+    return null;
+  }
 }
