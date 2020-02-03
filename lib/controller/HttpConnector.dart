@@ -54,6 +54,56 @@ class HttpConnector {
     return attempt;
   }
 
+  Future<String> sendSubjectWaiver(String signatureFileName, String subjectName, String subjectEmail, String subjectDate) async {
+    if (signatureFileName.startsWith('file://')) {
+      signatureFileName = signatureFileName.substring(6);
+    }
+    File signatureFile = File(signatureFileName);
+    Uri uri = Uri.parse(serverURL + "/waiver/subject");
+    http.MultipartRequest request = new http.MultipartRequest('POST', uri);
+    request.files.add(await http.MultipartFile.fromPath('researchSubjectSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    request.fields.addEntries([
+      MapEntry<String, String>('researchSubjectName', subjectName),
+      MapEntry<String, String>('researchSubjectEmail', subjectEmail),
+      MapEntry<String, String>('researchSubjectDate', subjectDate),
+
+    ]);
+    http.StreamedResponse response = await client.send(request);
+    String responseBody = await response.stream.bytesToString();
+    Map body = jsonDecode(responseBody);
+    if (response.statusCode == 200) {
+      return null;
+    }
+    return body['errorMessage'];
+  }
+
+  Future<String> sendRepresentativeWaiver(String signatureFileName, String subjectName, String subjectEmail, String repName, String repRelationship, String repDate) async {
+    if (signatureFileName.startsWith('file://')) {
+      signatureFileName = signatureFileName.substring(6);
+    }
+    File signatureFile = File(signatureFileName);
+    Uri uri = Uri.parse(serverURL + "/waiver/representative");
+    http.MultipartRequest request = new http.MultipartRequest('POST', uri);
+    request.files.add(await http.MultipartFile.fromPath('representativeSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    request.fields.addEntries([
+      MapEntry<String, String>('researchSubjectName', subjectName),
+      MapEntry<String, String>('researchSubjectEmail', subjectEmail),
+      MapEntry<String, String>('representativeName', repName),
+      MapEntry<String, String>('representativeRelationship', repRelationship),
+      MapEntry<String, String>('representativeDate', repDate),
+    ]);
+    http.StreamedResponse response = await client.send(request);
+    String responseBody = await response.stream.bytesToString();
+    Map body = jsonDecode(responseBody);
+    if (response.statusCode == 200) {
+      return null;
+    }
+    return body['errorMessage'];
+  }
+
+
   Future<bool> serverConnected() async {
     try {
       await client.get(serverURL + '/healthcheck');

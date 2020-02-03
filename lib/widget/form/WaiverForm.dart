@@ -22,12 +22,17 @@ class WaiverForm extends StatefulWidget {
 
 class _WaiverFormState extends State<WaiverForm> {
   final WaiverFormFields fields = new WaiverFormFields();
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: WaiverForm._formKey,
-      child: Expanded(
+      child: loading
+      ? Expanded(
+        child: Center(child: CircularProgressIndicator(),)
+      )
+      : Expanded(
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
@@ -144,9 +149,11 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "research-subject");
           }));
-          setState(() {
-            fields.researchSubjectSignatureFile = filePath;
-          });
+          if (filePath != null) {
+            setState(() {
+              fields.researchSubjectSignatureFile = filePath;
+            });
+          }
         },
       );
 //      return new Container();
@@ -164,12 +171,13 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "representative");
           }));
-          setState(() {
-            fields.representativeSignatureFile = filePath;
-          });
+          if (filePath != null) {
+            setState(() {
+              fields.representativeSignatureFile = filePath;
+            });
+          }
         },
       );
-//      return new Container();
     }
     else {
       return new Image.file(new File(fields.representativeSignatureFile));
@@ -179,9 +187,41 @@ class _WaiverFormState extends State<WaiverForm> {
   void _agreeToWaiver(BuildContext context) async {
     if (WaiverForm._formKey.currentState.validate()) {
       WaiverForm._formKey.currentState.save();
-      if (_isSigned()) {
-        // TODO: Save that this user has agreed to the HIPAA waiver and save their signature
-        _startRemoteTest(context);
+      int isSigned = _isSigned();
+      if (isSigned != -1) {
+        setState(() {
+          loading = true;
+        });
+        try {
+          HttpConnector connector = HttpConnector.instance();
+          String response = "";
+          if (isSigned == 0) {
+            response = await connector.sendSubjectWaiver(
+                fields.researchSubjectSignatureFile, fields.researchSubjectName,
+                fields.researchSubjectEmail, fields.getFormattedSubjectDate());
+          } else {
+            response = await connector.sendRepresentativeWaiver(
+                fields.representativeSignatureFile, fields.researchSubjectName,
+                fields.researchSubjectEmail, fields.representativeName,
+                fields.representativeRelationship,
+                fields.getFormattedRepresentativeDate());
+          }
+          setState(() {
+            loading = false;
+          });
+          print(response);
+          if (response != null) {
+            ErrorDialog errorDialog = new ErrorDialog(context);
+            errorDialog.show("Error Generating Waiver", response + "\n\nIf the problem persists, skip the waiver and begin a test with local processing.");
+            return;
+          }
+          _startRemoteTest(context);
+        } catch (error) {
+          CustomErrorDialog errorDialog = new CustomErrorDialog(context);
+          errorDialog.show("Error Connecting to Server",
+              "The server is currently down. Switching to local processing.");
+
+        }
       }
       else {
         ErrorDialog errorDialog = new ErrorDialog(context);
@@ -233,18 +273,18 @@ class _WaiverFormState extends State<WaiverForm> {
     }
   }
 
-  bool _isSigned() {
+  int _isSigned() {
     if (
       FormValidator.isValidName(fields.researchSubjectName) != null
       || FormValidator.isValidEmail(fields.researchSubjectEmail) != null
     ) {
-      return false;
+      return -1;
     }
     if (
       FormValidator.isValidDate(fields.researchSubjectDate) == null
       && FormValidator.isValidFile(fields.researchSubjectSignatureFile) == null
     ) {
-      return true;
+      return 0;
     }
     else if (
       FormValidator.isValidDate(fields.representativeDate) == null
@@ -252,8 +292,37 @@ class _WaiverFormState extends State<WaiverForm> {
       && FormValidator.isValidName(fields.representativeName) == null
       && FormValidator.isValidRelationship(fields.representativeRelationship) == null
     ) {
-      return true;
+      return 1;
     }
-    return false;
+    return -1;
+  }
+}
+
+class CustomErrorDialog {
+  BuildContext context;
+  CustomErrorDialog(this.context);
+
+  void show(String title, String content){
+    showDialog(context: this.context, builder: (context){
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Okay"),
+            onPressed: () => pressed(),
+          )
+        ],
+      );
+    });
+  }
+
+  void pressed() {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return AmbiancePage(
+        wsdCalculator: new LocalWSDCalculator(),
+      );
+    }));
   }
 }
