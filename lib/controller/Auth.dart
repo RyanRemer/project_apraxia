@@ -8,6 +8,7 @@ class Auth {
   CognitoUserPool _userPool = new CognitoUserPool(_userPoolId, _clientId);
   CognitoUser _user;
   CognitoUserSession _session;
+  String _userEmail;
 
   Auth._();
 
@@ -83,6 +84,7 @@ class Auth {
 
   Future<void> instantiateUser(String email, {String password}) async {
     this._user = new CognitoUser(email, _userPool);
+    this._userEmail = email;
     if (password != null) {
       await authenticateUser(email, password);
     }
@@ -126,6 +128,8 @@ class Auth {
     }
     return true;
   }
+
+  String get userEmail => _userEmail;
 
   void clearAuth() {
     this._user = null;
