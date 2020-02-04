@@ -4,6 +4,7 @@ import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/WaiverPage.dart';
+import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class SelectWaiverPage extends StatefulWidget {
   SelectWaiverPage({Key key}) : super(key: key);
@@ -113,9 +114,15 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
                         child: const Text("Search"),
                         onPressed: () async {
                           var tmp = await loadPatients(_patientName, _patientEmail);
-                          setState(() {
-                            _patients = tmp;
-                          });
+                          if (tmp.length > 0) {
+                            setState(() {
+                              _patients = tmp;
+                            });
+                          }
+                          else {
+                            ErrorDialog dialog = new ErrorDialog(context);
+                            dialog.show("No waivers found", "There are no waivers on file for this name and email address. Please try another.");
+                          }
                         }
                     ),
                     (_patients.length > 0) ?

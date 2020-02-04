@@ -1,12 +1,8 @@
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/FormValidator.dart';
-import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
-import 'package:project_apraxia/model/UserAttributes.dart';
+import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class InvalidateWaiverForm extends StatefulWidget {
-  static GlobalKey<FormState> _formKey = new GlobalKey();
 
   InvalidateWaiverForm({Key  key}) : super(key: key);
 
@@ -19,6 +15,7 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
   int _oldPatientSelected = -1;
   String _patientName = '';
   String _patientEmail = '';
+  bool _boxChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,7 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
       children: <Widget>[
         ListTile(
           title: TextFormField(
-            initialValue: _patientName,
+            controller: TextEditingController(text: _patientName),
             decoration: InputDecoration(labelText: "Patient Name"),
             onChanged: (String name) {
               _patientName = name;
@@ -35,7 +32,7 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
         ),
         ListTile(
           title: TextFormField(
-            initialValue: _patientEmail,
+            controller: TextEditingController(text: _patientEmail),
             decoration: InputDecoration(labelText: "Patient Email"),
             onChanged: (String email) {
               _patientEmail = email;
@@ -46,9 +43,15 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
           child: const Text("Search"),
           onPressed: () async {
             var tmp = await loadPatients(_patientName, _patientEmail);
-            setState(() {
-              _patients = tmp;
-            });
+            if (tmp.length > 0) {
+              setState(() {
+                _patients = tmp;
+              });
+            }
+            else {
+              ErrorDialog dialog = new ErrorDialog(context);
+              dialog.show("No waivers found", "There are no waivers on file for this name and email address. Please try another.");
+            }
           }
         ),
         (_patients.length > 0) ?
@@ -63,6 +66,44 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
               });
             },
           ),
+        ) : Container(),
+        (_oldPatientSelected != -1) ?
+        Column(
+          children: <Widget>[
+            ListTile(
+                title: Text('I, $_patientName, certify that I invalidate my HIPAA waiver and revoke researcher\'s future access to my files.'),
+                leading: Checkbox(
+                  value: _boxChecked,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _boxChecked = value;
+                    });
+                  },
+                )
+            ),
+            _boxChecked ?
+            RaisedButton(
+              child: Text("Invalidate Waiver"),
+              onPressed: () async {
+                bool result = await invalidateWaiver(_patientName, _patientEmail);
+                if (result) {
+                  setState(() {
+                    _patientName = '';
+                    _patientEmail = '';
+                    _boxChecked = false;
+                    _oldPatientSelected = -1;
+                    _patients = new List<dynamic>(0);
+                  });
+                  ErrorDialog dialog = new ErrorDialog(context);
+                  dialog.show("Success", "The waiver for $_patientName has been successfully invalidated.");
+                }
+                else {
+                  ErrorDialog dialog = new ErrorDialog(context);
+                  dialog.show("Failure", "There was an error. Please try again later.");
+                }
+              },
+            ) : Container()
+          ],
         ) : Container()
       ],
     );
@@ -70,8 +111,12 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
 
   Future<List<dynamic>> loadPatients(String subjectName, String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
-    List<dynamic> result = await connector.getWaiversOnFile(subjectName.trim(), subjectEmail.trim().toLowerCase());
-    return result;
+    return await connector.getWaiversOnFile(subjectName.trim(), subjectEmail.trim().toLowerCase());
+  }
+
+  Future<bool> invalidateWaiver(String subjectName, String subjectEmail) async {
+    HttpConnector connector = new HttpConnector.instance();
+    return await connector.invalidateWaiver(subjectName.trim(), subjectEmail.trim().toLowerCase());
   }
 
 }
