@@ -11,12 +11,12 @@ class WaiverFormFields {
   DateTime representativeDate;
 
   String getFormattedSubjectDate() {
-    DateFormat formatter = new DateFormat.yMMMMd("en_US");
+    DateFormat formatter = new DateFormat("MMMM dd, yyyy");
     return formatter.format(researchSubjectDate);
   }
 
   String getFormattedRepresentativeDate() {
-    DateFormat formatter = new DateFormat.yMMMMd("en_US");
+    DateFormat formatter = new DateFormat("MMMM dd, yyyy");
     return formatter.format(representativeDate);
   }
 

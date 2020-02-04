@@ -9,7 +9,8 @@ import 'package:project_apraxia/model/Attempt.dart';
 
 class HttpConnector {
   static HttpConnector _instance = HttpConnector._();
-  static String serverURL = "https://52.41.34.29:8080";
+//  static String serverURL = "https://52.41.34.29:8080";
+  static String serverURL = "https://localhost:8080";
   static Auth auth = new Auth.instance();
   IOClient client;
 
@@ -67,7 +68,7 @@ class HttpConnector {
       MapEntry<String, String>('researchSubjectName', subjectName),
       MapEntry<String, String>('researchSubjectEmail', subjectEmail),
       MapEntry<String, String>('researchSubjectDate', subjectDate),
-
+      MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
     http.StreamedResponse response = await client.send(request);
     String responseBody = await response.stream.bytesToString();
@@ -93,14 +94,26 @@ class HttpConnector {
       MapEntry<String, String>('representativeName', repName),
       MapEntry<String, String>('representativeRelationship', repRelationship),
       MapEntry<String, String>('representativeDate', repDate),
+      MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
     http.StreamedResponse response = await client.send(request);
     String responseBody = await response.stream.bytesToString();
     Map body = jsonDecode(responseBody);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && body['errorMessage'] == null) {
       return null;
     }
     return body['errorMessage'];
+  }
+
+  Future<List<dynamic>>  getWaiversOnFile(String subjectName, String subjectEmail) async {
+    Uri uri = Uri.parse(serverURL + "/waiver/" + subjectName + "/" + subjectEmail);
+    http.BaseRequest request = new http.Request('GET', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    http.StreamedResponse response = await client.send(request);
+    String responseBody = await response.stream.bytesToString();
+    Map body = jsonDecode(responseBody);
+    List<dynamic> output = body['waivers'];
+    return output;
   }
 
 

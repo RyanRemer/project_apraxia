@@ -156,7 +156,6 @@ class _WaiverFormState extends State<WaiverForm> {
           }
         },
       );
-//      return new Container();
     }
     else {
       return Image.file(new File(fields.researchSubjectSignatureFile));
@@ -197,19 +196,27 @@ class _WaiverFormState extends State<WaiverForm> {
           String response = "";
           if (isSigned == 0) {
             response = await connector.sendSubjectWaiver(
-                fields.researchSubjectSignatureFile, fields.researchSubjectName,
-                fields.researchSubjectEmail, fields.getFormattedSubjectDate());
+                fields.researchSubjectSignatureFile, fields.researchSubjectName.trim(),
+                fields.researchSubjectEmail.trim().toLowerCase(), fields.getFormattedSubjectDate());
           } else {
             response = await connector.sendRepresentativeWaiver(
-                fields.representativeSignatureFile, fields.researchSubjectName,
-                fields.researchSubjectEmail, fields.representativeName,
-                fields.representativeRelationship,
+                fields.representativeSignatureFile, fields.researchSubjectName.trim(),
+                fields.researchSubjectEmail.trim().toLowerCase(), fields.representativeName.trim(),
+                fields.representativeRelationship.trim(),
                 fields.getFormattedRepresentativeDate());
           }
           setState(() {
             loading = false;
           });
-          print(response);
+
+          File resFile = new File(fields.researchSubjectSignatureFile);
+          if (await resFile.exists()) {
+            await resFile.delete();
+          }
+          File repFile = new File(fields.representativeSignatureFile);
+          if (await repFile.exists()) {
+            await repFile.delete();
+          }
           if (response != null) {
             ErrorDialog errorDialog = new ErrorDialog(context);
             errorDialog.show("Error Generating Waiver", response + "\n\nIf the problem persists, skip the waiver and begin a test with local processing.");

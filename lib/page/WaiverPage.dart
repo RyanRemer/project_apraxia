@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
-import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SignWaiverPage.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -72,10 +70,6 @@ class _WaiverPageState extends State<WaiverPage> {
             child: ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                  child: Text("Skip Waiver - Basic Processing"),
-                  onPressed: () => _startLocalTest(context),
-                ),
-                RaisedButton(
                   child: Text("Sign Waiver"),
                   onPressed: () => _goToSignWaiverPage(context),
                 ),
@@ -91,14 +85,6 @@ class _WaiverPageState extends State<WaiverPage> {
   Future<List<dynamic>> loadWaiverInfo() async {
     String jsonString = await rootBundle.loadString('assets/hipaa_waiver.json');
     return jsonDecode(jsonString);
-  }
-
-  void _startLocalTest(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new LocalWSDCalculator(),
-      );
-    }));
   }
 
   void _goToSignWaiverPage(BuildContext context) {

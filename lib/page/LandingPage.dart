@@ -1,11 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/page/AmbiancePage.dart';
-
+import 'package:project_apraxia/page/SelectWaiverPage.dart';
 import 'package:project_apraxia/page/UpdateUserPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
-import 'package:project_apraxia/page/WaiverPage.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -62,7 +58,7 @@ class LandingPage extends StatelessWidget {
 
 void goToRecordPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => WaiverPage()));
+      .push(MaterialPageRoute(builder: (context) => SelectWaiverPage()));
 }
 
 void goToSettingsPage(BuildContext context) {
