@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 
-import 'package:project_apraxia/page/UpdateUserPage.dart';
+import 'package:project_apraxia/page/SettingsPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
 import 'package:project_apraxia/page/WaiverPage.dart';
 
@@ -65,7 +65,7 @@ void goToRecordPage(BuildContext context) {
 
 void goToSettingsPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => UpdateUserPage()));
+      .push(MaterialPageRoute(builder: (context) => SettingsPage()));
 }
 
 void goToHowToPage(BuildContext context) {
