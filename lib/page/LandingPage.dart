@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_apraxia/page/SettingsPage.dart';
 import 'package:project_apraxia/page/SelectWaiverPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
+import 'package:project_apraxia/controller/Auth.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -46,6 +47,13 @@ class LandingPage extends StatelessWidget {
                           color: Theme.of(context).buttonColor,
                           child: Text("Settings", style: TextStyle(fontSize: 20)),
                           onPressed: () => goToSettingsPage(context),
+                        )),
+                    ButtonTheme(
+                        minWidth: 250.0,
+                        child: RaisedButton(
+                          color: Theme.of(context).buttonColor,
+                          child: Text("Sign Out", style: TextStyle(fontSize: 20)),
+                          onPressed: () => signOut(context),
                         ))
                   ],
                 ),
@@ -69,4 +77,11 @@ void goToSettingsPage(BuildContext context) {
 void goToHowToPage(BuildContext context) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => HowToPage()));
+}
+
+void signOut(BuildContext context) {
+  Auth auth = Auth.instance();
+  auth.signOut();
+//  TODO: Delete any files generated
+  Navigator.pop(context);
 }

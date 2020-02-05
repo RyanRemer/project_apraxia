@@ -43,14 +43,17 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
           child: const Text("Search"),
           onPressed: () async {
             var tmp = await loadPatients(_patientName, _patientEmail);
-            if (tmp.length > 0) {
-              setState(() {
-                _patients = tmp;
-              });
-            }
-            else {
-              ErrorDialog dialog = new ErrorDialog(context);
-              dialog.show("No waivers found", "There are no waivers on file for this name and email address. Please try another.");
+            if (tmp != null) {
+              if (tmp.length > 0) {
+                setState(() {
+                  _patients = tmp;
+                });
+              }
+              else {
+                ErrorDialog dialog = new ErrorDialog(context);
+                dialog.show("No waivers found",
+                    "There are no waivers on file for this name and email address. Please try another.");
+              }
             }
           }
         ),
@@ -97,10 +100,6 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
                   ErrorDialog dialog = new ErrorDialog(context);
                   dialog.show("Success", "The waiver for $_patientName has been successfully invalidated.");
                 }
-                else {
-                  ErrorDialog dialog = new ErrorDialog(context);
-                  dialog.show("Failure", "There was an error. Please try again later.");
-                }
               },
             ) : Container()
           ],
@@ -111,12 +110,32 @@ class _InvalidateWaiverFormState extends State<InvalidateWaiverForm> {
 
   Future<List<dynamic>> loadPatients(String subjectName, String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
-    return await connector.getWaiversOnFile(subjectName.trim(), subjectEmail.trim().toLowerCase());
+    try {
+      return await connector.getWaiversOnFile(
+          subjectName.trim(), subjectEmail.trim().toLowerCase());
+    } on ServerConnectionException {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Error Connecting to Server', 'Please try again later.');
+    } on InternalServerException catch (e) {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Internal Server Error', e.message);
+    }
+    return null;
   }
 
   Future<bool> invalidateWaiver(String subjectName, String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
-    return await connector.invalidateWaiver(subjectName.trim(), subjectEmail.trim().toLowerCase());
+    try {
+      return await connector.invalidateWaiver(
+          subjectName.trim(), subjectEmail.trim().toLowerCase());
+    } on ServerConnectionException {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Error Connecting to Server', 'Please try again later.');
+    } on InternalServerException catch (e) {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Internal Server Error', e.message);
+    }
+    return false;
   }
 
 }

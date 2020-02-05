@@ -114,14 +114,17 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
                         child: const Text("Search"),
                         onPressed: () async {
                           var tmp = await loadPatients(_patientName, _patientEmail);
-                          if (tmp.length > 0) {
-                            setState(() {
-                              _patients = tmp;
-                            });
-                          }
-                          else {
-                            ErrorDialog dialog = new ErrorDialog(context);
-                            dialog.show("No waivers found", "There are no waivers on file for this name and email address. Please try another.");
+                          if (tmp != null) {
+                            if (tmp.length > 0) {
+                              setState(() {
+                                _patients = tmp;
+                              });
+                            }
+                            else {
+                              ErrorDialog dialog = new ErrorDialog(context);
+                              dialog.show("No waivers found",
+                                  "There are no waivers on file for this name and email address. Please try another.");
+                            }
                           }
                         }
                     ),
@@ -173,8 +176,18 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
 
   Future<List<dynamic>> loadPatients(String subjectName, String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
-    List<dynamic> result = await connector.getWaiversOnFile(subjectName.trim(), subjectEmail.trim().toLowerCase());
-    return result;
+    try {
+      List<dynamic> result = await connector.getWaiversOnFile(
+          subjectName.trim(), subjectEmail.trim().toLowerCase());
+      return result;
+    } on ServerConnectionException catch (e) {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Error Contacting Server', e.message);
+    } on InternalServerException catch (e) {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Internal Server Error', e.message);
+    }
+    return null;
   }
 
   void _startLocalTest(BuildContext context) {

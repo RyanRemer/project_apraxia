@@ -134,5 +134,6 @@ class Auth {
   void clearAuth() {
     this._user = null;
     this._session = null;
+    this._userEmail = null;
   }
 }

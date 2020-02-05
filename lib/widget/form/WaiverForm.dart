@@ -191,24 +191,28 @@ class _WaiverFormState extends State<WaiverForm> {
         setState(() {
           loading = true;
         });
+        HttpConnector connector = HttpConnector.instance();
         try {
-          HttpConnector connector = HttpConnector.instance();
-          String response = "";
           if (isSigned == 0) {
-            response = await connector.sendSubjectWaiver(
-                fields.researchSubjectSignatureFile, fields.researchSubjectName.trim(),
-                fields.researchSubjectEmail.trim().toLowerCase(), fields.getFormattedSubjectDate());
+            await connector.sendSubjectWaiver(
+                fields.researchSubjectSignatureFile,
+                fields.researchSubjectName.trim(),
+                fields.researchSubjectEmail.trim().toLowerCase(),
+                fields.getFormattedSubjectDate()
+            );
           } else {
-            response = await connector.sendRepresentativeWaiver(
-                fields.representativeSignatureFile, fields.researchSubjectName.trim(),
-                fields.researchSubjectEmail.trim().toLowerCase(), fields.representativeName.trim(),
+            await connector.sendRepresentativeWaiver(
+                fields.representativeSignatureFile,
+                fields.researchSubjectName.trim(),
+                fields.researchSubjectEmail.trim().toLowerCase(),
+                fields.representativeName.trim(),
                 fields.representativeRelationship.trim(),
-                fields.getFormattedRepresentativeDate());
+                fields.getFormattedRepresentativeDate()
+            );
           }
           setState(() {
             loading = false;
           });
-
           File resFile = new File(fields.researchSubjectSignatureFile);
           if (await resFile.exists()) {
             await resFile.delete();
@@ -217,17 +221,13 @@ class _WaiverFormState extends State<WaiverForm> {
           if (await repFile.exists()) {
             await repFile.delete();
           }
-          if (response != null) {
-            ErrorDialog errorDialog = new ErrorDialog(context);
-            errorDialog.show("Error Generating Waiver", response + "\n\nIf the problem persists, skip the waiver and begin a test with local processing.");
-            return;
-          }
           _startRemoteTest(context);
-        } catch (error) {
-          CustomErrorDialog errorDialog = new CustomErrorDialog(context);
-          errorDialog.show("Error Connecting to Server",
-              "The server is currently down. Switching to local processing.");
-
+        } on ServerConnectionException {
+          ErrorDialog dialog = new ErrorDialog(context);
+          dialog.show('Error Connecting to Server', 'If the problem persists, back out and use local processing.');
+        } on InternalServerException catch (e) {
+          ErrorDialog errorDialog = new ErrorDialog(context);
+          errorDialog.show("Error Generating Waiver", e.message + "\n\nIf the problem persists, back out and use local processing.");
         }
       }
       else {
@@ -305,31 +305,3 @@ class _WaiverFormState extends State<WaiverForm> {
   }
 }
 
-class CustomErrorDialog {
-  BuildContext context;
-  CustomErrorDialog(this.context);
-
-  void show(String title, String content){
-    showDialog(context: this.context, builder: (context){
-      return AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Okay"),
-            onPressed: () => pressed(),
-          )
-        ],
-      );
-    });
-  }
-
-  void pressed() {
-    Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new LocalWSDCalculator(),
-      );
-    }));
-  }
-}
