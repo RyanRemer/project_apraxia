@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
+import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
@@ -54,22 +54,10 @@ class _ReportsPageState extends State<ReportsPage> {
     }
   }
 
-//  Future setTestAmbiance() async {
-//    LocalFileController localFileController = new LocalFileController();
-//
-//    String localUri = await localFileController.getLocalRef(
-//        "assets/prompts/amb.wav");
-//
-//    await wsdCalculator.setAmbiance(localUri);
-//  }
-
   Future calculateWSDs() async {
     setState(() {
       loading = true;
     });
-
-    // For testing purposes
-//    await setTestAmbiance();
 
     double runningTotal = 0.0;
     for (final prompt in prompts) {
@@ -81,7 +69,7 @@ class _ReportsPageState extends State<ReportsPage> {
             prompt.syllableCount,
             widget.evaluationId);
       } catch (error) {
-        wsdCalculator = new WSDCalculator();
+        wsdCalculator = new LocalWSDCalculator();
         newAttempt = await wsdCalculator.addAttempt(
             wsdReport.getRecording(prompt).soundFile.path,
             prompt.word,

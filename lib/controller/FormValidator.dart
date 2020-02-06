@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class FormValidator {
   static final int _A = "A".codeUnitAt(0);
   static final int _Z = "Z".codeUnitAt(0);
@@ -111,6 +113,27 @@ class FormValidator {
   static String isValidAddress(String s) {
     if (s == null || s.isEmpty) {
       return "Address must not be empty.";
+    }
+    return null;
+  }
+
+  static String isValidFile(String s) {
+    if (s == null || s.isEmpty) {
+      return "Must be a valid file name and path.";
+    }
+    return null;
+  }
+
+  static String isValidRelationship(String s) {
+    if (s == null || s.isEmpty) {
+      return "Must be a valid relationship.";
+    }
+    return null;
+  }
+
+  static String isValidDate(DateTime dateTime) {
+    if (dateTime == null) {
+      return "Date must not be empty";
     }
     return null;
   }

@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/HttpConnector.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
-import 'package:project_apraxia/page/AmbiancePage.dart';
+import 'package:project_apraxia/page/SignWaiverPage.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class WaiverPage extends StatefulWidget {
   WaiverPage({Key key}) : super(key: key);
@@ -12,60 +13,84 @@ class WaiverPage extends StatefulWidget {
 
 class _WaiverPageState extends State<WaiverPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("HIPAA Waiver"),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text("HIPAA Waiver", style: Theme.of(context).textTheme.title,),
+          Expanded(
+            child: FutureBuilder(
+              future: loadWaiverInfo(), builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                else {
+                  List<dynamic> hipaaData = snapshot.data;
+                  return ListView.builder(itemBuilder: (BuildContext context, int index) {
+                    if (index >= hipaaData.length) {
+                      return null;
+                    }
+                    dynamic map = hipaaData[index];
+                    if (map["text"] == null) {
+                      return Divider();
+                    }
+                    TextStyle style;
+                    if (map["style"] == "title") {
+                      style = Theme.of(context).textTheme.title;
+                    }
+                    else if (map["style"] == "body1") {
+                      style = Theme.of(context).textTheme.body1;
+                    }
+                    else if (map["style"] == "body2") {
+                      style = Theme.of(context).textTheme.body2;
+                    }
+                    return Padding(
+                      padding: new EdgeInsets.only(
+                        top: map["top_margin"],
+                        bottom: map["bot_margin"],
+                        right: map["right_margin"],
+                        left: map["left_margin"],
+                      ),
+                      child: Text(map["text"], style: style),
+                    );
+                  });
+                }
+              },
+            ),
           ),
-          const Divider(),
-          Spacer(),
-          ButtonBar(
-            children: <Widget>[
-              FlatButton(
-                child: Text("Calculate Locally", style: TextStyle(color: Theme.of(context).hintColor),),
-                onPressed: startLocalTest,
-              ),
-              FlatButton(
-                child: Text("Agree To Waiver"),
-                onPressed: startRemoteTest,
-              )
-            ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ButtonBar(
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("Sign Waiver"),
+                  onPressed: () => _goToSignWaiverPage(context),
+                ),
+              ],
+              alignment: MainAxisAlignment.center,
+            )
           )
         ],
-      ),
+      )
     );
   }
 
-  void startLocalTest() {
+  Future<List<dynamic>> loadWaiverInfo() async {
+    String jsonString = await rootBundle.loadString('assets/hipaa_waiver.json');
+    return jsonDecode(jsonString);
+  }
+
+  void _goToSignWaiverPage(BuildContext context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new WSDCalculator(),
-      );
+      return SignWaiverPage();
     }));
   }
 
-  void startRemoteTest() async {
-    HttpConnector connector = new HttpConnector();
-    if (await connector.serverConnected()) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return AmbiancePage(
-          wsdCalculator: new HttpConnector(),
-        );
-      }));
-    }
-    else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return AmbiancePage(
-          wsdCalculator: new WSDCalculator(),
-        );
-      }));
-    }
-  }
 }
