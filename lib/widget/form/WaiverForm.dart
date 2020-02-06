@@ -225,9 +225,15 @@ class _WaiverFormState extends State<WaiverForm> {
         } on ServerConnectionException {
           ErrorDialog dialog = new ErrorDialog(context);
           dialog.show('Error Connecting to Server', 'If the problem persists, back out and use local processing.');
+          setState(() {
+            loading = false;
+          });
         } on InternalServerException catch (e) {
           ErrorDialog errorDialog = new ErrorDialog(context);
           errorDialog.show("Error Generating Waiver", e.message + "\n\nIf the problem persists, back out and use local processing.");
+          setState(() {
+            loading = false;
+          });
         }
       }
       else {
