@@ -213,6 +213,7 @@ class _WaiverFormState extends State<WaiverForm> {
           setState(() {
             loading = false;
           });
+
           File resFile = new File(fields.researchSubjectSignatureFile);
           if (await resFile.exists()) {
             await resFile.delete();
@@ -310,4 +311,3 @@ class _WaiverFormState extends State<WaiverForm> {
     return -1;
   }
 }
-
