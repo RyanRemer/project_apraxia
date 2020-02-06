@@ -35,7 +35,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         return body['evaluationId'];
       }
       String errorMessage = body['errorMessage'];
@@ -56,7 +56,6 @@ class HttpConnector {
       recordingFileName = recordingFileName.substring(6);
     }
     File recordingFile = File(recordingFileName);
-//    Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt?word=' + word + '&syllableCount=' + syllableCount.toString());
     Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt');
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', recordingFile.path, contentType: new MediaType('application', 'x-tar')));
@@ -66,7 +65,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         Attempt attempt = Attempt(body['attemptId'], body['wsd']);
         return attempt;
       }
@@ -102,7 +101,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         return;
       }
       String errorMessage = body['errorMessage'];
@@ -139,7 +138,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         return;
       }
       String errorMessage = body['errorMessage'];
@@ -163,7 +162,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         return body['waivers'];
       }
       String errorMessage = body['errorMessage'];
@@ -187,7 +186,7 @@ class HttpConnector {
       http.StreamedResponse response = await client.send(request);
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
-      if (response.statusCode == 200 && body['success']) {
+      if (response.statusCode == 200) {
         return true;
       }
       String errorMessage = body['errorMessage'];
@@ -207,8 +206,7 @@ class HttpConnector {
   Future<bool> serverConnected() async {
     try {
       http.Response response = await client.get(serverURL + '/healthcheck');
-      Map body = jsonDecode(response.body);
-      if (body['success']) {
+      if (response.statusCode == 200) {
         return true;
       }
       return false;
@@ -220,7 +218,6 @@ class HttpConnector {
 
 
 class InternalServerException implements Exception {
-
   String message;
 
   InternalServerException({String message}) {
