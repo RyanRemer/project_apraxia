@@ -31,10 +31,24 @@ class HttpConnector {
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', ambienceFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
-    http.StreamedResponse response = await client.send(request);
-    String responseBody = await response.stream.bytesToString();
-    Map body = jsonDecode(responseBody);
-    return body['evaluationId'];
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return body['evaluationId'];
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
   }
 
   Future<Attempt> addAttempt(String recordingFileName, String word, int syllableCount, String evaluationId) async {
@@ -42,19 +56,33 @@ class HttpConnector {
       recordingFileName = recordingFileName.substring(6);
     }
     File recordingFile = File(recordingFileName);
-    Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt?word=' + word + '&syllableCount=' + syllableCount.toString());
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt');
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', recordingFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
-//    request.fields.addEntries([MapEntry<String, String>('syllableCount', syllableCount.toString()), MapEntry<String, String>('word', word)]);
-    http.StreamedResponse response = await client.send(request);
-    String responseBody = await response.stream.bytesToString();
-    Map body = jsonDecode(responseBody);
-    Attempt attempt = Attempt(body['attemptId'], body['wsd']);
-    return attempt;
+    request.fields.addEntries([MapEntry<String, String>('syllableCount', syllableCount.toString()), MapEntry<String, String>('word', word)]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        Attempt attempt = Attempt(body['attemptId'], body['wsd']);
+        return attempt;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
   }
 
-  Future<String> sendSubjectWaiver(String signatureFileName, String subjectName, String subjectEmail, String subjectDate) async {
+  Future<void> sendSubjectWaiver(String signatureFileName, String subjectName, String subjectEmail, String subjectDate) async {
     if (signatureFileName.startsWith('file://')) {
       signatureFileName = signatureFileName.substring(6);
     }
@@ -69,16 +97,27 @@ class HttpConnector {
       MapEntry<String, String>('researchSubjectDate', subjectDate),
       MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
-    http.StreamedResponse response = await client.send(request);
-    String responseBody = await response.stream.bytesToString();
-    Map body = jsonDecode(responseBody);
-    if (response.statusCode == 200) {
-      return null;
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
     }
-    return body['errorMessage'];
   }
 
-  Future<String> sendRepresentativeWaiver(String signatureFileName, String subjectName, String subjectEmail, String repName, String repRelationship, String repDate) async {
+  Future<void> sendRepresentativeWaiver(String signatureFileName, String subjectName, String subjectEmail, String repName, String repRelationship, String repDate) async {
     if (signatureFileName.startsWith('file://')) {
       signatureFileName = signatureFileName.substring(6);
     }
@@ -95,34 +134,109 @@ class HttpConnector {
       MapEntry<String, String>('representativeDate', repDate),
       MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
-    http.StreamedResponse response = await client.send(request);
-    String responseBody = await response.stream.bytesToString();
-    Map body = jsonDecode(responseBody);
-    if (response.statusCode == 200 && body['errorMessage'] == null) {
-      return null;
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
     }
-    return body['errorMessage'];
   }
 
-  Future<List<dynamic>>  getWaiversOnFile(String subjectName, String subjectEmail) async {
+  Future<List<dynamic>> getWaiversOnFile(String subjectName, String subjectEmail) async {
     Uri uri = Uri.parse(serverURL + "/waiver/" + subjectName + "/" + subjectEmail);
     http.BaseRequest request = new http.Request('GET', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
-    http.StreamedResponse response = await client.send(request);
-    String responseBody = await response.stream.bytesToString();
-    Map body = jsonDecode(responseBody);
-    List<dynamic> output = body['waivers'];
-    return output;
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return body['waivers'];
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
+  }
+
+  Future<bool> invalidateWaiver(String subjectName, String subjectEmail) async {
+    Uri uri = Uri.parse(serverURL + "/invalidate/waiver/" + subjectName + "/" + subjectEmail);
+    http.BaseRequest request = new http.Request('PUT', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return true;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
   }
 
 
   Future<bool> serverConnected() async {
     try {
-      await client.get(serverURL + '/healthcheck');
-      return true;
+      http.Response response = await client.get(serverURL + '/healthcheck');
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }
   }
+}
+
+
+class InternalServerException implements Exception {
+  String message;
+
+  InternalServerException({String message}) {
+    if (message != null) {
+      this.message = "Exception: " + message;
+    }
+    else {
+      this.message = "Exception: Internal server error.";
+    }
+  }
+
+  @override
+  String toString() {
+    return this.message;
+  }
+}
+
+
+class ServerConnectionException implements Exception {
+  final String message = "Error connecting to the server.";
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
@@ -9,7 +10,7 @@ import 'package:project_apraxia/widget/ErrorDialog.dart';
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
   final List<Prompt> prompts;
-  IWSDCalculator wsdCalculator;
+  final IWSDCalculator wsdCalculator;
   final String evaluationId;
 
   ReportsPage(
@@ -49,7 +50,7 @@ class _ReportsPageState extends State<ReportsPage> {
     try {
       calculateWSDs();
     } catch (error) {
-      var dialog = new ErrorDialog(context);
+      ErrorDialog dialog = new ErrorDialog(context);
       dialog.show("WSD Calculation Error", error.toString());
     }
   }
@@ -68,7 +69,7 @@ class _ReportsPageState extends State<ReportsPage> {
             prompt.word,
             prompt.syllableCount,
             widget.evaluationId);
-      } catch (error) {
+      } on ServerConnectionException {
         wsdCalculator = new LocalWSDCalculator();
         newAttempt = await wsdCalculator.addAttempt(
             wsdReport.getRecording(prompt).soundFile.path,
@@ -78,6 +79,15 @@ class _ReportsPageState extends State<ReportsPage> {
         ErrorDialog errorDialog = new ErrorDialog(context);
         errorDialog.show("Error Connecting to Server",
             "The server is currently down. Switching to local processing.");
+      } on InternalServerException catch(e) {
+        wsdCalculator = new LocalWSDCalculator();
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
       }
 
       runningTotal += newAttempt.WSD;

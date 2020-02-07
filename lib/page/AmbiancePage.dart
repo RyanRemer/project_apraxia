@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
@@ -7,11 +8,11 @@ import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class AmbiancePage extends StatefulWidget {
-  IWSDCalculator wsdCalculator;
+  final IWSDCalculator wsdCalculator;
   AmbiancePage({@required this.wsdCalculator, Key key}) : super(key: key);
 
   @override
-  _AmbiancePageState createState() => _AmbiancePageState();
+  _AmbiancePageState createState() => _AmbiancePageState(wsdCalculator);
 }
 
 class _AmbiancePageState extends State<AmbiancePage> {
@@ -19,6 +20,9 @@ class _AmbiancePageState extends State<AmbiancePage> {
   bool isRecording = false;
   bool ambienceRecorded = false;
   String _evaluationId;
+  IWSDCalculator wsdCalculator;
+
+  _AmbiancePageState(this.wsdCalculator);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +64,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   void startTest() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => RecordPage(wsdCalculator: widget.wsdCalculator, evaluationId: _evaluationId,)));
+        context, MaterialPageRoute(builder: (context) => RecordPage(wsdCalculator: wsdCalculator, evaluationId: _evaluationId,)));
   }
 
   Future<void> onTap() async {
@@ -100,12 +104,16 @@ class _AmbiancePageState extends State<AmbiancePage> {
   Future<String> setAmbiance(String fileUri) async {
     String evaluationId;
     try {
-      evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
-      print(evaluationId);
-    } catch (error) {
-      widget.wsdCalculator = new LocalWSDCalculator();
-      evaluationId = await widget.wsdCalculator.setAmbiance(fileUri);
-      print(evaluationId);
+      evaluationId = await wsdCalculator.setAmbiance(fileUri);
+    } on ServerConnectionException {
+      wsdCalculator = new LocalWSDCalculator();
+      evaluationId = await wsdCalculator.setAmbiance(fileUri);
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Error Connecting to Server",
+          "The server is currently down. Switching to local processing.");
+    } on InternalServerException {
+      wsdCalculator = new LocalWSDCalculator();
+      evaluationId = await wsdCalculator.setAmbiance(fileUri);
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Connecting to Server",
           "The server is currently down. Switching to local processing.");

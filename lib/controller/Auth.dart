@@ -28,7 +28,7 @@ class Auth {
   Future<void> signUp(String email, String password, String name, String address, String phone) async {
     var userAttributes = [
       new AttributeArg(name: "email", value: email),
-      new AttributeArg(name: "name", value: phone),
+      new AttributeArg(name: "name", value: name),
       new AttributeArg(name: "address", value: address),
       new AttributeArg(name: "phone_number", value: phone)
     ];
@@ -134,5 +134,6 @@ class Auth {
   void clearAuth() {
     this._user = null;
     this._session = null;
+    this._userEmail = null;
   }
 }

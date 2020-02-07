@@ -2,7 +2,6 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
-import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
 
@@ -60,7 +59,7 @@ class SignInForm extends StatelessWidget {
 
       try {
         await _auth.signIn(signInRequest.email, signInRequest.password);
-        Navigator.pushReplacement(
+        Navigator.push(
             // context, MaterialPageRoute(builder: (context) => RecordPage()));
             context, MaterialPageRoute(builder: (context) => LandingPage()));
       } on CognitoClientException catch (error) {

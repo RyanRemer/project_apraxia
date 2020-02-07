@@ -23,6 +23,12 @@ class UserAttributes {
         }
       }
     }
+    else {
+      name = "";
+      email = "";
+      phoneNumber = "+1";
+      address = "";
+    }
   }
 
   UserAttributes.test() {
