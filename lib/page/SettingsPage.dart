@@ -13,9 +13,9 @@ class SettingsPage extends StatelessWidget {
           title: Text("Settings"),
           bottom: TabBar(
             tabs: <Widget>[
-              Text("Account"),
-              Text("Prompts"),
-              Text("Waivers")
+              Tab(child: Text("Account")),
+              Tab(child: Text("Prompts")),
+              Tab(child: Text("Waivers"))
             ],
           ),
         ),
