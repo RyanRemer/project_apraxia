@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
 import 'package:project_apraxia/model/Prompt.dart';
+import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class ReportsPage extends StatefulWidget {
@@ -94,13 +96,15 @@ class _ReportsPageState extends State<ReportsPage> {
       calculatedWSDs[prompt] = newAttempt;
     }
 
-    // For added dramatic effect
-    Future.delayed(new Duration(seconds: 1), () {
-      this.setState(() {
-        loading = false;
-        averageWSD = runningTotal / prompts.length;
+    // For added dramatic effect if it's running locally
+    if (wsdCalculator is LocalWSDCalculator) {
+      Future.delayed(new Duration(seconds: 1), () {
+        this.setState(() {
+          loading = false;
+          averageWSD = runningTotal / prompts.length;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -171,5 +175,20 @@ class _ReportsPageState extends State<ReportsPage> {
             ));
   }
 
-  void completeTest() {}
+  void completeTest() {
+    deleteLocalFiles();
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void deleteLocalFiles() {
+    RecordingStorage _recordingStorage = RecordingStorage.singleton();
+    _recordingStorage.getAmbianceFile().deleteSync();
+    for (Prompt prompt in prompts) {
+      for (Recording recording in _recordingStorage.getRecordings(prompt)) {
+        recording.soundFile.deleteSync();
+      }
+      _recordingStorage.updateRecordings(prompt, []);
+    }
+  }
 }

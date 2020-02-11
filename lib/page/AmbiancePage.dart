@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
-import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RecordController.dart';
+import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
@@ -70,6 +71,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
   Future<void> onTap() async {
     try {
       String fileUri = await recordAmbiance();
+      RecordingStorage.singleton().setAmbiance(fileUri);
       _evaluationId = await setAmbiance(fileUri);
 
     } on PlatformException {
