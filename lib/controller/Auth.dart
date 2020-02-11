@@ -136,4 +136,11 @@ class Auth {
     this._session = null;
     this._userEmail = null;
   }
+
+  bool isLoggedIn() {
+    if (this._user == null || this._session == null) {
+      return false;
+    }
+    return this._session.isValid();
+  }
 }
