@@ -40,14 +40,19 @@ class SignInForm extends StatelessWidget {
               },
             ),
           ),
-          RaisedButton(
-            child: Text("Sign In"),
-            onPressed: () => signIn(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                child: Text("Forgot Password?"),
+                onPressed: () => sendForgotPassword(context),
+              ),
+              RaisedButton(
+                child: Text("Sign In"),
+                onPressed: () => signIn(context),
+              )
+            ],
           ),
-          FlatButton(
-            child: Text("Forgot Password"),
-            onPressed: () => sendForgotPassword(context),
-          )
         ],
       ),
     );
