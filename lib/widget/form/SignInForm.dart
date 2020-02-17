@@ -1,8 +1,7 @@
-import 'package:amazon_cognito_identity_dart/cognito.dart';
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
-import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
 
@@ -41,14 +40,19 @@ class SignInForm extends StatelessWidget {
               },
             ),
           ),
-          RaisedButton(
-            child: Text("Sign In"),
-            onPressed: () => signIn(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                child: Text("Forgot Password?"),
+                onPressed: () => sendForgotPassword(context),
+              ),
+              RaisedButton(
+                child: Text("Sign In"),
+                onPressed: () => signIn(context),
+              )
+            ],
           ),
-          FlatButton(
-            child: Text("Forgot Password"),
-            onPressed: () => sendForgotPassword(context),
-          )
         ],
       ),
     );
@@ -60,7 +64,7 @@ class SignInForm extends StatelessWidget {
 
       try {
         await _auth.signIn(signInRequest.email, signInRequest.password);
-        Navigator.pushReplacement(
+        Navigator.push(
             // context, MaterialPageRoute(builder: (context) => RecordPage()));
             context, MaterialPageRoute(builder: (context) => LandingPage()));
       } on CognitoClientException catch (error) {
@@ -114,6 +118,9 @@ class SignInForm extends StatelessWidget {
       await _auth.instantiateUser(signInRequest.email);
       try {
         String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
+        if (emailSentTo == null) {
+          throw new CognitoClientException("Failed to send the forgotten password notification to the server.");
+        }
         showDialog(
           context: context,
           builder: (context) =>

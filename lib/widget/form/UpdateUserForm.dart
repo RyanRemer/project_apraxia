@@ -1,30 +1,41 @@
-import 'package:amazon_cognito_identity_dart/cognito.dart';
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/UserAttributes.dart';
 
-class UpdateUserForm extends StatelessWidget {
+class UpdateUserForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
-  final Auth auth = new Auth.instance();
-  UserAttributes attributes;
 
-  UpdateUserForm({Key key}) : super(key: key) {
-    auth.getUserAttributes().then(
-      (userAttributes) {this.attributes = new UserAttributes(attributes: userAttributes);}
-    );
+  UpdateUserForm({Key  key}) : super(key: key);
+
+  @override
+  _UpdateUserFormState createState() => _UpdateUserFormState();
+}
+
+class _UpdateUserFormState extends State<UpdateUserForm> {
+  final Auth auth = new Auth.instance();
+  UserAttributes attributes = new UserAttributes();
+
+
+  _UpdateUserFormState() {
+    auth.getUserAttributes().then((initialAttributes) {
+      setState(() {
+        this.attributes = new UserAttributes(attributes: initialAttributes);
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: UpdateUserForm._formKey,
       child: Column(
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.person),
             title: TextFormField(
-              initialValue: attributes.name,
+              controller: TextEditingController(text: attributes.name),
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: "Full Name",
@@ -32,7 +43,7 @@ class UpdateUserForm extends StatelessWidget {
               validator: (String name) {
                 return FormValidator.isValidName(name);
               },
-              onSaved: (String name) {
+              onChanged: (String name) {
                 attributes.name = name;
               },
             ),
@@ -40,12 +51,12 @@ class UpdateUserForm extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.email),
             title: TextFormField(
-              initialValue: attributes.email,
+              controller: TextEditingController(text: attributes.email),
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email",
               ),
-              onSaved: (String email) {
+              onChanged: (String email) {
                 attributes.email = email;
               },
               validator: (String email) {
@@ -56,7 +67,7 @@ class UpdateUserForm extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.phone),
             title: TextFormField(
-              initialValue: attributes.phoneNumber.substring(2),
+              controller: TextEditingController(text: attributes.phoneNumber.substring(2)),
               decoration: InputDecoration(
                 labelText: "Phone Number",
               ),
@@ -64,7 +75,7 @@ class UpdateUserForm extends StatelessWidget {
               validator: (String phoneNumber){
                 return FormValidator.isValidPhoneNumber(phoneNumber);
               },
-              onSaved: (String phoneNumber) {
+              onChanged: (String phoneNumber) {
                 attributes.phoneNumber = "+1" + phoneNumber;
               },
             ),
@@ -72,13 +83,13 @@ class UpdateUserForm extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.home),
             title: TextFormField(
-              initialValue: attributes.address,
+              controller: TextEditingController(text: attributes.address),
               maxLines: 2,
               decoration: InputDecoration(
                 labelText: "Address",
               ),
               keyboardType: TextInputType.multiline,
-              onSaved: (String address) {
+              onChanged: (String address) {
                 attributes.address = address;
               },
               validator: (String address) {
@@ -96,8 +107,8 @@ class UpdateUserForm extends StatelessWidget {
   }
 
   Future saveChanges(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (UpdateUserForm._formKey.currentState.validate()) {
+      UpdateUserForm._formKey.currentState.save();
       try {
         await auth.updateUserAttributes(
           attributes.email,

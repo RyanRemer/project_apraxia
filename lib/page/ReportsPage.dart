@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
+import 'package:project_apraxia/controller/HttpConnector.dart';
+import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
 import 'package:project_apraxia/model/Prompt.dart';
+import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
   final List<Prompt> prompts;
+  final IWSDCalculator wsdCalculator;
+  final String evaluationId;
 
-  ReportsPage(this.wsdReport, this.prompts, {Key key}) : super(key: key);
+  ReportsPage(
+      {@required this.wsdReport,
+      @required this.prompts,
+      @required this.wsdCalculator,
+      @required this.evaluationId,
+      Key key})
+      : super(key: key);
 
   @override
-  _ReportsPageState createState() => _ReportsPageState(this.wsdReport, this.prompts);
+  _ReportsPageState createState() =>
+      _ReportsPageState(this.wsdReport, this.prompts, this.wsdCalculator);
 }
 
 class _ReportsPageState extends State<ReportsPage> {
@@ -24,12 +36,9 @@ class _ReportsPageState extends State<ReportsPage> {
   IWSDCalculator wsdCalculator;
   double averageWSD;
 
-  _ReportsPageState(WsdReport wsdReport, List<Prompt> prompts) {
-    this.wsdReport = wsdReport;
-    this.prompts = prompts;
+  _ReportsPageState(this.wsdReport, this.prompts, this.wsdCalculator) {
     loading = false;
     calculatedWSDs = new Map();
-    wsdCalculator = new WSDCalculator();
     averageWSD = 0.0;
 
     for (final prompt in prompts) {
@@ -43,45 +52,59 @@ class _ReportsPageState extends State<ReportsPage> {
     try {
       calculateWSDs();
     } catch (error) {
-      var dialog = new ErrorDialog(context);
+      ErrorDialog dialog = new ErrorDialog(context);
       dialog.show("WSD Calculation Error", error.toString());
     }
   }
-
-//  Future setTestAmbiance() async {
-//    LocalFileController localFileController = new LocalFileController();
-//
-//    String localUri = await localFileController.getLocalRef(
-//        "assets/prompts/amb.wav");
-//
-//    await wsdCalculator.setAmbiance(localUri);
-//  }
 
   Future calculateWSDs() async {
     setState(() {
       loading = true;
     });
 
-    // For testing purposes
-//    await setTestAmbiance();
-
     double runningTotal = 0.0;
     for (final prompt in prompts) {
-      Attempt newAttempt = await wsdCalculator.addAttempt(wsdReport
-          .getRecording(prompt)
-          .soundFile
-          .path, prompt.word, prompt.syllableCount, "");
+      Attempt newAttempt;
+      try {
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+      } on ServerConnectionException {
+        wsdCalculator = new LocalWSDCalculator();
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Error Connecting to Server",
+            "The server is currently down. Switching to local processing.");
+      } on InternalServerException catch(e) {
+        wsdCalculator = new LocalWSDCalculator();
+        newAttempt = await wsdCalculator.addAttempt(
+            wsdReport.getRecording(prompt).soundFile.path,
+            prompt.word,
+            prompt.syllableCount,
+            widget.evaluationId);
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
+      }
+
       runningTotal += newAttempt.WSD;
       calculatedWSDs[prompt] = newAttempt;
     }
 
-    // For added dramatic effect
-    Future.delayed(new Duration(seconds: 1), () {
-      this.setState(() {
-        loading = false;
-        averageWSD = runningTotal / prompts.length;
+    // For added dramatic effect if it's running locally
+    if (wsdCalculator is LocalWSDCalculator) {
+      Future.delayed(new Duration(seconds: 1), () {
+        this.setState(() {
+          loading = false;
+          averageWSD = runningTotal / prompts.length;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -116,7 +139,9 @@ class _ReportsPageState extends State<ReportsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(prompts[position].word),
-                              Text(calculatedWSDs[prompts[position]].WSD.toStringAsFixed(2))
+                              Text(calculatedWSDs[prompts[position]]
+                                  .WSD
+                                  .toStringAsFixed(2))
                             ],
                           ),
                         ),
@@ -133,12 +158,15 @@ class _ReportsPageState extends State<ReportsPage> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Average WSD", style: TextStyle(fontSize: 24)),
+                          child: Text("Average WSD",
+                              style: TextStyle(fontSize: 24)),
                         ),
-                        Text(averageWSD.toStringAsFixed(2), style: TextStyle(fontSize: 36),),
+                        Text(
+                          averageWSD.toStringAsFixed(2),
+                          style: TextStyle(fontSize: 36),
+                        ),
                       ],
-                    )
-                ),
+                    )),
                 RaisedButton(
                   child: Text("Complete Test"),
                   onPressed: completeTest,
@@ -148,6 +176,19 @@ class _ReportsPageState extends State<ReportsPage> {
   }
 
   void completeTest() {
+    deleteLocalFiles();
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
 
+  void deleteLocalFiles() {
+    RecordingStorage _recordingStorage = RecordingStorage.singleton();
+    _recordingStorage.getAmbianceFile().deleteSync();
+    for (Prompt prompt in prompts) {
+      for (Recording recording in _recordingStorage.getRecordings(prompt)) {
+        recording.soundFile.deleteSync();
+      }
+      _recordingStorage.updateRecordings(prompt, []);
+    }
   }
 }

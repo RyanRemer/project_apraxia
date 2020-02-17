@@ -20,9 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
   recorder_wav: ^0.1.0
-  amazon_cognito_identity_dart: ^0.0.22
-  path_provider:
+  amazon_cognito_identity_dart_2: ^0.1.6
   audioplayer: ^0.5.2
+  http: ^0.12.0+2
+  signature: ^3.0.0
+  path_provider: ^1.5.1
+  intl: ^0.16.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,6 +50,7 @@ flutter:
 
   assets:
     - assets/prompts/
+    - assets/hipaa_waiver.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

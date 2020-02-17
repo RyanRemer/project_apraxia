@@ -1,4 +1,4 @@
-import 'package:amazon_cognito_identity_dart/cognito.dart';
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 
 class UserAttributes {
   String email;
@@ -22,6 +22,12 @@ class UserAttributes {
           phoneNumber = attribute.getValue();
         }
       }
+    }
+    else {
+      name = "";
+      email = "";
+      phoneNumber = "+1";
+      address = "";
     }
   }
 

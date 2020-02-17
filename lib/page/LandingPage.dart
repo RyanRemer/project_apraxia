@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
-
-import 'package:project_apraxia/page/UpdateUserPage.dart';
+import 'package:project_apraxia/page/SettingsPage.dart';
+import 'package:project_apraxia/page/SelectWaiverPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
+import 'package:project_apraxia/controller/Auth.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -30,13 +32,6 @@ class LandingPage extends StatelessWidget {
                         minWidth: 250.0,
                         child: RaisedButton(
                           color: Theme.of(context).buttonColor,
-                          child: Text("How To", style: TextStyle(fontSize: 20)),
-                          onPressed: () => goToHowToPage(context),
-                        )),
-                    ButtonTheme(
-                        minWidth: 250.0,
-                        child: RaisedButton(
-                          color: Theme.of(context).buttonColor,
                           child: Text("Start WSD Calculation",
                               style: TextStyle(fontSize: 20)),
                           onPressed: () => goToRecordPage(context),
@@ -45,8 +40,22 @@ class LandingPage extends StatelessWidget {
                         minWidth: 250.0,
                         child: RaisedButton(
                           color: Theme.of(context).buttonColor,
+                          child: Text("How To", style: TextStyle(fontSize: 20)),
+                          onPressed: () => goToHowToPage(context),
+                        )),
+                    ButtonTheme(
+                        minWidth: 250.0,
+                        child: RaisedButton(
+                          color: Theme.of(context).buttonColor,
                           child: Text("Settings", style: TextStyle(fontSize: 20)),
                           onPressed: () => goToSettingsPage(context),
+                        )),
+                    ButtonTheme(
+                        minWidth: 250.0,
+                        child: RaisedButton(
+                          color: Theme.of(context).buttonColor,
+                          child: Text("Sign Out", style: TextStyle(fontSize: 20)),
+                          onPressed: () => signOut(context),
                         ))
                   ],
                 ),
@@ -58,16 +67,33 @@ class LandingPage extends StatelessWidget {
 }
 
 void goToRecordPage(BuildContext context) {
-  Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => AmbiancePage()));
+  if(Auth.instance().isLoggedIn()) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SelectWaiverPage()));
+  }
+  else {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) =>
+          AmbiancePage(
+              wsdCalculator: new LocalWSDCalculator()
+          )
+    ));
+  }
 }
 
 void goToSettingsPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => UpdateUserPage()));
+      .push(MaterialPageRoute(builder: (context) => SettingsPage()));
 }
 
 void goToHowToPage(BuildContext context) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => HowToPage()));
+}
+
+void signOut(BuildContext context) {
+  Auth auth = Auth.instance();
+  auth.signOut();
+//  TODO: Delete any files generated
+  Navigator.pop(context);
 }
