@@ -137,4 +137,22 @@ class FormValidator {
     }
     return null;
   }
+
+  static String isValidAge(String s) {
+    if (s == null || s.trim() == "") {
+      return "Age must not be empty";
+    }
+    try {
+      int age = int.parse(s);
+      if (age < 0) {
+        return "Age must not be negative";
+      }
+      else if (age > 150) {
+        return "Age must be less than 150.";
+      }
+      return null;
+    } on FormatException {
+      return "Must be a valid age.";
+    }
+  }
 }

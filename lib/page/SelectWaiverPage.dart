@@ -3,6 +3,7 @@ import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
+import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/page/WaiverPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
@@ -194,6 +195,7 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return AmbiancePage(
         wsdCalculator: new LocalWSDCalculator(),
+        evalId: "",
       );
     }));
   }
@@ -206,7 +208,7 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
 
   void _startRemoteTest(BuildContext context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
+      return SurveyPage(
         wsdCalculator: new RemoteWSDCalculator(),
       );
     }));
