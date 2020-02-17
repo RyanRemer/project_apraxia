@@ -1,10 +1,10 @@
 import 'package:project_apraxia/model/Recording.dart';
-import 'package:project_apraxia/controller/WSDCalculator.dart';
+import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 
 class WaveformStorage {
   Recording currSelectedRecording;
-  IWSDCalculator wsdCalculator = new WSDCalculator();
+  IWSDCalculator wsdCalculator = new LocalWSDCalculator();
 
   Future<List<double>> wsdGetAmplitudes(Recording recording) async {
     if(recording == null) {
