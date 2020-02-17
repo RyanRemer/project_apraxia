@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
+import 'package:project_apraxia/data/WaveformStorage.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/page/PromptArea.dart';
@@ -18,6 +19,7 @@ class _PromptsPageState extends State<PromptsPage> {
   List<Prompt> prompts;
   int index = 0;
   WsdReport wsdReport = new WsdReport();
+  WaveformStorage waveformStorage = new WaveformStorage();
 
   _PromptsPageState(this.prompts);
 
@@ -31,7 +33,7 @@ class _PromptsPageState extends State<PromptsPage> {
         children: <Widget>[
           Expanded(
             child: PromptArea(
-              key: ObjectKey(prompts[index]),
+              key: UniqueKey(),
               prompt: prompts[index],
               selectedRecording: wsdReport.getRecording(prompts[index]),
               onSelectRecording: (Recording selectedRecording) {
@@ -61,7 +63,7 @@ class _PromptsPageState extends State<PromptsPage> {
             child: Text(isLast() ? "Done" : "Next"),
             onPressed:
                 enableNext() ? isLast() ? _moveToReportsPage : _incrementIndex : null,
-          )
+          ),
         ],
       ),
     );
@@ -90,5 +92,4 @@ class _PromptsPageState extends State<PromptsPage> {
   void _moveToReportsPage() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsPage(wsdReport, prompts)));
   }
-
 }
