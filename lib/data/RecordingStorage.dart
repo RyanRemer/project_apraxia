@@ -1,11 +1,10 @@
-import 'dart:io';
-
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 
 class RecordingStorage {
   Map<Prompt, List<Recording>> recordingMap = new Map();
-  File ambianceFile;
+  SafeFile ambianceFile;
 
   static final instance = new RecordingStorage._();
   RecordingStorage._();
@@ -13,12 +12,12 @@ class RecordingStorage {
     return instance;
   }
 
-  File getAmbianceFile() {
+  SafeFile getAmbianceFile() {
     return ambianceFile;
   }
 
   void setAmbiance(String fileUri) {
-    ambianceFile = new File(fileUri);
+    ambianceFile = new SafeFile(fileUri);
   }
 
   List<Recording> getRecordings(Prompt prompt){

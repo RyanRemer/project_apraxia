@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:audioplayer/audioplayer.dart';
@@ -43,7 +43,7 @@ class PromptController {
       ByteData byteData = await assetBundle.load(prompt.soundUri);
 
       localFileController.createFile(localUri);
-      File localFile = localFileController.getFile(localUri);
+      SafeFile localFile = localFileController.getFile(localUri);
 
       localFile.writeAsBytesSync(Int8List.view(byteData.buffer));
       prompt.soundUri = localFile.uri.toString();

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 
 /// A controller for saving and loading from local files on either android or iOS devices
 /// 
@@ -15,11 +15,11 @@ class LocalFileController {
     return localPath + "/" + uri;
   }
 
-  File getFile(String localRef){
-    return File(localRef);
+  SafeFile getFile(String localRef){
+    return SafeFile(localRef);
   }
 
   void createFile(String localRef){
-    File(localRef).createSync(recursive: true);
+    SafeFile(localRef).createSync(recursive: true);
   }
 }

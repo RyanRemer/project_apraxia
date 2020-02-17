@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
@@ -59,17 +60,19 @@ class PromptAreaState extends State<PromptArea> {
     ));
   }
 
-  void addRecording(File soundFile) {
+  void addRecording(SafeFile soundFile) {
     Recording recording = new Recording(
       name: prompt.word + "-${_recordings.length + 1}",
     );
 
     if (Platform.isAndroid) {
       Directory directory = soundFile.parent;
-      recording.soundFile = File("${directory.path}/${recording.name}.wav");
+      recording.soundFile = SafeFile("${directory.path}/${recording.name}.wav");
+      recording.soundFile.createSync();
       soundFile.copySync(recording.soundFile.path);
+      soundFile.deleteSync();
     } else {
-      recording.soundFile = soundFile;
+      recording.soundFile = new SafeFile(soundFile.path);
     }
 
     setState(() {
