@@ -191,7 +191,6 @@ class _SurveyFormState extends State<SurveyForm> {
   void submit(BuildContext context) async {
     if (SurveyForm._formKey.currentState.validate()) {
       SurveyForm._formKey.currentState.save();
-
       if (_doNotDiscloseAge) {
         fields.age = 'no answer';
       }
@@ -208,10 +207,20 @@ class _SurveyFormState extends State<SurveyForm> {
       if (_other) {
         fields.impression += _otherImpression;
       }
-
       HttpConnector connector = new HttpConnector.instance();
-      String evalId = await connector.createEvaluation(fields.age, fields.gender, fields.impression);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmbiancePage(wsdCalculator: widget.wsdCalculator, evalId: evalId,)));
+
+      try {
+        String evalId = await connector.createEvaluation(fields.age, fields.gender, fields.impression);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmbiancePage(wsdCalculator: widget.wsdCalculator, evalId: evalId,)));
+      } on ServerConnectionException {
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Error Connecting to Server",
+            "The server is currently down. Switching to local processing.");
+      } on InternalServerException {
+        ErrorDialog errorDialog = new ErrorDialog(context);
+        errorDialog.show("Error Connecting to Server",
+            "An unexpected server error occurred. Switching to local processing.");
+      }
     }
   }
 }
