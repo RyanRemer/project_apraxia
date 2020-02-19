@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
-import 'package:project_apraxia/data/WaveformStorage.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
@@ -23,7 +22,6 @@ class _PromptsPageState extends State<PromptsPage> {
   List<Prompt> prompts;
   int index = 0;
   WsdReport wsdReport = new WsdReport();
-  WaveformStorage waveformStorage = new WaveformStorage();
 
   _PromptsPageState(this.prompts);
 
