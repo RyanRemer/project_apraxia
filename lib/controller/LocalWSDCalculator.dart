@@ -6,7 +6,7 @@ class LocalWSDCalculator extends IWSDCalculator {
   static const channel = const MethodChannel("wsdCalculator");
 
   @override
-  Future<String> setAmbiance(String fileName) async {
+  Future<void> setAmbiance(String fileName, {String evalId: ""}) async {
     return await channel.invokeMethod("calculateAmbiance", [fileName]);
   }
 
