@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/widget/form_field/RecordingFormField.dart';
+import 'package:uuid/uuid.dart';
 
 class CustomPromptForm extends StatefulWidget {
-  Prompt prompt;
+  final Prompt prompt;
   CustomPromptForm({@required this.prompt, key}) : super(key: key);
 
   @override

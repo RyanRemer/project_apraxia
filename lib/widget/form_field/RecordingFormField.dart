@@ -1,11 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 import 'package:project_apraxia/widget/RecordButton.dart';
 
 class RecordingFormField extends FormField<String> {
-
   RecordingFormField({
     String filePath,
     FormFieldSetter<String> onSaved,
@@ -29,21 +29,30 @@ class _RecordingFormField extends StatelessWidget {
     return Column(
       children: <Widget>[
         ListTile(
-          title: Text(state.value ?? "No Sound Recording"),
+          title: Text(hasRecorded
+              ? "Sound Recorded"
+              : "No Sound Recording",
+              maxLines: 2,
+              ),
           trailing: PlayButton(
             filepath: state.value,
-            isEnabled: state.value != null,
+            isEnabled: hasRecorded,
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(32.0),
           child: RecordButton(
-            onRecord: (SafeFile file) {
+            soundUri: state.value,
+            onRecord: (File file) {
               state.didChange(file.path);
             },
           ),
         )
       ],
     );
+  }
+
+  bool get hasRecorded {
+    return File(state.value).existsSync();
   }
 }

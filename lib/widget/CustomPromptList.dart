@@ -50,6 +50,7 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
               trailing: PlayButton(
                 filepath: prompt.soundUri,
               ),
+              onLongPress: () => editPrompt(prompt),
             ),
           );
         },
@@ -87,13 +88,27 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
 
   Future<void> addPrompt() async {
     Prompt prompt = await Navigator.push(context, MaterialPageRoute(builder: (context){
-      return CustomPromptForm(prompt: new Prompt());
+      return CustomPromptForm(prompt: new Prompt(soundUri: "prompts/prompt-${prompts.length + 1}.wav"));
     }));
 
     if (prompt != null){
       setState(() {
         prompts.add(prompt);
       });
+      save();
+    }
+  }
+
+  Future<void> editPrompt(Prompt prompt) async {
+    Prompt editedPrompt = await Navigator.push(context, MaterialPageRoute(builder: (context){
+      return CustomPromptForm(prompt: prompt);
+    }));
+
+    if (editedPrompt != null){
+      setState(() {
+        prompt = editedPrompt;
+      });
+      save();
     }
   }
 

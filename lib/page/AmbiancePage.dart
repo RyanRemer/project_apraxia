@@ -99,7 +99,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
     await Future.delayed(Duration(seconds: seconds));
 
-    String fileUri = await recordController.stopRecording();
+    String fileUri = await recordController.stopRecording("recordings/ambiance.wav");
     return fileUri;
   }
 

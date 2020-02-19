@@ -1,18 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
-import 'package:uuid/uuid.dart';
 
-typedef RecordCallback = void Function(SafeFile soundFile);
+typedef RecordCallback = void Function(File soundFile);
 
 /// A circular button with a microphone that records audio from the device into a device folder
 class RecordButton extends StatefulWidget {
   /// After each recording call this function with the [File] with the audio information
   final RecordCallback onRecord;
+  // The non-localized URI where the file should be stored
+  final String soundUri;
 
-  RecordButton({@required this.onRecord, Key key}) : super(key: key);
+  RecordButton({@required this.onRecord, @required this.soundUri, Key key}) : super(key: key);
 
   @override
   _RecordButtonState createState() => _RecordButtonState();
@@ -23,7 +25,10 @@ class _RecordButtonState extends State<RecordButton> {
   RecordController recordController;
   bool isRecording = false;
 
-  _RecordButtonState({this.recordController, this.isRecording = false}) {
+  _RecordButtonState({
+    this.recordController, 
+    this.isRecording = false,
+    }) {
     this.recordController ??= new RecordController();
   }
 
@@ -63,9 +68,8 @@ class _RecordButtonState extends State<RecordButton> {
   Future recordAudio() async {
     try {
       if (isRecording) {
-        String soundUri = await recordController.stopRecording();
-        String fileUri = await createRecordingFile(soundUri);
-        widget.onRecord(SafeFile(fileUri)); //send the file to the callback function
+        String soundUri = await recordController.stopRecording(widget.soundUri);
+        widget.onRecord(File(soundUri)); 
       } else {
         recordController.startRecording();
       }
@@ -74,13 +78,6 @@ class _RecordButtonState extends State<RecordButton> {
       var dialog = new ErrorDialog(context);
       dialog.show("Recording Error", error.toString());
     }
-  }
-
-  Future<String> createRecordingFile(String soundUri) async {
-    Uuid uuid = new Uuid();
-    String localUri = await localFileController.getLocalRef("recordings/${uuid.v1()}.wav");
-    SafeFile(soundUri).copySync(localUri);
-    return localUri;
   }
 
 

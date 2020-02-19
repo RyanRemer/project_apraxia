@@ -29,7 +29,7 @@ void main(){
       return "test.wav";
     });
 
-    String filename = await recordController.stopRecording();
+    String filename = await recordController.stopRecording("test.wav");
     expect(filename, "test.wav");
   });
 

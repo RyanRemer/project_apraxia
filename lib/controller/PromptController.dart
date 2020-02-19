@@ -23,7 +23,7 @@ class PromptController {
     this.assetBundle ??= rootBundle;
   }
 
-  // save prompts to the local
+  // save prompts to the local storage on the device
   Future<void> savePrompts(List<Prompt> prompts) async {
     File promptsJsonFile =
         await localFileController.getLocalFile("prompts/local_prompts.json");
