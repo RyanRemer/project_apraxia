@@ -14,46 +14,89 @@ class PromptController {
   LocalFileController localFileController;
   AudioPlayer audioPlayer;
   AssetBundle assetBundle;
-  static List<Prompt> prompts;
 
-  PromptController({this.audioPlayer, this.localFileController, this.assetBundle}){
+  PromptController(
+      {this.audioPlayer, this.localFileController, this.assetBundle}) {
     this.audioPlayer ??= new AudioPlayer();
     this.localFileController ??= new LocalFileController();
     this.assetBundle ??= rootBundle;
   }
 
+  // save prompts to the local
+  Future<void> savePrompts(List<Prompt> prompts) async {
+    File promptsJsonFile =
+        await localFileController.getLocalFile("prompts/local_prompts.json");
+    List<dynamic> jsonObject = prompts.map((prompt) => prompt.toMap()).toList();
+    String promptsJson = jsonEncode(jsonObject);
+    promptsJsonFile.writeAsStringSync(promptsJson);
+  }
+
+  Future<List<Prompt>> getEnabledPrompts() async {
+    List<Prompt> prompts = await getPrompts();
+    return prompts.where((prompt) => prompt.enabled).toList();
+  }
+
   /// Loads prompts from the [AssentBundle] and saves them in a
   /// local device directory so that the AudioPlayer can play them
   Future<List<Prompt>> getPrompts() async {
-    if (prompts == null) {
-      prompts = await _getPromptAssets();
-      await _writePromptsToLocal(prompts);
+    await _copyAssetPromptsJson();
+    await _copyAssetPromptSoundFiles();
+
+    File promptsJsonFile =
+        await localFileController.getLocalFile("prompts/local_prompts.json");
+    String promptsJson = promptsJsonFile.readAsStringSync();
+    List<dynamic> jsonObject = jsonDecode(promptsJson);
+
+    return List.generate(jsonObject.length, (index) {
+      return Prompt.fromMap(jsonObject[index]);
+    });
+  }
+
+  // copies the local_prompts.json file if it does not exist localy
+  Future _copyAssetPromptsJson() async {
+    File localFile =
+        await localFileController.getLocalFile("prompts/local_prompts.json");
+    List<dynamic> jsonObject = jsonDecode(localFile.readAsStringSync());
+
+    if (localFile.existsSync() == false || jsonObject.length == 0) {
+      List<Prompt> localizedAssetPrompts = await _getLocalizedPromptAssets();
+      List<dynamic> jsonObject = localizedAssetPrompts.map((prompt) => prompt.toMap()).toList();
+      String promptsJson = jsonEncode(jsonObject);
+      localFile.createSync(recursive: true);
+      localFile.writeAsStringSync(promptsJson);
     }
-    return prompts;
+  }
+
+  // returns a list of prompts with localized soundUris
+  Future<List<Prompt>> _getLocalizedPromptAssets() async {
+    List<Prompt> assetPrompts = await _getPromptAssets();
+    for (Prompt prompt in assetPrompts){
+      prompt.soundUri = await localFileController.getLocalRef(prompt.soundUri);
+    }
+    return assetPrompts;
   }
 
   // saves all the prompt's uris to a local directory for playback
-  Future _writePromptsToLocal(List<Prompt> prompts) async {
-    for (Prompt prompt in prompts) {
+  Future _copyAssetPromptSoundFiles() async {
+    List<Prompt> assetPrompts = await _getPromptAssets();
+    for (Prompt prompt in assetPrompts) {
       if (prompt.soundUri == null) {
         continue;
       }
 
-      String localUri = await localFileController.getLocalRef(prompt.soundUri);
       ByteData byteData = await assetBundle.load(prompt.soundUri);
-
-      localFileController.createFile(localUri);
-      File localFile = localFileController.getFile(localUri);
+      File localFile = await localFileController.getLocalFile(prompt.soundUri);
+      localFile.createSync(recursive: true);
 
       localFile.writeAsBytesSync(Int8List.view(byteData.buffer));
       prompt.soundUri = localFile.uri.toString();
     }
   }
 
-  // load all of the prompts specified in the assets/prompts/local_prompts.json file
+  // load all of the prompts specified in the assets/prompts/asset_prompts.json file
   Future<List<Prompt>> _getPromptAssets() async {
     String promptJson =
-        await assetBundle.loadString("assets/prompts/local_prompts.json");
+        await assetBundle.loadString("assets/prompts/asset_prompts.json");
     var jsonMap = json.decode(promptJson);
 
     return List.generate(jsonMap.length, (int i) {

@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
+import 'package:uuid/uuid.dart';
 
 typedef RecordCallback = void Function(File soundFile);
 
@@ -18,6 +20,7 @@ class RecordButton extends StatefulWidget {
 }
 
 class _RecordButtonState extends State<RecordButton> {
+  LocalFileController localFileController = new LocalFileController();
   RecordController recordController;
   bool isRecording = false;
 
@@ -61,10 +64,11 @@ class _RecordButtonState extends State<RecordButton> {
   Future recordAudio() async {
     try {
       if (isRecording) {
-        String fileUri = await recordController.stopRecording();
+        String soundUri = await recordController.stopRecording();
+        String fileUri = await createRecordingFile(soundUri);
         widget.onRecord(File(fileUri)); //send the file to the callback function
       } else {
-        await recordController.startRecording();
+        recordController.startRecording();
       }
       
     } catch (error) {
@@ -72,4 +76,13 @@ class _RecordButtonState extends State<RecordButton> {
       dialog.show("Recording Error", error.toString());
     }
   }
+
+  Future<String> createRecordingFile(String soundUri) async {
+    Uuid uuid = new Uuid();
+    String localUri = await localFileController.getLocalRef("recordings/${uuid.v1()}.wav");
+    File(soundUri).copySync(localUri);
+    return localUri;
+  }
+
+
 }
