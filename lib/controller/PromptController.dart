@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:audioplayer/audioplayer.dart';
@@ -16,8 +15,11 @@ class PromptController {
   AudioPlayer audioPlayer;
   AssetBundle assetBundle;
 
-  PromptController(
-      {this.audioPlayer, this.localFileController, this.assetBundle}) {
+  PromptController({
+    this.audioPlayer,
+    this.localFileController,
+    this.assetBundle,
+  }) {
     this.audioPlayer ??= new AudioPlayer();
     this.localFileController ??= new LocalFileController();
     this.assetBundle ??= rootBundle;
@@ -32,6 +34,7 @@ class PromptController {
     promptsJsonFile.writeAsStringSync(promptsJson);
   }
 
+  //get a list of only the prompts that
   Future<List<Prompt>> getEnabledPrompts() async {
     List<Prompt> prompts = await getPrompts();
     return prompts.where((prompt) => prompt.enabled).toList();
@@ -60,8 +63,9 @@ class PromptController {
     List<dynamic> jsonObject = jsonDecode(localFile.readAsStringSync());
 
     if (localFile.existsSync() == false || jsonObject.length == 0) {
-      List<Prompt> localizedAssetPrompts = await _getLocalizedPromptAssets();
-      List<dynamic> jsonObject = localizedAssetPrompts.map((prompt) => prompt.toMap()).toList();
+      List<Prompt> localizedAssetPrompts = await _getLocalizedAssetPrompts();
+      List<dynamic> jsonObject =
+          localizedAssetPrompts.map((prompt) => prompt.toMap()).toList();
       String promptsJson = jsonEncode(jsonObject);
       localFile.createSync(recursive: true);
       localFile.writeAsStringSync(promptsJson);
@@ -69,9 +73,9 @@ class PromptController {
   }
 
   // returns a list of prompts with localized soundUris
-  Future<List<Prompt>> _getLocalizedPromptAssets() async {
+  Future<List<Prompt>> _getLocalizedAssetPrompts() async {
     List<Prompt> assetPrompts = await _getPromptAssets();
-    for (Prompt prompt in assetPrompts){
+    for (Prompt prompt in assetPrompts) {
       prompt.soundUri = await localFileController.getLocalRef(prompt.soundUri);
     }
     return assetPrompts;
