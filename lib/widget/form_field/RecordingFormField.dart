@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 import 'package:project_apraxia/widget/RecordButton.dart';
 
@@ -39,7 +38,7 @@ class _RecordingFormField extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(32.0),
           child: RecordButton(
-            onRecord: (File file) {
+            onRecord: (SafeFile file) {
               state.didChange(file.path);
             },
           ),

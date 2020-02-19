@@ -1,12 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:uuid/uuid.dart';
 
-typedef RecordCallback = void Function(File soundFile);
+typedef RecordCallback = void Function(SafeFile soundFile);
 
 /// A circular button with a microphone that records audio from the device into a device folder
 class RecordButton extends StatefulWidget {
@@ -66,7 +65,7 @@ class _RecordButtonState extends State<RecordButton> {
       if (isRecording) {
         String soundUri = await recordController.stopRecording();
         String fileUri = await createRecordingFile(soundUri);
-        widget.onRecord(File(fileUri)); //send the file to the callback function
+        widget.onRecord(SafeFile(fileUri)); //send the file to the callback function
       } else {
         recordController.startRecording();
       }
@@ -80,7 +79,7 @@ class _RecordButtonState extends State<RecordButton> {
   Future<String> createRecordingFile(String soundUri) async {
     Uuid uuid = new Uuid();
     String localUri = await localFileController.getLocalRef("recordings/${uuid.v1()}.wav");
-    File(soundUri).copySync(localUri);
+    SafeFile(soundUri).copySync(localUri);
     return localUri;
   }
 

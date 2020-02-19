@@ -1,8 +1,8 @@
-import 'dart:io';
+import 'package:project_apraxia/controller/SafeFile.dart';
 
 class Recording {
   String name;
-  File soundFile;
+  SafeFile soundFile;
 
   Recording({this.name, this.soundFile});
 }

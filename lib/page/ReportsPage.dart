@@ -183,10 +183,10 @@ class _ReportsPageState extends State<ReportsPage> {
 
   void deleteLocalFiles() {
     RecordingStorage _recordingStorage = RecordingStorage.singleton();
-    _recordingStorage.getAmbianceFile().deleteSync();
+    _recordingStorage.getAmbianceFile().safeDeleteSync();
     for (Prompt prompt in prompts) {
       for (Recording recording in _recordingStorage.getRecordings(prompt)) {
-        recording.soundFile.deleteSync();
+        recording.soundFile.safeDeleteSync();
       }
       _recordingStorage.updateRecordings(prompt, []);
     }

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:audioplayer/audioplayer.dart';
