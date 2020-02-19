@@ -17,6 +17,7 @@ class LocalWSDCalculator extends IWSDCalculator {
 
   @override
   Future<List<double>> getAmplitudes(String fileName) async {
-    return await channel.invokeMethod("getAmplitude", [fileName]);
+    List<dynamic> amplitudes = await channel.invokeMethod("getAmplitude", [fileName]);
+    return List<double>.from(amplitudes);
   }
 }
