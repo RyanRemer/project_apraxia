@@ -19,10 +19,10 @@ class RecordController {
   /// saves the current recording to [fileUri]
   Future<String> stopRecording(String fileUri) async {
     String recordingUri = await recorder.stopRecorder();
-    File recordingFile = File(recordingUri);
+    SafeFile recordingFile = SafeFile(recordingUri);
 
     String localUri = await localFileController.getLocalRef(fileUri);
-    File(localUri).createSync(recursive: true);
+    SafeFile(localUri).createSync(recursive: true);
     recordingFile.copySync(localUri);
     recordingFile.deleteSync();
 

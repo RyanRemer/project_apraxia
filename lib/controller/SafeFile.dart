@@ -11,7 +11,7 @@ class SafeFile {
   }
 
   Future<SafeFile> writeAsBytes(List<int> bytes) async {
-    this.file = await this.file.writeAsBytes(bytes);
+    await this.file.writeAsBytes(bytes);
     return this;
   }
 
@@ -36,13 +36,13 @@ class SafeFile {
   }
 
   Future<SafeFile> copy(String newPath) async {
-    this.file = await this.file.copy(newPath);
-    return this;
+    await this.file.copy(newPath);
+    return SafeFile(newPath);
   }
 
   SafeFile copySync(String newPath) {
-    this.file = this.file.copySync(newPath);
-    return this;
+    this.file.copySync(newPath);
+    return SafeFile(newPath);
   }
 
   Future<void> safeDelete() async {
@@ -60,7 +60,7 @@ class SafeFile {
   }
 
   Future<SafeFile> create({bool recursive: false}) async {
-    this.file = await this.file.create(recursive: recursive);
+    await this.file.create(recursive: recursive);
     return this;
   }
 
