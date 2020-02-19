@@ -33,7 +33,7 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
       appBar: AppBar(
         title: Text("Select Waiver"),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Padding(
             child: Container(),
