@@ -8,6 +8,7 @@ import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/PromptTile.dart';
 import 'package:project_apraxia/widget/RecordButton.dart';
 import 'package:project_apraxia/widget/RecordingsTable.dart';
+import 'package:project_apraxia/page/Waveform.dart';
 
 class PromptArea extends StatefulWidget {
   final Prompt prompt;
@@ -49,6 +50,10 @@ class PromptAreaState extends State<PromptArea> {
             onSelectRecording: widget.onSelectRecording,
           ),
         ),
+        Padding(padding: EdgeInsets.only(top: 8),),
+        Expanded(
+            child: Waveform(widget.selectedRecording),
+          ),
         Expanded(
           child: Center(
             child: RecordButton(
@@ -76,8 +81,8 @@ class PromptAreaState extends State<PromptArea> {
   }
 
   void setDefaultSelection() {
-    if (widget.selectedRecording == null && _recordings.isNotEmpty){
-      widget.onSelectRecording(_recordings.first);
+    if (_recordings.isNotEmpty){
+      widget.onSelectRecording(_recordings.last);
     }
   }
 }

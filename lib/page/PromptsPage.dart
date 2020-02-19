@@ -35,7 +35,7 @@ class _PromptsPageState extends State<PromptsPage> {
         children: <Widget>[
           Expanded(
             child: PromptArea(
-              key: ObjectKey(prompts[index]),
+              key: UniqueKey(),
               prompt: prompts[index],
               selectedRecording: wsdReport.getRecording(prompts[index]),
               onSelectRecording: (Recording selectedRecording) {
@@ -63,10 +63,9 @@ class _PromptsPageState extends State<PromptsPage> {
           ),
           RaisedButton(
             child: Text(isLast() ? "Done" : "Next"),
-            onPressed: enableNext()
-                ? isLast() ? _moveToReportsPage : _incrementIndex
-                : null,
-          )
+            onPressed:
+                enableNext() ? isLast() ? _moveToReportsPage : _incrementIndex : null,
+          ),
         ],
       ),
     );

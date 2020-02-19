@@ -24,9 +24,41 @@ class HttpConnector {
     return _instance;
   }
 
-  Future<String> setAmbiance(String ambienceFileName) async {
-    SafeFile ambienceFile = SafeFile(ambienceFileName);
+  Future<String> createEvaluation(String age, String gender, String impression) async {
     Uri uri = Uri.parse(serverURL + "/evaluation");
+    http.MultipartRequest request = new http.MultipartRequest('POST', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    request.fields.addEntries([
+      MapEntry<String, String>('age', age),
+      MapEntry<String, String>('gender', gender),
+      MapEntry<String, String>('impression', impression),
+    ]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return body['evaluationId'];
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
+  }
+
+  Future<void> setAmbiance(String ambienceFileName, String evalId) async {
+    if (ambienceFileName.startsWith('file://')) {
+      ambienceFileName = ambienceFileName.substring(6);
+    }
+    File ambienceFile = File(ambienceFileName);
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evalId + "/ambiance");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', ambienceFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
@@ -35,7 +67,7 @@ class HttpConnector {
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
       if (response.statusCode == 200) {
-        return body['evaluationId'];
+        return;
       }
       String errorMessage = body['errorMessage'];
       if (errorMessage != null) {

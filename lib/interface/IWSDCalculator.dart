@@ -9,9 +9,9 @@ abstract class IWSDCalculator {
   *
   * @param fileName: String of where the recording is located
   *
-  * @return: an evaluation ID of the ambiance file
+  * @return: void
   */
-  Future<String> setAmbiance(String fileName);
+  Future<void> setAmbiance(String fileName, {String evalId: ""});
 
   /*
   * Calculates a WSD for the given filename, stores it, and sends back the ID
