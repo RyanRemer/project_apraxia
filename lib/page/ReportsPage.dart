@@ -188,7 +188,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                   }),
                                   Container(
                                     child: Text(calculatedWSDs[prompts[position]]
-                                        .WSD
+                                        .wsd
                                         .toStringAsFixed(2)),
                                     width: 45.0,
                                   )
