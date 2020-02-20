@@ -60,7 +60,12 @@ class PromptController {
   Future _copyAssetPromptsJson() async {
     File localFile =
         await localFileController.getLocalFile("prompts/local_prompts.json");
-    List<dynamic> jsonObject = jsonDecode(localFile.readAsStringSync());
+    List<dynamic> jsonObject;
+    try {
+      jsonObject = jsonDecode(localFile.readAsStringSync());
+    } on FileSystemException {
+      jsonObject = new List<dynamic>(0);
+    }
 
     if (localFile.existsSync() == false || jsonObject.length == 0) {
       List<Prompt> localizedAssetPrompts = await _getLocalizedAssetPrompts();

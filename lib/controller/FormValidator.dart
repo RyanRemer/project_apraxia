@@ -1,31 +1,29 @@
-import 'package:intl/intl.dart';
-
 class FormValidator {
-  static final int _A = "A".codeUnitAt(0);
-  static final int _Z = "Z".codeUnitAt(0);
-  static final int _a = "a".codeUnitAt(0);
-  static final int _z = "z".codeUnitAt(0);
-  static final int _0 = "0".codeUnitAt(0);
-  static final int _9 = "9".codeUnitAt(0);
+  static final int _capAValue = "A".codeUnitAt(0);
+  static final int _capZValue = "Z".codeUnitAt(0);
+  static final int _lowAValue = "a".codeUnitAt(0);
+  static final int _lowZValue = "z".codeUnitAt(0);
+  static final int _zeroValue = "0".codeUnitAt(0);
+  static final int _nineValue = "9".codeUnitAt(0);
 
   static bool isAlphabetic(String s) {
     int c = s.codeUnitAt(0);
-    return (c >= _A && c <= _Z || c >= _a && c <= _z);
+    return (c >= _capAValue && c <= _capZValue || c >= _lowAValue && c <= _lowZValue);
   }
 
   static bool isNumeric(String s) {
     int c = s.codeUnitAt(0);
-    return (c >= _0 && c <= _9);
+    return (c >= _zeroValue && c <= _nineValue);
   }
 
   static bool isUpperCase(String s) {
     int c = s.codeUnitAt(0);
-    return (c >= _A && c <= _Z);
+    return (c >= _capAValue && c <= _capZValue);
   }
 
   static bool isLowerCase(String s) {
     int c = s.codeUnitAt(0);
-    return (c >= _a && c <= _z);
+    return (c >= _lowAValue && c <= _lowZValue);
   }
 
   static String isValidEmail(String s) {

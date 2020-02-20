@@ -92,7 +92,7 @@ class _ReportsPageState extends State<ReportsPage> {
         errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
       }
 
-      runningTotal += newAttempt.WSD;
+      runningTotal += newAttempt.wsd;
       calculatedWSDs[prompt] = newAttempt;
     }
 
@@ -140,7 +140,7 @@ class _ReportsPageState extends State<ReportsPage> {
                             children: <Widget>[
                               Text(prompts[position].word),
                               Text(calculatedWSDs[prompts[position]]
-                                  .WSD
+                                  .wsd
                                   .toStringAsFixed(2))
                             ],
                           ),

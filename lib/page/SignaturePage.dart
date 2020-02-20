@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:signature/signature.dart';
 import 'dart:io';
@@ -61,17 +60,17 @@ class _SignaturePageState extends State<SignaturePage> {
     );
   }
 
-  Future<SafeFile> _saveSignature(Uint8List bytes) async {
+  Future<File> _saveSignature(Uint8List bytes) async {
     Directory directory = await getApplicationDocumentsDirectory();
     String dirPath = directory.path;
-    SafeFile file = new SafeFile(dirPath + '/' + widget.filePrefix + 'signature.png');
+    File file = new File(dirPath + '/' + widget.filePrefix + 'signature.png');
     return file.writeAsBytes(bytes);
   }
 
   void _submitSignature() async {
     if (_controller.isNotEmpty) {
       Uint8List pngBytes = await _controller.toPngBytes();
-      SafeFile file = await _saveSignature(pngBytes);
+      File file = await _saveSignature(pngBytes);
       Navigator.pop(context, file.path);
     }
     else {

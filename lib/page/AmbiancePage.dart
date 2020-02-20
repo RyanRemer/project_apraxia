@@ -105,6 +105,9 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   Future<void> setAmbiance(String fileUri) async {
     try {
+      if (!fileUri.startsWith("file://")) {
+        fileUri = "file://" + fileUri;
+      }
       await wsdCalculator.setAmbiance(fileUri, evalId: widget.evalId);
     } on ServerConnectionException {
       wsdCalculator = new LocalWSDCalculator();

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/WaiverFormFields.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
@@ -215,10 +214,10 @@ class _WaiverFormState extends State<WaiverForm> {
             loading = false;
           });
 
-          SafeFile resFile = new SafeFile(fields.researchSubjectSignatureFile);
-          resFile.safeDeleteSync();
-          SafeFile repFile = new SafeFile(fields.representativeSignatureFile);
-          repFile.safeDeleteSync();
+          File resFile = new File(fields.researchSubjectSignatureFile);
+          resFile.deleteSync();
+          File repFile = new File(fields.representativeSignatureFile);
+          repFile.deleteSync();
           _startRemoteTest(context);
         } on ServerConnectionException {
           ErrorDialog dialog = new ErrorDialog(context);

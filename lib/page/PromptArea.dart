@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
@@ -69,7 +68,7 @@ class PromptAreaState extends State<PromptArea> {
   void addRecording(File soundFile) {
     Recording recording = new Recording(
       name: prompt.word + "-${_recordings.length + 1}",
-      soundFile: SafeFile(soundFile.path)
+      soundFile: File(soundFile.path)
     );
 
     setState(() {

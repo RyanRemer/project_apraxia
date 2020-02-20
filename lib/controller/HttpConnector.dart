@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:http_parser/http_parser.dart';
@@ -83,7 +82,10 @@ class HttpConnector {
   }
 
   Future<Attempt> addAttempt(String recordingFileName, String word, int syllableCount, String evaluationId) async {
-    SafeFile recordingFile = SafeFile(recordingFileName);
+    if (recordingFileName.startsWith('file://')) {
+      recordingFileName = recordingFileName.substring(6);
+    }
+    File recordingFile = File(recordingFileName);
     Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + '/attempt');
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('recording', recordingFile.path, contentType: new MediaType('application', 'x-tar')));
@@ -111,7 +113,10 @@ class HttpConnector {
   }
 
   Future<void> sendSubjectWaiver(String signatureFileName, String subjectName, String subjectEmail, String subjectDate) async {
-    SafeFile signatureFile = SafeFile(signatureFileName);
+    if (signatureFileName.startsWith('file://')) {
+      signatureFileName = signatureFileName.substring(6);
+    }
+    File signatureFile = File(signatureFileName);
     Uri uri = Uri.parse(serverURL + "/waiver/subject");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('researchSubjectSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
@@ -143,7 +148,10 @@ class HttpConnector {
   }
 
   Future<void> sendRepresentativeWaiver(String signatureFileName, String subjectName, String subjectEmail, String repName, String repRelationship, String repDate) async {
-    SafeFile signatureFile = SafeFile(signatureFileName);
+    if (signatureFileName.startsWith('file://')) {
+      signatureFileName = signatureFileName.substring(6);
+    }
+    File signatureFile = File(signatureFileName);
     Uri uri = Uri.parse(serverURL + "/waiver/representative");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('representativeSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));

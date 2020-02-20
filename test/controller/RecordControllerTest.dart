@@ -10,7 +10,7 @@ void main(){
   test("RecordController can start recording", () async {
     MockRecorder mockRecorder = new MockRecorder();
     RecordController recordController = new RecordController(recorder: mockRecorder);
-    String filename = "recorder.wav";
+//    String filename = "recorder.wav";
 
     when(mockRecorder.startRecorder()).thenAnswer((_) async{
       return null;
