@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
+import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:audioplayer/audioplayer.dart';
@@ -46,8 +47,7 @@ class PromptController {
     await _copyAssetPromptsJson();
     await _copyAssetPromptSoundFiles();
 
-    File promptsJsonFile =
-        await localFileController.getLocalFile("prompts/local_prompts.json");
+    SafeFile promptsJsonFile = await getLocalPromptsJson();
     String promptsJson = promptsJsonFile.readAsStringSync();
     List<dynamic> jsonObject = jsonDecode(promptsJson);
 
@@ -56,13 +56,17 @@ class PromptController {
     });
   }
 
+  Future<List<Prompt>> reloadPromptsFromAssets() async {
+    SafeFile localFile = await getLocalPromptsJson();
+    localFile.deleteSync();
+    return getPrompts();
+  }
+
   // copies the local_prompts.json file if it does not exist localy
   Future _copyAssetPromptsJson() async {
-    File localFile =
-        await localFileController.getLocalFile("prompts/local_prompts.json");
-    List<dynamic> jsonObject = jsonDecode(localFile.readAsStringSync());
+    SafeFile localFile = await getLocalPromptsJson();
 
-    if (localFile.existsSync() == false || jsonObject.length == 0) {
+    if (localFile.existsSync() == false) {
       List<Prompt> localizedAssetPrompts = await _getLocalizedAssetPrompts();
       List<dynamic> jsonObject =
           localizedAssetPrompts.map((prompt) => prompt.toMap()).toList();
@@ -107,5 +111,15 @@ class PromptController {
     return List.generate(jsonMap.length, (int i) {
       return Prompt.fromMap(jsonMap[i]);
     });
+  }
+
+  Future<SafeFile> getLocalPromptsJson() async {
+    File localPromptsJson = await localFileController.getLocalFile("prompts/local_prompts.json");
+    return SafeFile(localPromptsJson.path);
+  }
+
+  Future<SafeFile> getAssetPromptsJson() async {
+    File localPromptsJson = await localFileController.getLocalFile("assets/prompts/asset_prompts.json");
+    return SafeFile(localPromptsJson.path);
   }
 }

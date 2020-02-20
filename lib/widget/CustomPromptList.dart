@@ -21,6 +21,31 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
 
   @override
   Widget build(BuildContext context) {
+    if (prompts == null || prompts.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("No prompts found in save file"),
+            ),
+            FlatButton.icon(
+              icon: Icon(Icons.refresh),
+              label: Text("Reload"),
+              onPressed: () async {
+                List<Prompt> reloadedPrompts =
+                    await promptController.reloadPromptsFromAssets();
+                setState(() {
+                  prompts = reloadedPrompts;
+                });
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: ListView.builder(
         padding: EdgeInsets.only(bottom: 64.0),
@@ -87,11 +112,14 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
   }
 
   Future<void> addPrompt() async {
-    Prompt prompt = await Navigator.push(context, MaterialPageRoute(builder: (context){
-      return CustomPromptForm(prompt: new Prompt(soundUri: "prompts/prompt-${prompts.length + 1}.wav"));
+    Prompt prompt =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return CustomPromptForm(
+          prompt:
+              new Prompt(soundUri: "prompts/prompt-${prompts.length + 1}.wav"));
     }));
 
-    if (prompt != null){
+    if (prompt != null) {
       setState(() {
         prompts.add(prompt);
       });
@@ -100,11 +128,12 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
   }
 
   Future<void> editPrompt(Prompt prompt) async {
-    Prompt editedPrompt = await Navigator.push(context, MaterialPageRoute(builder: (context){
+    Prompt editedPrompt =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return CustomPromptForm(prompt: prompt);
     }));
 
-    if (editedPrompt != null){
+    if (editedPrompt != null) {
       setState(() {
         prompt = editedPrompt;
       });

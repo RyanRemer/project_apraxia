@@ -36,13 +36,12 @@ class SafeFile {
   }
 
   Future<SafeFile> copy(String newPath) async {
-    this.file = await this.file.copy(newPath);
-    return this;
+    File copiedFile = await this.file.copy(newPath);
+    return SafeFile(copiedFile.path);
   }
 
   SafeFile copySync(String newPath) {
-    this.file = this.file.copySync(newPath);
-    return this;
+    return SafeFile(this.file.copySync(newPath).path);
   }
 
   Future<void> safeDelete() async {
@@ -66,6 +65,14 @@ class SafeFile {
 
   void createSync({bool recursive: false}) {
     this.file.createSync(recursive: recursive);
+  }
+
+  void writeAsStringSync(String contents){
+    return this.file.writeAsStringSync(contents);
+  }
+
+  String readAsStringSync(){
+    return this.file.readAsStringSync();
   }
 
   Directory get parent => file.parent;
