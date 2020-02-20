@@ -75,7 +75,8 @@ void goToRecordPage(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) =>
           AmbiancePage(
-              wsdCalculator: new LocalWSDCalculator()
+              wsdCalculator: new LocalWSDCalculator(),
+              evalId: "",
           )
     ));
   }

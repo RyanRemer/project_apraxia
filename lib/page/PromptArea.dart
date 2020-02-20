@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/PromptTile.dart';
 import 'package:project_apraxia/widget/RecordButton.dart';
 import 'package:project_apraxia/widget/RecordingsTable.dart';
+import 'package:project_apraxia/page/Waveform.dart';
 
 class PromptArea extends StatefulWidget {
   final Prompt prompt;
@@ -49,6 +49,10 @@ class PromptAreaState extends State<PromptArea> {
             onSelectRecording: widget.onSelectRecording,
           ),
         ),
+        Padding(padding: EdgeInsets.only(top: 8),),
+        Expanded(
+            child: Waveform(widget.selectedRecording),
+          ),
         Expanded(
           child: Center(
             child: RecordButton(
@@ -64,7 +68,7 @@ class PromptAreaState extends State<PromptArea> {
   void addRecording(File soundFile) {
     Recording recording = new Recording(
       name: prompt.word + "-${_recordings.length + 1}",
-      soundFile: SafeFile(soundFile.path)
+      soundFile: File(soundFile.path)
     );
 
     setState(() {
@@ -76,8 +80,8 @@ class PromptAreaState extends State<PromptArea> {
   }
 
   void setDefaultSelection() {
-    if (widget.selectedRecording == null && _recordings.isNotEmpty){
-      widget.onSelectRecording(_recordings.first);
+    if (_recordings.isNotEmpty){
+      widget.onSelectRecording(_recordings.last);
     }
   }
 }

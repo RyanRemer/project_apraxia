@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/WaiverFormFields.dart';
-import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
@@ -10,6 +8,7 @@ import 'package:project_apraxia/controller/FormValidator.dart';
 import 'dart:io';
 
 import 'package:project_apraxia/page/SignaturePage.dart';
+import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class WaiverForm extends StatefulWidget {
@@ -215,10 +214,10 @@ class _WaiverFormState extends State<WaiverForm> {
             loading = false;
           });
 
-          SafeFile resFile = new SafeFile(fields.researchSubjectSignatureFile);
-          resFile.safeDeleteSync();
-          SafeFile repFile = new SafeFile(fields.representativeSignatureFile);
-          repFile.safeDeleteSync();
+          File resFile = new File(fields.researchSubjectSignatureFile);
+          resFile.deleteSync();
+          File repFile = new File(fields.representativeSignatureFile);
+          repFile.deleteSync();
           _startRemoteTest(context);
         } on ServerConnectionException {
           ErrorDialog dialog = new ErrorDialog(context);
@@ -250,7 +249,7 @@ class _WaiverFormState extends State<WaiverForm> {
       wsdCalculator = new LocalWSDCalculator();
     }
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return new AmbiancePage(
+      return new SurveyPage(
         wsdCalculator: wsdCalculator,
       );
     }));

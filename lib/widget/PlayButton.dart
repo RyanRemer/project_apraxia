@@ -18,8 +18,12 @@ class PlayButton extends StatelessWidget {
   }
 
   Future<void> play(BuildContext context) async {
+    String pathToPlay = filepath;
+    if (!pathToPlay.startsWith("file://")) {
+      pathToPlay = "file://" + pathToPlay;
+    }
     try{
-      await audioPlayer.play(filepath);
+      await audioPlayer.play(pathToPlay);
     }
     catch(error){
       ErrorDialog errorDialog = new ErrorDialog(context);

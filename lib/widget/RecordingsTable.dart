@@ -54,7 +54,7 @@ class _RecordingsTableState extends State<RecordingsTable> {
       ),
       title: Text(recording.name),
       trailing: PlayButton(
-        filepath: recording.soundFile.prefixPath,
+        filepath: recording.soundFile.path,
       ),
     );
   }

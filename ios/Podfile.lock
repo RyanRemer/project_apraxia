@@ -9,7 +9,7 @@ PODS:
 
 DEPENDENCIES:
   - audioplayer (from `.symlinks/plugins/audioplayer/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - recorder_wav (from `.symlinks/plugins/recorder_wav/ios`)
 
@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
   audioplayer:
     :path: ".symlinks/plugins/audioplayer/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   recorder_wav:
@@ -29,6 +29,6 @@ SPEC CHECKSUMS:
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   recorder_wav: d6bf72b6ea28e9349bb87295bbce2bfb5dcc5db3
 
-PODFILE CHECKSUM: b6a0a141693093b304368d08511b46cf3d1d0ac5
+PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.8.4

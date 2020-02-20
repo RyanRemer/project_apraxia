@@ -64,7 +64,8 @@ class PromptController {
 
   // copies the local_prompts.json file if it does not exist localy
   Future _copyAssetPromptsJson() async {
-    SafeFile localFile = await getLocalPromptsJson();
+    File localFile =
+        await localFileController.getLocalFile("prompts/local_prompts.json");
 
     if (localFile.existsSync() == false) {
       List<Prompt> localizedAssetPrompts = await _getLocalizedAssetPrompts();

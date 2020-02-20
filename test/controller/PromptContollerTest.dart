@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
-import 'package:project_apraxia/model/Prompt.dart';
 
 class MockAudioPlayer extends Mock implements AudioPlayer {}
 

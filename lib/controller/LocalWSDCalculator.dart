@@ -6,8 +6,8 @@ class LocalWSDCalculator extends IWSDCalculator {
   static const channel = const MethodChannel("wsdCalculator");
 
   @override
-  Future<String> setAmbiance(String fileName) async {
-    return await channel.invokeMethod("calculateAmbiance", [fileName]);
+  Future<void> setAmbiance(String fileName, {String evalId: ""}) async {
+    await channel.invokeMethod("calculateAmbiance", [fileName]);
   }
 
   @override
@@ -17,6 +17,7 @@ class LocalWSDCalculator extends IWSDCalculator {
 
   @override
   Future<List<double>> getAmplitudes(String fileName) async {
-    return await channel.invokeMethod("getAmplitude", [fileName]);
+    List<dynamic> amplitudes = await channel.invokeMethod("getAmplitude", [fileName]);
+    return List<double>.from(amplitudes);
   }
 }

@@ -69,7 +69,7 @@ class _RecordButtonState extends State<RecordButton> {
     try {
       if (isRecording) {
         String soundUri = await recordController.stopRecording(widget.soundUri);
-        widget.onRecord(File(soundUri)); 
+        widget.onRecord(File(soundUri));
       } else {
         recordController.startRecording();
       }
