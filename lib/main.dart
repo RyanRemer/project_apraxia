@@ -22,6 +22,14 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+
+        buttonTheme: ButtonThemeData(
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
+          textTheme: ButtonTextTheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18)
+          )
+        )
       ),
       home: SignInPage(),
     );

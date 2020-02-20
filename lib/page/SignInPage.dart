@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
 import 'package:project_apraxia/page/SignUpPage.dart';
+import 'package:project_apraxia/widget/form/Logo.dart';
 import 'package:project_apraxia/widget/form/SignInForm.dart';
 
 class SignInPage extends StatefulWidget {
@@ -14,34 +15,17 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
         appBar: AppBar(),
         body: Builder(
-          builder: (context) => ListView(
+          builder: (context) => Column(
             children: <Widget>[
-              Container(
-                child: SignInForm(),
+              Expanded(child: Logo(),),
+              Expanded(
+                flex: 2,
+                child: SingleChildScrollView(
+                  child: SignInForm(),
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  FlatButton(
-                    child: Text("Continue as Guest"),
-                    onPressed: () => guestLogin(context),
-                  ),
-                  FlatButton(
-                    child: Text("Sign Up"),
-                    onPressed: () => goToSignUp(context),
-                  )
-                ],
-              )
             ],
           ),
         ));
-  }
-
-  void goToSignUp(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpPage()));
-  }
-
-  void guestLogin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LandingPage()));
   }
 }
