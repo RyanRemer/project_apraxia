@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/widget/WaveformPainter.dart';
 
 class Waveform extends StatelessWidget {
   final IWSDCalculator wsdCalculator = new LocalWSDCalculator();
-  Recording selectedRecording;
+  final String soundUri;
   Future<List<double>> amplitudes;
 
-  Waveform(this.selectedRecording) {
-    if(selectedRecording == null) {
+  Waveform(this.soundUri) {
+    if(soundUri == null) {
       this.amplitudes = null;
     } else {
-      this.amplitudes = wsdCalculator.getAmplitudes(selectedRecording.soundFile.path);
+      this.amplitudes = wsdCalculator.getAmplitudes(soundUri);
     }
   }
 
@@ -27,7 +26,7 @@ class Waveform extends StatelessWidget {
               builder: (BuildContext context, BoxConstraints constraints) {
             return CustomPaint(
               size: Size(constraints.biggest.width, constraints.biggest.height),
-              painter: WaveformPainter(snapshot.data),
+              painter: WaveformPainter(snapshot.data, color: Theme.of(context).primaryColor),
             );
           });
         } else {

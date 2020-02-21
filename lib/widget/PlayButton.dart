@@ -17,8 +17,9 @@ class _PlayButtonState extends State<PlayButton> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.play_arrow),
+    return FlatButton.icon(
+      icon: Icon(Icons.play_circle_filled, size: 32.0,),
+      label: Text("Play"),
       onPressed: () => audioPlayer.play(filepath),
     );
   }

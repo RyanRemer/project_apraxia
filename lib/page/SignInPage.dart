@@ -13,10 +13,12 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
         body: Builder(
           builder: (context) => ListView(
             children: <Widget>[
+              SizedBox(
+                height: 64.0,
+              ),
               Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: Logo(),

@@ -5,8 +5,12 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const FlutterLogo(
-      size: 200,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Image.asset("assets/logo/icon.png", height: 150,),
+        Image.asset("assets/logo/appraxia.png", height: 50,)
+      ],
     );
   }
 }

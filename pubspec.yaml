@@ -51,6 +51,7 @@ flutter:
   assets:
     - assets/prompts/
     - assets/hipaa_waiver.json
+    - assets/logo/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
