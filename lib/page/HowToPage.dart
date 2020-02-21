@@ -139,7 +139,7 @@ class HowToPage extends StatelessWidget {
                       ),
                       Positioned(
                         bottom: imageHeight * 0.0125,
-                        right: imageWidth * 0.07,
+                        left: imageWidth * 0.07,
                         child: Tooltip(
                           message: "Moves to the previous prompt",
                           preferBelow: false,
