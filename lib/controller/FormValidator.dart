@@ -153,4 +153,14 @@ class FormValidator {
       return "Must be a valid age.";
     }
   }
+
+  static String isValidImpression(String s) {
+    if (s == null || s.trim() == "") {
+      return null;
+    }
+    if (s.length >= 200) {
+      return "Must be < 200 characters.";
+    }
+    return null;
+  }
 }

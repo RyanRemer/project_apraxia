@@ -162,6 +162,9 @@ class _SurveyFormState extends State<SurveyForm> {
                     _otherImpression = value;
                   });
                 },
+                validator: (String s) {
+                  return FormValidator.isValidImpression(s);
+                },
               ),
             ),
             ListTile(
