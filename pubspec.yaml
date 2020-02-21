@@ -49,6 +49,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/help/
     - assets/prompts/
     - assets/hipaa_waiver.json
 
