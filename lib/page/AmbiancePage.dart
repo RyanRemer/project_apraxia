@@ -11,7 +11,7 @@ import 'package:project_apraxia/widget/ErrorDialog.dart';
 class AmbiancePage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
   final String evalId;
-  AmbiancePage({@required this.wsdCalculator, @required this.evalId, Key key}) : super(key: key);
+  AmbiancePage({@required this.wsdCalculator, this.evalId, Key key}) : super(key: key);
 
   @override
   _AmbiancePageState createState() => _AmbiancePageState(wsdCalculator);

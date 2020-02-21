@@ -73,7 +73,7 @@ void startWSDTest(BuildContext context) {
   } else {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
-            AmbiancePage(wsdCalculator: new LocalWSDCalculator())));
+            AmbiancePage(wsdCalculator: new LocalWSDCalculator(),)));
   }
 }
 

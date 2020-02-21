@@ -15,15 +15,13 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
         appBar: AppBar(),
         body: Builder(
-          builder: (context) => Column(
+          builder: (context) => ListView(
             children: <Widget>[
-              Expanded(child: Logo(),),
-              Expanded(
-                flex: 2,
-                child: SingleChildScrollView(
-                  child: SignInForm(),
-                ),
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Logo(),
               ),
+              SignInForm(),
             ],
           ),
         ));

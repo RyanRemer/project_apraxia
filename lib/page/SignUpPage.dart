@@ -11,14 +11,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Sign Up"),
+      ),
       body: ListView(
         children: <Widget>[
           SignUpForm(),
-          FlatButton(
-            child: Text("Sign In"),
-            onPressed: () => goToSignIn(context),
-          )
         ],
       ),
     );
