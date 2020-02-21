@@ -88,10 +88,20 @@ class WSDCalculator {
 
 		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 		
-		let wavFile = String(fileName.split(separator: "/").last!)
-		
 		let documentDirectory = urls as URL
 		
+		var documentDirectoryString = documentDirectory.absoluteString
+		print("documentDirectoryString: \(documentDirectoryString)")
+		
+		if (!fileName.hasPrefix("file://")) {
+			let start = documentDirectoryString.index(documentDirectoryString.startIndex, offsetBy: 7)
+			let end = documentDirectoryString.endIndex
+			let range = start..<end
+			documentDirectoryString = String(documentDirectoryString[range])
+		}
+		
+		let wavFile = String(fileName.dropFirst(documentDirectoryString.count))
+				
 		let soundURL = documentDirectory.appendingPathComponent(wavFile)
 		
 		let currentMultisyllabicWordResponse = loadAudioSignal(audioURL: soundURL)

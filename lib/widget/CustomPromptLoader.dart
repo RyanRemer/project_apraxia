@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/widget/CustomPromptList.dart';
-import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class CustomPromptLoader extends StatefulWidget {
   CustomPromptLoader({Key key}) : super(key: key);
