@@ -8,8 +8,9 @@ class SettingsPage extends StatelessWidget {
   final bool isLoggedIn = Auth.instance().isLoggedIn();
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: isLoggedIn ? 3 : 1,
+    if (isLoggedIn){
+      return DefaultTabController(
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Settings"),
@@ -22,6 +23,15 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Settings"),
+        ),
+        body: CustomPromptLoader(),
+      );
+    }
   }
 
   List<Widget> _buildTabBar(bool isLoggedIn) {
@@ -49,7 +59,7 @@ class SettingsPage extends StatelessWidget {
     }
     else {
       return [
-        Container(),
+        CustomPromptLoader(),
       ];
     }
   }

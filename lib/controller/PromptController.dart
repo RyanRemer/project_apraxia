@@ -25,23 +25,22 @@ class PromptController {
     this.assetBundle ??= rootBundle;
   }
 
-  // save prompts to the local storage on the device
+  /// save prompts to the local storage on the device
   Future<void> savePrompts(List<Prompt> prompts) async {
-    File promptsJsonFile =
-        await localFileController.getLocalFile("prompts/local_prompts.json");
+    File promptsJsonFile = await getLocalPromptsJson();
     List<dynamic> jsonObject = prompts.map((prompt) => prompt.toMap()).toList();
     String promptsJson = jsonEncode(jsonObject);
     promptsJsonFile.writeAsStringSync(promptsJson);
   }
 
-  //get a list of only the prompts that
+  //get a list of only the prompts have the enabled property as true (determined from settings)
   Future<List<Prompt>> getEnabledPrompts() async {
     List<Prompt> prompts = await getPrompts();
     return prompts.where((prompt) => prompt.enabled).toList();
   }
 
-  /// Loads prompts from the [AssentBundle] and saves them in a
-  /// local device directory so that the AudioPlayer can play them
+  /// This is a complex function that returns the list of prompts to the user
+  /// It is complex because 
   Future<List<Prompt>> getPrompts() async {
     await _copyAssetPromptsJson();
     await _copyAssetPromptSoundFiles();
@@ -63,8 +62,7 @@ class PromptController {
 
   // copies the local_prompts.json file if it does not exist localy
   Future _copyAssetPromptsJson() async {
-    File localFile =
-        await localFileController.getLocalFile("prompts/local_prompts.json");
+    File localFile = await getLocalPromptsJson();
 
     if (localFile.existsSync() == false) {
       List<Prompt> localizedAssetPrompts = await _getLocalizedAssetPrompts();
@@ -90,7 +88,7 @@ class PromptController {
     List<Prompt> assetPrompts = await _getPromptAssets();
     for (Prompt prompt in assetPrompts) {
       if (prompt.soundUri == null) {
-        continue;
+        throw Exception("SoundUri for ${prompt.word} is null");
       }
 
       ByteData byteData = await assetBundle.load(prompt.soundUri);
@@ -98,14 +96,13 @@ class PromptController {
       localFile.createSync(recursive: true);
 
       localFile.writeAsBytesSync(Int8List.view(byteData.buffer));
-      prompt.soundUri = localFile.uri.toString();
+      prompt.soundUri = localFile.path;
     }
   }
 
   // load all of the prompts specified in the assets/prompts/asset_prompts.json file
   Future<List<Prompt>> _getPromptAssets() async {
-    String promptJson =
-        await assetBundle.loadString("assets/prompts/asset_prompts.json");
+    String promptJson = await getAssetPromptsJson();
     var jsonMap = json.decode(promptJson);
 
     return List.generate(jsonMap.length, (int i) {
@@ -117,7 +114,7 @@ class PromptController {
     return localFileController.getLocalFile("prompts/local_prompts.json");
   }
 
-  Future<File> getAssetPromptsJson() async {
-    return await localFileController.getLocalFile("assets/prompts/asset_prompts.json");
+  Future<String> getAssetPromptsJson() async {
+    return await assetBundle.loadString("assets/prompts/asset_prompts.json");
   }
 }
