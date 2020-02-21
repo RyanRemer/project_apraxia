@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
-import 'package:project_apraxia/controller/SafeFile.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:audioplayer/audioplayer.dart';
@@ -47,7 +46,7 @@ class PromptController {
     await _copyAssetPromptsJson();
     await _copyAssetPromptSoundFiles();
 
-    SafeFile promptsJsonFile = await getLocalPromptsJson();
+    File promptsJsonFile = await getLocalPromptsJson();
     String promptsJson = promptsJsonFile.readAsStringSync();
     List<dynamic> jsonObject = jsonDecode(promptsJson);
 
@@ -57,7 +56,7 @@ class PromptController {
   }
 
   Future<List<Prompt>> reloadPromptsFromAssets() async {
-    SafeFile localFile = await getLocalPromptsJson();
+    File localFile = await getLocalPromptsJson();
     localFile.deleteSync();
     return getPrompts();
   }
@@ -114,13 +113,11 @@ class PromptController {
     });
   }
 
-  Future<SafeFile> getLocalPromptsJson() async {
-    File localPromptsJson = await localFileController.getLocalFile("prompts/local_prompts.json");
-    return SafeFile(localPromptsJson.path);
+  Future<File> getLocalPromptsJson() async {
+    return localFileController.getLocalFile("prompts/local_prompts.json");
   }
 
-  Future<SafeFile> getAssetPromptsJson() async {
-    File localPromptsJson = await localFileController.getLocalFile("assets/prompts/asset_prompts.json");
-    return SafeFile(localPromptsJson.path);
+  Future<File> getAssetPromptsJson() async {
+    return await localFileController.getLocalFile("assets/prompts/asset_prompts.json");
   }
 }
