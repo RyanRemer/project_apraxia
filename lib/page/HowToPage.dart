@@ -40,10 +40,10 @@ class HowToPage extends StatelessWidget {
                     child: Text("Recording each word", style: Theme.of(context).textTheme.body2)
                   ),
                   Text(""),
-                  Text("In this section of the test, record the word displayed. If the word needs to be spoken allowed,"
-                      " a pre-recorded prompt can be played. If the first attempt is unsuccessful, simply tap the record"
-                      " button to record another attempt, then select which recording will be used as part of the WSD"
-                      " calculation.", style: Theme.of(context).textTheme.body1),
+                  Text("In this section of the test, record the word displayed at the top of the page. If the word needs "
+                      "to be spoken out loud, a pre-recorded prompt can be played. If the first attempt is unsuccessful, "
+                      "simply tap the record button to record another attempt, then select which recording will be used "
+                      "as part of the WSD calculation.", style: Theme.of(context).textTheme.body1),
                   Text(""),
                   Text("Tap and hold on a circle for more information about what that item does."),
                   Text(""),
