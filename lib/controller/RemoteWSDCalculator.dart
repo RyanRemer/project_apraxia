@@ -7,8 +7,8 @@ class RemoteWSDCalculator extends IWSDCalculator {
   static HttpConnector connector = HttpConnector.instance();
 
   @override
-  Future<String> setAmbiance(String fileName) async {
-    return await connector.setAmbiance(fileName);
+  Future<void> setAmbiance(String fileName, {String evalId: ""}) async {
+    return await connector.setAmbiance(fileName, evalId);
   }
 
   @override
