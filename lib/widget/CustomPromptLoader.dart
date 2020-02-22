@@ -33,14 +33,16 @@ class _CustomPromptLoaderState extends State<CustomPromptLoader> {
                   child: Text("Error loading prompts"),
                 ),
                 FlatButton.icon(
-                  icon: Icon(Icons.refresh),
-                  label: Text("Retry"),
-                  onPressed: () {
-                    setState(() {
-                      promptFuture = promptController.getPrompts();
-                    });
-                  },
-                ),
+                    icon: Icon(Icons.refresh),
+                    label: Text("Reload Assets"),
+                    onPressed: () async {
+                      List<Prompt> reloadedPrompts =
+                          await promptController.reloadPrompts();
+                      await promptController.savePrompts(reloadedPrompts);
+                      setState(() {
+                        promptFuture = promptController.getPrompts();
+                      });
+                    }),
               ],
             ),
           );
