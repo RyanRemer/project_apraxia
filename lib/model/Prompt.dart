@@ -6,6 +6,13 @@ class Prompt {
 
   Prompt({this.word, this.syllableCount, this.soundUri, this.enabled = true});
 
+  Prompt.from(Prompt prompt){
+    this.word = prompt.word;
+    this.syllableCount = prompt.syllableCount;
+    this.soundUri = prompt.soundUri;
+    this.enabled = prompt.enabled;
+  }
+
   Map<String, dynamic> toMap(){
     return {
       "word" : this.word,

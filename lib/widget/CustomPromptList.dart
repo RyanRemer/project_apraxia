@@ -32,10 +32,10 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
             ),
             FlatButton.icon(
               icon: Icon(Icons.refresh),
-              label: Text("Reload"),
+              label: Text("Reload Assets"),
               onPressed: () async {
                 List<Prompt> reloadedPrompts =
-                    await promptController.reloadPromptsFromAssets();
+                    await promptController.reloadPrompts();
                 setState(() {
                   prompts = reloadedPrompts;
                 });
@@ -64,12 +64,14 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
             child: ListTile(
               leading: Checkbox(
                 value: prompt.enabled,
-                onChanged: (bool value) {
-                  setState(() {
-                    return prompt.enabled = value;
-                  });
-                  save();
-                },
+                onChanged: canToggle(prompt)
+                    ? (bool value) {
+                        setState(() {
+                          return prompt.enabled = value;
+                        });
+                        save();
+                      }
+                    : null,
               ),
               title: Text(prompt.word),
               trailing: PlayButton(
@@ -86,6 +88,14 @@ class _CustomPromptsListState extends State<CustomPromptsList> {
         onPressed: addPrompt,
       ),
     );
+  }
+
+  bool canToggle(Prompt prompt) {
+    if (prompt.enabled == false) {
+      return true;
+    } else {
+      return prompts.where((prompt) => prompt.enabled).length > 1;
+    }
   }
 
   Future<bool> confirmDelete(Prompt prompt) {
