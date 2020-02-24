@@ -25,6 +25,7 @@
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
@@ -66,7 +67,7 @@
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
-.flutter-plugins-dependencies
+# Drake put these in to simplify commits. Feel free to take them out if necessary
 ios/Podfile.lock
 ios/Flutter/Flutter.podspec
 ios/Podfile

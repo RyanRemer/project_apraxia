@@ -230,7 +230,6 @@ class _ReportsPageState extends State<ReportsPage> {
   void completeTest() {
     deleteLocalFiles();
     Navigator.pop(context);
-    Navigator.pop(context);
   }
 
   Future<void> removePrompt(Prompt prompt) async {
