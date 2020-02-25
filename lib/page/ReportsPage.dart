@@ -96,7 +96,7 @@ class _ReportsPageState extends State<ReportsPage> {
         errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
       }
 
-      runningTotal += newAttempt.WSD;
+      runningTotal += newAttempt.wsd;
       calculatedWSDs[prompt] = newAttempt;
     }
 
@@ -188,7 +188,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                   }),
                                   Container(
                                     child: Text(calculatedWSDs[prompts[position]]
-                                        .WSD
+                                        .wsd
                                         .toStringAsFixed(2)),
                                     width: 45.0,
                                   )
@@ -229,7 +229,6 @@ class _ReportsPageState extends State<ReportsPage> {
 
   void completeTest() {
     deleteLocalFiles();
-    Navigator.pop(context);
     Navigator.pop(context);
   }
 

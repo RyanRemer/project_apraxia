@@ -92,7 +92,7 @@ class _PromptsPageState extends State<PromptsPage> {
   }
 
   void _moveToReportsPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return ReportsPage(
         wsdReport: wsdReport,
         wsdCalculator: widget.wsdCalculator,

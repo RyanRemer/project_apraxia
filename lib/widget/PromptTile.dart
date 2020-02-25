@@ -4,8 +4,6 @@ import 'package:project_apraxia/controller/PromptController.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 
-import 'Conditional.dart';
-
 class PromptTile extends StatefulWidget {
   final Prompt prompt;
   PromptTile(this.prompt, {Key key}) : super(key: key);

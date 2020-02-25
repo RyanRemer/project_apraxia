@@ -1,17 +1,21 @@
 class Attempt {
   String _attemptId;
-  double _WSD;
+  double _wsd;
 
-  Attempt(this._attemptId, this._WSD);
+  Attempt(this._attemptId, this._wsd);
 
-  double get WSD => _WSD;
+  // ignore: unnecessary_getters_setters
+  double get wsd => _wsd;
 
-  set WSD(double value) {
-    _WSD = value;
+  // ignore: unnecessary_getters_setters
+  set wsd(double value) {
+    _wsd = value;
   }
 
+  // ignore: unnecessary_getters_setters
   String get attemptId => _attemptId;
 
+  // ignore: unnecessary_getters_setters
   set attemptId(String value) {
     _attemptId = value;
   }

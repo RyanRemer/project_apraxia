@@ -7,7 +7,7 @@ class LocalWSDCalculator extends IWSDCalculator {
 
   @override
   Future<void> setAmbiance(String fileName, {String evalId: ""}) async {
-    return await channel.invokeMethod("calculateAmbiance", [fileName]);
+    await channel.invokeMethod("calculateAmbiance", [fileName]);
   }
 
   @override

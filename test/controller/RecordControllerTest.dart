@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
@@ -12,7 +10,7 @@ void main(){
   test("RecordController can start recording", () async {
     MockRecorder mockRecorder = new MockRecorder();
     RecordController recordController = new RecordController(recorder: mockRecorder);
-    String filename = "recorder.wav";
+//    String filename = "recorder.wav";
 
     when(mockRecorder.startRecorder()).thenAnswer((_) async{
       return null;
@@ -31,7 +29,7 @@ void main(){
       return "test.wav";
     });
 
-    String filename = await recordController.stopRecording();
+    String filename = await recordController.stopRecording("test.wav");
     expect(filename, "test.wav");
   });
 

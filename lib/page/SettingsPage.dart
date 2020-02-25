@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/widget/CustomPromptLoader.dart';
 import 'package:project_apraxia/widget/form/InvalidateWaiverForm.dart';
 import 'package:project_apraxia/widget/form/UpdateUserForm.dart';
 import 'package:project_apraxia/controller/Auth.dart';
@@ -7,8 +8,9 @@ class SettingsPage extends StatelessWidget {
   final bool isLoggedIn = Auth.instance().isLoggedIn();
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: isLoggedIn ? 3 : 1,
+    if (isLoggedIn){
+      return DefaultTabController(
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Settings"),
@@ -21,6 +23,15 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Settings"),
+        ),
+        body: CustomPromptLoader(),
+      );
+    }
   }
 
   List<Widget> _buildTabBar(bool isLoggedIn) {
@@ -42,13 +53,13 @@ class SettingsPage extends StatelessWidget {
     if (isLoggedIn) {
       return [
         UpdateUserForm(),
-        Container(),
+        CustomPromptLoader(),
         InvalidateWaiverForm()
       ];
     }
     else {
       return [
-        Container(),
+        CustomPromptLoader(),
       ];
     }
   }
