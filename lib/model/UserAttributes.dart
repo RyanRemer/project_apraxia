@@ -26,7 +26,7 @@ class UserAttributes {
     else {
       name = "";
       email = "";
-      phoneNumber = "+1";
+      phoneNumber = "";
       address = "";
     }
   }
@@ -34,7 +34,7 @@ class UserAttributes {
   UserAttributes.test() {
     email = "drakebwade@gmail.com";
     name = "Drake Wade";
-    phoneNumber = "1234567890";
+    phoneNumber = "8018503345";
     address = "123 Example St\nCity, State 123456";
   }
 }

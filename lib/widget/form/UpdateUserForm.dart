@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/UserAttributes.dart';
+import 'package:international_phone_input/international_phone_input.dart';
+import 'package:phone_number/phone_number.dart';
 
 class UpdateUserForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
@@ -16,6 +18,8 @@ class UpdateUserForm extends StatefulWidget {
 class _UpdateUserFormState extends State<UpdateUserForm> {
   final Auth auth = new Auth.instance();
   UserAttributes attributes = new UserAttributes();
+  bool _validPhoneNumber = true;
+  PhoneNumber _phoneNumberParser = new PhoneNumber();
 
 
   _UpdateUserFormState() {
@@ -64,20 +68,38 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
               },
             ),
           ),
+//          ListTile(
+//            leading: Icon(Icons.phone),
+//            title: TextFormField(
+//              controller: TextEditingController(text: attributes.phoneNumber.substring(2)),
+//              decoration: InputDecoration(
+//                labelText: "Phone Number",
+//              ),
+//              keyboardType: TextInputType.phone,
+//              validator: (String phoneNumber){
+//                return FormValidator.isValidPhoneNumber(phoneNumber);
+//              },
+//              onChanged: (String phoneNumber) {
+//                attributes.phoneNumber = "+1" + phoneNumber;
+//              },
+//            ),
+//          ),
           ListTile(
             leading: Icon(Icons.phone),
-            title: TextFormField(
-              controller: TextEditingController(text: attributes.phoneNumber.substring(2)),
-              decoration: InputDecoration(
-                labelText: "Phone Number",
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (String phoneNumber){
-                return FormValidator.isValidPhoneNumber(phoneNumber);
+            title: InternationalPhoneInput(
+              onPhoneNumberChange: (String number, String internationalizedPhoneNumber, String isoCode) {
+                if (internationalizedPhoneNumber != "") {
+                  attributes.phoneNumber = internationalizedPhoneNumber;
+                  _validPhoneNumber = true;
+                }
+                else {
+                  _validPhoneNumber = false;
+                }
               },
-              onChanged: (String phoneNumber) {
-                attributes.phoneNumber = "+1" + phoneNumber;
-              },
+
+              initialPhoneNumber: attributes.phoneNumber.substring(2),
+              initialSelection: "US",
+              errorText: "Invalid phone number",
             ),
           ),
           ListTile(
@@ -107,7 +129,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
   }
 
   Future saveChanges(BuildContext context) async {
-    if (UpdateUserForm._formKey.currentState.validate()) {
+    if (UpdateUserForm._formKey.currentState.validate() && _validPhoneNumber) {
       UpdateUserForm._formKey.currentState.save();
       try {
         await auth.updateUserAttributes(

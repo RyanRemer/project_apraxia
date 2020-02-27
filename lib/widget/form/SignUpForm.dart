@@ -4,18 +4,26 @@ import 'package:project_apraxia/model/SignUpRequest.dart';
 import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
+import 'package:international_phone_input/international_phone_input.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
-  final Auth auth = new Auth.instance();
-  final SignUpRequest signUpRequest = new SignUpRequest.test();
 
   SignUpForm({Key key}) : super(key: key);
 
   @override
+  _SignUpFormState createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  final Auth auth = new Auth.instance();
+  final SignUpRequest signUpRequest = new SignUpRequest.test();
+  bool validPhoneNumber = false;
+
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: SignUpForm._formKey,
       child: Column(
         children: <Widget>[
           ListTile(
@@ -71,19 +79,20 @@ class SignUpForm extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.phone),
-            title: TextFormField(
-              initialValue: signUpRequest.attributes.phoneNumber,
-              decoration: InputDecoration(
-                labelText: "Phone Number",
-                hintText: "xxxxxxxxxx",
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (String phoneNumber){
-                return FormValidator.isValidPhoneNumber(phoneNumber);
+            title: InternationalPhoneInput(
+              onPhoneNumberChange: (String number, String internationalizedPhoneNumber, String isoCode) {
+                if (internationalizedPhoneNumber != "") {
+                  signUpRequest.attributes.phoneNumber = internationalizedPhoneNumber;
+                  validPhoneNumber = true;
+                }
+                else {
+                  validPhoneNumber = false;
+                }
               },
-              onSaved: (String phoneNumber) {
-                signUpRequest.attributes.phoneNumber = "+1" + phoneNumber;
-              },
+              initialPhoneNumber: signUpRequest.attributes.phoneNumber,
+              initialSelection: "US",
+              hintText: "000-000-0000",
+              errorText: "Invalid phone number",
             ),
           ),
           ListTile(
@@ -114,8 +123,8 @@ class SignUpForm extends StatelessWidget {
   }
 
   Future signUp(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (SignUpForm._formKey.currentState.validate() && validPhoneNumber) {
+      SignUpForm._formKey.currentState.save();
       try {
         await auth.signUp(
             signUpRequest.attributes.email,
@@ -160,6 +169,7 @@ class SignUpForm extends StatelessWidget {
   }
 
   void goToSignIn(BuildContext context) {
+    Navigator.of(context).pop();
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
   }
 }
