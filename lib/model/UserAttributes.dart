@@ -34,7 +34,7 @@ class UserAttributes {
   UserAttributes.test() {
     email = "drakebwade@gmail.com";
     name = "Drake Wade";
-    phoneNumber = "8018503345";
+    phoneNumber = "+18018503345";
     address = "123 Example St\nCity, State 123456";
   }
 }
