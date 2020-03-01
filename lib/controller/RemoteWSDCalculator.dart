@@ -21,4 +21,9 @@ class RemoteWSDCalculator extends IWSDCalculator {
     IWSDCalculator calculator = new LocalWSDCalculator();
     return calculator.getAmplitudes(fileName);
   }
+
+  @override
+  Future<void> updateAttempt(String evalId, String attemptId, bool active) async {
+    return await connector.updateAttempt(evalId, attemptId, active);
+  }
 }

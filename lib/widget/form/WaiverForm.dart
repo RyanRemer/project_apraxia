@@ -215,9 +215,13 @@ class _WaiverFormState extends State<WaiverForm> {
           });
 
           File resFile = new File(fields.researchSubjectSignatureFile);
-          resFile.deleteSync();
+          if (resFile.existsSync()) {
+            resFile.deleteSync();
+          }
           File repFile = new File(fields.representativeSignatureFile);
-          repFile.deleteSync();
+          if (repFile.existsSync()) {
+            repFile.deleteSync();
+          }
           _startRemoteTest(context);
         } on ServerConnectionException {
           ErrorDialog dialog = new ErrorDialog(context);

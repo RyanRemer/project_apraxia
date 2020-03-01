@@ -232,6 +232,32 @@ class HttpConnector {
     }
   }
 
+  Future<void> updateAttempt(String evalId, String attemptId, bool active) async {
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evalId + "/attempt/" + attemptId);
+    http.MultipartRequest request = new http.MultipartRequest('PUT', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    request.fields.addEntries([
+      MapEntry<String, String>('active', active.toString()),
+    ]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
+  }
 
   Future<bool> serverConnected() async {
     try {

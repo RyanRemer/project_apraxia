@@ -20,4 +20,7 @@ class LocalWSDCalculator extends IWSDCalculator {
     List<dynamic> amplitudes = await channel.invokeMethod("getAmplitude", [fileName]);
     return List<double>.from(amplitudes);
   }
+
+  @override
+  Future<void> updateAttempt(String evalId, String attemptId, bool active) async {}
 }
