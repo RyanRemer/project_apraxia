@@ -175,8 +175,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
                                   RaisedButton(
                                       child: const Text("Search"),
                                       onPressed: () async {
-                                        var tmp = await loadPatients(
-                                            _patientName, _patientEmail);
+                                        var tmp = await loadPatients(_patientEmail);
                                         if (tmp != null) {
                                           if (tmp.length > 0) {
                                             setState(() {
@@ -241,12 +240,10 @@ class _SelectTestPageState extends State<SelectTestPage> {
         ));
   }
 
-  Future<List<dynamic>> loadPatients(
-      String subjectName, String subjectEmail) async {
+  Future<List<dynamic>> loadPatients(String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
     try {
-      List<dynamic> result = await connector.getWaiversOnFile(
-          subjectName.trim(), subjectEmail.trim().toLowerCase());
+      List<dynamic> result = await connector.getWaiversOnFile(subjectEmail.trim().toLowerCase());
       return result;
     } on ServerConnectionException catch (e) {
       ErrorDialog dialog = new ErrorDialog(context);
