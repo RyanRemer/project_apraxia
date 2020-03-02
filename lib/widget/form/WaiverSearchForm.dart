@@ -107,6 +107,9 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
       _selectedWaiver = waiver;
     });
     onSelect(waiver, context);
+    setState(() {
+      _selectedWaiver = null;
+    });
   }
 
   Future<void> _search() async {
