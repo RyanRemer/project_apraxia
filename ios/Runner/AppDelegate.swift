@@ -43,7 +43,7 @@ import AVFoundation
 				// the file name is coming in and storing ambiance in swift
 				if let fileNameArray = call.arguments as? [String] {
 					let wsdCalculator = WSDCalculator.sharedInstance
-					let _ = wsdCalculator.getAmbianceFileThreshold(fileName: fileNameArray[0])
+					wsdCalculator.getAmbianceFileThreshold(fileName: fileNameArray[0])
 					result("")
 				}
 			} else if call.method == "getAmplitude" {

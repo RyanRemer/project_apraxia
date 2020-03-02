@@ -3,8 +3,8 @@ import 'package:project_apraxia/widget/Conditional.dart';
 
 class PageNavigation extends StatelessWidget {
   final PageController pageController;
-  final bool isFirst;
-  final bool isLast;
+  bool isFirst;
+  bool isLast;
   PageNavigation(
     this.pageController, {
     Key key,

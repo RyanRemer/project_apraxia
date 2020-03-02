@@ -1,0 +1,53 @@
+[
+    {
+        "word" : "Gingerbread",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/GingerbreadPrompt.wav"
+    },
+    {
+        "word" : "Constitution",
+        "syllableCount" : 4,
+        "soundUri" : "assets/prompts/ConstitutionPrompt.wav"
+    },
+    {
+        "word" : "Flattering",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/FlatteringPrompt.wav"
+    },
+    {
+        "word" : "Harmonica",
+        "syllableCount" : 4,
+        "soundUri" : "assets/prompts/HarmonicaPrompt.wav"
+    },
+    {
+        "word" : "Jabbering",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/JabberingPrompt.wav"
+    },
+    {
+        "word" : "Spaghetti",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/SpaghettiPrompt.wav"
+    },
+    {
+        "word" : "Stethoscope",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/StethoscopePrompt.wav"
+    },
+    {
+        "word" : "Thickening",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/ThickeningPrompt.wav"
+    },
+    {
+        "word" : "Volcano",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/VolcanoPrompt.wav"
+    },
+    {
+        "word" : "Zippering",
+        "syllableCount" : 3,
+        "soundUri" : "assets/prompts/ZipperingPrompt.wav"
+    }
+    
+]

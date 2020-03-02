@@ -3,29 +3,18 @@ import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/widget/WaveformPainter.dart';
 
-class Waveform extends StatefulWidget {
-  final Recording selectedRecording;
-
-  Waveform(this.selectedRecording);
-
-  @override
-  _WaveformState createState() => _WaveformState(this.selectedRecording);
-}
-
-class _WaveformState extends State<Waveform> {
+class Waveform extends StatelessWidget {
+  final IWSDCalculator wsdCalculator = new LocalWSDCalculator();
+  final String soundUri;
   Future<List<double>> amplitudes;
-  final Recording selectedRecording;
 
-  _WaveformState(this.selectedRecording) {
-    if (selectedRecording == null) {
+  Waveform(this.soundUri) {
+    if(soundUri == null) {
       this.amplitudes = null;
     } else {
-      IWSDCalculator wsdCalculator = new LocalWSDCalculator();
-      this.amplitudes = wsdCalculator.getAmplitudes(selectedRecording.soundFile.path);
+      this.amplitudes = wsdCalculator.getAmplitudes(soundUri);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {

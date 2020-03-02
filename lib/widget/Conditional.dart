@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class Conditional extends StatelessWidget {
   final bool condition;
-  final Widget childIfTrue;
-  final Widget childIfFalse;
+  Widget childIfTrue;
+  Widget childIfFalse;
 
   Conditional({
     @required this.condition,
