@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
@@ -34,6 +35,9 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
               onChanged: (String email) {
                 _patientEmail = email;
               },
+              validator: (String value) {
+                return FormValidator.isValidEmail(value);
+              },
             ),
           ),
           ButtonBar(
@@ -48,40 +52,60 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
             ],
           ),
           Builder(
-              builder: (BuildContext context) {
-                if (_waivers == null) {
-                  return Container();
-                } else if (_waivers.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text("No Waivers Found"),
-                  );
-                } else {
-                  return Column(
-                    children: _waivers.map((waiver) {
-                      return RadioListTile(
-                        title: Text("Name: ${waiver["subjectName"]}"),
-                        subtitle: Text("Date Signed: ${waiver["date"]}"),
-                        onChanged: (Map<String, String> value) {
-                          setState(() {
-                            _selectWaiver(waiver);
-                          });
-                        },
-                        groupValue: _selectedWaiver,
-                        value: waiver,
-                      );
-                    }).toList(),
-                  );
-                }
+            builder: (BuildContext context) {
+              if (_waivers == null) {
+                return Container();
+              } else if (_waivers.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text("No Waivers Found"),
+                );
+              } else {
+                final double screenHeight = MediaQuery.of(context).size.height;
+                return Padding(
+                  padding: EdgeInsets.only(top: 24.0, bottom: 24.0),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                          width: 1,
+                          style: BorderStyle.solid,
+                        )
+                    ),
+                    child: SizedBox(
+                      height: screenHeight * 0.35,
+                      child: Scrollbar(
+                        child: ListView.builder(
+                          itemCount: _waivers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Map<String, String> waiver = _waivers[index];
+                            return RadioListTile(
+                              title: Text("Name: ${waiver["subjectName"]}"),
+                              subtitle: Text("Date Signed: ${waiver["date"]}"),
+                              onChanged: (Map<String, String> value) {
+                                _selectWaiver(waiver);
+                              },
+                              groupValue: _selectedWaiver,
+                              value: waiver,
+                            );
+                          },
+                        ),
+                      )
+                    ),
+                  )
+                );
               }
-          )
+            }
+          ),
         ],
       ),
     );
   }
 
   void _selectWaiver(Map<String, String> waiver) {
-    _selectedWaiver = waiver;
+    setState(() {
+      _selectedWaiver = waiver;
+    });
     onSelect(waiver, context);
   }
 
