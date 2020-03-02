@@ -103,6 +103,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Permission Denied",
           "In order to record the ambiance of the room we need permission to your microphone and storage. Please grant us permission and restart the app.");
+      throw error;
     } catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Recording Ambiance", error.toString());
@@ -124,8 +125,8 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
     await Future.delayed(Duration(seconds: seconds));
 
-    String filePath = await recordController.stopRecording();
-    return filePath;
+    String fileUri = await recordController.stopRecording("recordings/ambiance.wav");
+    return fileUri;
   }
 
   Future<void> setAmbiance(String fileUri) async {

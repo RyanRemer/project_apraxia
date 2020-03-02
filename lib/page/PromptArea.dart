@@ -56,7 +56,8 @@ class PromptAreaState extends State<PromptArea> {
         Expanded(
           child: Center(
             child: RecordButton(
-              onRecord: addRecording,
+              soundUri: "recordings/${prompt.word}-${_recordings.length + 1}.wav",
+              onRecord: addRecording, 
             ),
           ),
         ),
@@ -67,15 +68,8 @@ class PromptAreaState extends State<PromptArea> {
   void addRecording(File soundFile) {
     Recording recording = new Recording(
       name: prompt.word + "-${_recordings.length + 1}",
+      soundFile: File(soundFile.path)
     );
-
-    if (Platform.isAndroid) {
-      Directory directory = soundFile.parent;
-      recording.soundFile = File("${directory.path}/${recording.name}.wav");
-      soundFile.copySync(recording.soundFile.path);
-    } else {
-      recording.soundFile = soundFile;
-    }
 
     setState(() {
       _recordings.add(recording);
