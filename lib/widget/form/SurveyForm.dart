@@ -27,7 +27,7 @@ class _SurveyFormState extends State<SurveyForm> {
   bool _dysarthria = false;
   bool _other = false;
   String _otherImpression;
-  bool _none = false;
+  bool _none = true;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +162,9 @@ class _SurveyFormState extends State<SurveyForm> {
                     _otherImpression = value;
                   });
                 },
+                validator: (String s) {
+                  return FormValidator.isValidImpression(s);
+                },
               ),
             ),
             ListTile(
@@ -170,8 +173,8 @@ class _SurveyFormState extends State<SurveyForm> {
                 value: _none,
                 onChanged: (bool value) {
                   setState(() {
-                    _none = value;
                     if (value) {
+                      _none = value;
                       _dysarthria = false;
                       _aphasia = false;
                       _apraxia = false;
@@ -194,26 +197,33 @@ class _SurveyFormState extends State<SurveyForm> {
   void submit(BuildContext context) async {
     if (SurveyForm._formKey.currentState.validate()) {
       SurveyForm._formKey.currentState.save();
+      String gender = fields.gender.toLowerCase();
+      if (fields.gender == "Prefer not to disclose") {
+        gender = "no answer";
+      }
+
       if (_doNotDiscloseAge) {
-        fields.age = 'no answer';
+        fields.age = "no answer";
       }
       fields.impression = "";
-      if (_apraxia) {
-        fields.impression += "apraxia,";
-      }
-      if (_aphasia) {
-        fields.impression += "aphasia,";
-      }
-      if (_dysarthria) {
-        fields.impression += "dysarthria,";
-      }
-      if (_other) {
-        fields.impression += _otherImpression;
+      if (!_none) {
+        if (_apraxia) {
+          fields.impression += "apraxia,";
+        }
+        if (_aphasia) {
+          fields.impression += "aphasia,";
+        }
+        if (_dysarthria) {
+          fields.impression += "dysarthria,";
+        }
+        if (_other) {
+          fields.impression += _otherImpression;
+        }
       }
       HttpConnector connector = new HttpConnector.instance();
 
       try {
-        String evalId = await connector.createEvaluation(fields.age, fields.gender, fields.impression);
+        String evalId = await connector.createEvaluation(fields.age, gender, fields.impression);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmbiancePage(wsdCalculator: widget.wsdCalculator, evalId: evalId,)));
       } on ServerConnectionException {
         ErrorDialog errorDialog = new ErrorDialog(context);

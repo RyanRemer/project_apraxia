@@ -32,28 +32,28 @@ class LandingPage extends StatelessWidget {
                 RaisedButton(
                   child: Text(
                     "Start WSD Calculation",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.headline,
                   ),
                   onPressed: () => startWSDTest(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "How To",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.headline,
                   ),
                   onPressed: () => goToHowToPage(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "Settings",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.headline,
                   ),
                   onPressed: () => goToSettingsPage(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "Sign Out",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.headline,
                   ),
                   onPressed: () => signOut(context),
                 )
@@ -68,13 +68,13 @@ class LandingPage extends StatelessWidget {
 
 void startWSDTest(BuildContext context) {
   if (Auth.instance().isLoggedIn()) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => SelectTestPage()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectTestPage()));
   } else {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => AmbiancePage(
-              wsdCalculator: new LocalWSDCalculator(),
-            )));
+          wsdCalculator: new LocalWSDCalculator(),
+          evalId: "",
+        )));
   }
 }
 

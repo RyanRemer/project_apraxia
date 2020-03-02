@@ -40,7 +40,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
           ActionCard(
             title: Text(
               "Local Processing",
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline,
             ),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
           ActionCard(
             title: Text(
               "Advanced Processing",
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline,
             ),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

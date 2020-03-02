@@ -8,6 +8,10 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/page/Waveform.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
+import 'package:project_apraxia/model/Recording.dart';
+import 'dart:io';
+
+import 'Waveform.dart';
 
 class AmbiancePage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
@@ -43,10 +47,11 @@ class _AmbiancePageState extends State<AmbiancePage> {
                   child: Text(
                       "Press the button below and be quiet for $seconds second."),
                 )),
+            ambianceRecorded ?
             Container(
               height: 100,
-              child: Waveform(ambiancePath),
-            ),
+              child: Waveform(Recording(name: "ambiance", soundFile: File(ambiancePath))),
+            ) : Container(height: 100),
             Expanded(
               child: FlatButton(
                 color: Colors.red,
@@ -99,10 +104,11 @@ class _AmbiancePageState extends State<AmbiancePage> {
       String fileUri = await recordAmbiance();
       RecordingStorage.singleton().setAmbiance(fileUri);
       await setAmbiance(fileUri);
-    } on PlatformException {
+    } on PlatformException catch(error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Permission Denied",
           "In order to record the ambiance of the room we need permission to your microphone and storage. Please grant us permission and restart the app.");
+      throw error;
     } catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Recording Ambiance", error.toString());
@@ -124,8 +130,8 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
     await Future.delayed(Duration(seconds: seconds));
 
-    String filePath = await recordController.stopRecording();
-    return filePath;
+    String fileUri = await recordController.stopRecording("recordings/ambiance.wav");
+    return fileUri;
   }
 
   Future<void> setAmbiance(String fileUri) async {

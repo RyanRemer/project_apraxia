@@ -19,7 +19,7 @@ class _RecordPageState extends State<RecordPage> {
   Future<List<Prompt>> promptsFuture;
 
   _RecordPageState() {
-    promptsFuture = promptController.getPrompts();
+    promptsFuture = promptController.getEnabledPrompts();
   }
 
   @override
