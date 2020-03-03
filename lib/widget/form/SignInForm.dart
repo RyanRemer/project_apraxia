@@ -4,6 +4,7 @@ import 'package:project_apraxia/model/SignInRequest.dart';
 import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
+import 'package:project_apraxia/widget/ForgotPasswordButton.dart';
 
 class SignInForm extends StatelessWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
@@ -43,10 +44,7 @@ class SignInForm extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              FlatButton(
-                child: Text("Forgot Password?"),
-                onPressed: () => sendForgotPassword(context),
-              ),
+              ForgotPasswordButton(),
               RaisedButton(
                 child: Text("Sign In"),
                 onPressed: () => signIn(context),
@@ -61,12 +59,9 @@ class SignInForm extends StatelessWidget {
   Future signIn(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
       try {
         await _auth.signIn(signInRequest.email, signInRequest.password);
-        Navigator.push(
-            // context, MaterialPageRoute(builder: (context) => RecordPage()));
-            context, MaterialPageRoute(builder: (context) => LandingPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
           showDialog(
@@ -110,53 +105,6 @@ class SignInForm extends StatelessWidget {
         }
       }
     }
-  }
-
-  Future sendForgotPassword(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      await _auth.instantiateUser(signInRequest.email);
-      try {
-        String emailSentTo = await _auth.sendForgotPassword(signInRequest.email);
-        if (emailSentTo == null) {
-          throw new CognitoClientException("Failed to send the forgotten password notification to the server.");
-        }
-        showDialog(
-          context: context,
-          builder: (context) =>
-              AlertDialog(
-                title: Text("Success"),
-                content: Text("An email containing a verification code was sent to " + emailSentTo + "."),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("Reset Password"),
-                    onPressed: () => goToPasswordRecovery(context),
-                  )
-                ],
-              )
-        );
-      } on CognitoClientException catch (error) {
-        showDialog(
-          context: context,
-          builder: (context) =>
-              AlertDialog(
-                title: Text("Password Recovery Error"),
-                content: Text(error.message),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("Okay"),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-        );
-      }
-    }
-  }
-
-  void goToPasswordRecovery(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => PasswordRecoveryPage()));
   }
 
   void resendAuthentication(BuildContext context) {

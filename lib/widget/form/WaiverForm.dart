@@ -149,7 +149,7 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "research-subject");
           }));
-          if (filePath != null) {
+          if (filePath != null && File(filePath).existsSync()) {
             setState(() {
               fields.researchSubjectSignatureFile = filePath;
             });
@@ -170,7 +170,7 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "representative");
           }));
-          if (filePath != null) {
+          if (filePath != null && File(filePath).existsSync()) {
             setState(() {
               fields.representativeSignatureFile = filePath;
             });
