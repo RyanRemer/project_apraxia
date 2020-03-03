@@ -233,6 +233,10 @@ class _ReportsPageState extends State<ReportsPage> {
     calculateWSDs();
   }
 
+  Future<void> updateAttempt(Attempt attempt) async {
+    return wsdCalculator.updateAttempt(widget.evaluationId, attempt.attemptId, false);
+  }
+
   void deleteLocalFiles() {
     RecordingStorage _recordingStorage = RecordingStorage.singleton();
     _recordingStorage.getAmbianceFile().deleteSync();
