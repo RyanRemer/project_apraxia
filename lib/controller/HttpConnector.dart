@@ -259,6 +259,35 @@ class HttpConnector {
     }
   }
 
+  Future<void> sendReport(String email, String name, String evalId) async {
+    Uri uri = Uri.parse(serverURL + "/sendReport");
+    http.MultipartRequest request = new http.MultipartRequest('POST', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    request.fields.addEntries([
+      MapEntry<String, String>('evalId', evalId),
+      MapEntry<String, String>('name', name),
+      MapEntry<String, String>('email', email),
+    ]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        return;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
+  }
+
   Future<bool> serverConnected() async {
     try {
       http.Response response = await client.get(serverURL + '/healthcheck');
