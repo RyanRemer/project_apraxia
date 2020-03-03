@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
+import 'package:project_apraxia/model/Waiver.dart';
 import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
@@ -13,7 +14,7 @@ class WaiverSearchForm extends StatefulWidget {
 
 class _WaiverSearchFormState extends State<WaiverSearchForm> {
   static final _formKey = new GlobalKey<FormState>();
-  List<Map<String, String>> waivers;
+  List<Waiver> waivers;
   String _patientName;
   String _patientEmail;
 
@@ -68,10 +69,19 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
               } else {
                 return Column(
                   children: waivers.map((waiver) {
-                    return ListTile(
-                      title: Text(
-                          "Name: ${waiver["subjectName"]}\nEmail:${waiver["subjectEmail"]}"),
-                      onTap: () => selectWaiver(waiver),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            leading: Icon(Icons.person),
+                            title: Text(
+                                "${waiver.subjectName}\n${waiver.subjectEmail}"),
+                            onTap: () => selectWaiver(waiver),
+                          ),
+                        ),
+                      ),
                     );
                   }).toList(),
                 );
@@ -83,7 +93,7 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
     );
   }
 
-  void selectWaiver(Map<String, String> waiver) {
+  void selectWaiver(Waiver waiver) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return SurveyPage(
         wsdCalculator: new RemoteWSDCalculator(),
@@ -102,13 +112,16 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
     }
   }
 
-  Future<List<dynamic>> loadWaivers(
+  Future<List<Waiver>> loadWaivers(
       String subjectName, String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
     try {
-      List<dynamic> result = await connector.getWaiversOnFile(
+      List waiverMaps = await connector.getWaiversOnFile(
           subjectName.trim(), subjectEmail.trim().toLowerCase());
-      return result;
+
+      return List<Waiver>.generate(waiverMaps.length, (index) {
+        return Waiver.fromMap(waiverMaps[index]);
+      });
     } on ServerConnectionException catch (e) {
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show('Error Contacting Server', e.message);

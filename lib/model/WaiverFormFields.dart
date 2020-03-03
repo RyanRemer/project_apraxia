@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 class WaiverFormFields {
   String researchSubjectName;
   String researchSubjectEmail;
+  bool hasRepresentative;
   String researchSubjectSignatureFile;
   DateTime researchSubjectDate;
   String representativeName;
@@ -23,6 +24,7 @@ class WaiverFormFields {
   WaiverFormFields() {
     researchSubjectName = "";
     researchSubjectEmail = "";
+    hasRepresentative = false;
     researchSubjectSignatureFile = "";
     researchSubjectDate = new DateTime.now();
     representativeName = "";

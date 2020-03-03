@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
+import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/WaveformPainter.dart';
 
 class Waveform extends StatelessWidget {
@@ -26,7 +27,7 @@ class Waveform extends StatelessWidget {
               builder: (BuildContext context, BoxConstraints constraints) {
             return CustomPaint(
               size: Size(constraints.biggest.width, constraints.biggest.height),
-              painter: WaveformPainter(snapshot.data, color: Theme.of(context).primaryColor),
+              painter: WaveformPainter(snapshot.data, color: AppTheme.of(context).primaryLight),
             );
           });
         } else {

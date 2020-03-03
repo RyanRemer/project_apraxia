@@ -32,28 +32,28 @@ class LandingPage extends StatelessWidget {
                 RaisedButton(
                   child: Text(
                     "Start WSD Calculation",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.title,
                   ),
                   onPressed: () => startWSDTest(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "How To",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.title,
                   ),
                   onPressed: () => goToHowToPage(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "Settings",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.title,
                   ),
                   onPressed: () => goToSettingsPage(context),
                 ),
                 RaisedButton(
                   child: Text(
                     "Sign Out",
-                    style: Theme.of(context).primaryTextTheme.headline6,
+                    style: Theme.of(context).primaryTextTheme.title,
                   ),
                   onPressed: () => signOut(context),
                 )

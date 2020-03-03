@@ -33,14 +33,14 @@ class _SelectTestPageState extends State<SelectTestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Waiver"),
+        title: Text("Select Test"),
       ),
       body: ListView(
         children: <Widget>[
           ActionCard(
             title: Text(
               "Local Processing",
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.title,
             ),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
           ActionCard(
             title: Text(
               "Advanced Processing",
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.title,
             ),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +72,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text("Start Remote Test"),
+                child: Text("Select Waiver"),
                 onPressed: () => _startRemoteTesting(context),
               )
             ],
