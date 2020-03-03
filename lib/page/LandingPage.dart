@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/page/AboutPage.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SettingsPage.dart';
 import 'package:project_apraxia/page/SelectWaiverPage.dart';
@@ -42,6 +43,13 @@ class LandingPage extends StatelessWidget {
                           color: Theme.of(context).buttonColor,
                           child: Text("How To", style: TextStyle(fontSize: 20)),
                           onPressed: () => goToHowToPage(context),
+                        )),
+                    ButtonTheme(
+                        minWidth: 250.0,
+                        child: RaisedButton(
+                          color: Theme.of(context).buttonColor,
+                          child: Text("About", style: TextStyle(fontSize: 20)),
+                          onPressed: () => goToAboutPage(context),
                         )),
                     ButtonTheme(
                         minWidth: 250.0,
@@ -90,6 +98,11 @@ void goToSettingsPage(BuildContext context) {
 void goToHowToPage(BuildContext context) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => HowToPage()));
+}
+
+void goToAboutPage(BuildContext context) {
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => AboutPage()));
 }
 
 void signOut(BuildContext context) {
