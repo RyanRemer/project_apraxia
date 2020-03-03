@@ -37,4 +37,15 @@ abstract class IWSDCalculator {
   * @return: A list of doubles representing the raw amplitude values from the file
   */
   Future<List<double>> getAmplitudes(String fileName);
+
+  /*
+  * This updates an attempt to be active or inactive when set on the Reports page.
+  *
+  * @param evalId: String of the evaluation ID
+  * @param attemptId: String of the attempt ID
+  * @param active: boolean value to set the attempt status to
+  *
+  * @return: void
+  */
+  Future<void> updateAttempt(String evalId, String attemptId, bool active);
 }

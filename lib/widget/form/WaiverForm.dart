@@ -215,16 +215,12 @@ class _WaiverFormState extends State<WaiverForm> {
           });
 
           File resFile = new File(fields.researchSubjectSignatureFile);
-          try {
+          if (resFile.existsSync()) {
             resFile.deleteSync();
-          } on FileSystemException {
-            print("Error deleting research subject signature file.");
           }
           File repFile = new File(fields.representativeSignatureFile);
-          try {
+          if (repFile.existsSync()) {
             repFile.deleteSync();
-          } on FileSystemException {
-            print("Error deleting the representative signature file.");
           }
           _startRemoteTest(context);
         } on ServerConnectionException {
