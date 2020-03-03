@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
@@ -11,18 +12,24 @@ typedef RecordCallback = void Function(File soundFile);
 class RecordButton extends StatefulWidget {
   /// After each recording call this function with the [File] with the audio information
   final RecordCallback onRecord;
+  // The non-localized URI where the file should be stored
+  final String soundUri;
 
-  RecordButton({@required this.onRecord, Key key}) : super(key: key);
+  RecordButton({@required this.onRecord, @required this.soundUri, Key key}) : super(key: key);
 
   @override
   _RecordButtonState createState() => _RecordButtonState();
 }
 
 class _RecordButtonState extends State<RecordButton> {
+  LocalFileController localFileController = new LocalFileController();
   RecordController recordController;
   bool isRecording = false;
 
-  _RecordButtonState({this.recordController, this.isRecording = false}) {
+  _RecordButtonState({
+    this.recordController, 
+    this.isRecording = false,
+    }) {
     this.recordController ??= new RecordController();
   }
 
@@ -62,10 +69,10 @@ class _RecordButtonState extends State<RecordButton> {
   Future recordAudio() async {
     try {
       if (isRecording) {
-        String fileUri = await recordController.stopRecording();
-        widget.onRecord(File(fileUri)); //send the file to the callback function
+        String soundUri = await recordController.stopRecording(widget.soundUri);
+        widget.onRecord(File(soundUri));
       } else {
-        await recordController.startRecording();
+        recordController.startRecording();
       }
       
     } catch (error) {
@@ -73,4 +80,6 @@ class _RecordButtonState extends State<RecordButton> {
       dialog.show("Recording Error", error.toString());
     }
   }
+
+
 }

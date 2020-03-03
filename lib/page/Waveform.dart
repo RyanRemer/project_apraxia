@@ -4,13 +4,21 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/WaveformPainter.dart';
 
-class Waveform extends StatelessWidget {
-  final IWSDCalculator wsdCalculator = new LocalWSDCalculator();
+class Waveform extends StatefulWidget {
   final String soundUri;
+
+  Waveform(this.soundUri);
+
+  @override
+  _WaveformState createState() => _WaveformState(this.soundUri);
+}
+
+class _WaveformState extends State<Waveform> {
+  final IWSDCalculator wsdCalculator = new LocalWSDCalculator();
   Future<List<double>> amplitudes;
 
-  Waveform(this.soundUri) {
-    if(soundUri == null) {
+  _WaveformState(String soundUri) {
+    if (soundUri == null) {
       this.amplitudes = null;
     } else {
       this.amplitudes = wsdCalculator.getAmplitudes(soundUri);
@@ -27,7 +35,8 @@ class Waveform extends StatelessWidget {
               builder: (BuildContext context, BoxConstraints constraints) {
             return CustomPaint(
               size: Size(constraints.biggest.width, constraints.biggest.height),
-              painter: WaveformPainter(snapshot.data, color: AppTheme.of(context).primaryLight),
+              painter: WaveformPainter(snapshot.data,
+                  color: AppTheme.of(context).primaryLight),
             );
           });
         } else {

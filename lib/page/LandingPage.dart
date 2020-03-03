@@ -71,10 +71,14 @@ void startWSDTest(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => SelectTestPage()));
   } else {
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: (context) => AmbiancePage(
-              wsdCalculator: new LocalWSDCalculator(),
-            )));
+          wsdCalculator: new LocalWSDCalculator(),
+          evalId: "",
+        ),
+      ),
+    );
   }
 }
 

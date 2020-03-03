@@ -15,6 +15,11 @@ class LocalFileController {
     return localPath + "/" + uri;
   }
 
+  Future<File> getLocalFile(String uri) async {
+    String localUri = await getLocalRef(uri);
+    return File(localUri);
+  }
+
   File getFile(String localRef){
     return File(localRef);
   }
