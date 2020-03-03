@@ -149,7 +149,7 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "research-subject");
           }));
-          if (filePath != null) {
+          if (filePath != null && File(filePath).existsSync()) {
             setState(() {
               fields.researchSubjectSignatureFile = filePath;
             });
@@ -170,7 +170,7 @@ class _WaiverFormState extends State<WaiverForm> {
           String filePath = await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return new SignaturePage(filePrefix: "representative");
           }));
-          if (filePath != null) {
+          if (filePath != null && File(filePath).existsSync()) {
             setState(() {
               fields.representativeSignatureFile = filePath;
             });
@@ -215,9 +215,13 @@ class _WaiverFormState extends State<WaiverForm> {
           });
 
           File resFile = new File(fields.researchSubjectSignatureFile);
-          resFile.deleteSync();
+          if (resFile.existsSync()) {
+            resFile.deleteSync();
+          }
           File repFile = new File(fields.representativeSignatureFile);
-          repFile.deleteSync();
+          if (repFile.existsSync()) {
+            repFile.deleteSync();
+          }
           _startRemoteTest(context);
         } on ServerConnectionException {
           ErrorDialog dialog = new ErrorDialog(context);

@@ -4,29 +4,39 @@ import 'package:project_apraxia/model/SignUpRequest.dart';
 import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-class SignUpForm extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = new GlobalKey();
-  final Auth auth = new Auth.instance();
-  final SignUpRequest signUpRequest = new SignUpRequest.test();
+
+class SignUpForm extends StatefulWidget {
+  static GlobalKey<FormState> _formKey = new GlobalKey();
 
   SignUpForm({Key key}) : super(key: key);
 
   @override
+  _SignUpFormState createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  final Auth _auth = new Auth.instance();
+  final SignUpRequest _signUpRequest = new SignUpRequest.test();
+
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: SignUpForm._formKey,
       child: Column(
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.email),
             title: TextFormField(
-              initialValue: signUpRequest.attributes.email,
+              initialValue: _signUpRequest.attributes.email,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  labelText: "Email", hintText: "email@example.com"),
+                labelText: "Email",
+                hintText: "email@example.com",
+              ),
               onSaved: (String email) {
-                signUpRequest.attributes.email = email;
+                _signUpRequest.attributes.email = email;
               },
               validator: (String email) {
                 return FormValidator.isValidEmail(email);
@@ -36,61 +46,69 @@ class SignUpForm extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.vpn_key),
             title: TextFormField(
-              initialValue: signUpRequest.password,
+              initialValue: _signUpRequest.password,
               obscureText: true,
-              decoration:
-                  InputDecoration(labelText: "Password", hintText: "Password1"),
+              decoration: InputDecoration(
+                labelText: "Password",
+                hintText: "Password1",
+              ),
               validator: (String password) {
                 return FormValidator.isValidPassword(password);
               },
               onSaved: (String password) {
-                signUpRequest.password = password;
+                _signUpRequest.password = password;
               },
             ),
           ),
           ListTile(
             leading: Icon(Icons.person),
             title: TextFormField(
-              initialValue: signUpRequest.attributes.name,
+              initialValue: _signUpRequest.attributes.name,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
-                  labelText: "Full Name", hintText: "First Last"),
+                labelText: "Full Name",
+                hintText: "First Last",
+              ),
               validator: (String name) {
                 return FormValidator.isValidName(name);
               },
               onSaved: (String name) {
-                signUpRequest.attributes.name = name;
+                _signUpRequest.attributes.name = name;
               },
             ),
           ),
           ListTile(
             leading: Icon(Icons.phone),
-            title: TextFormField(
-              initialValue: signUpRequest.attributes.phoneNumber,
-              decoration: InputDecoration(
-                labelText: "Phone Number",
-                hintText: "xxxxxxxxxx",
+            title: InternationalPhoneNumberInput.withCustomDecoration(
+              onInputChanged: (PhoneNumber number) {
+                _signUpRequest.attributes.phoneNumber = number.phoneNumber;
+              },
+              isEnabled: true,
+              autoValidate: true,
+              formatInput: true,
+              countries: ['US', 'CA'],
+              initialCountry2LetterCode: 'US',
+              textFieldController: TextEditingController(text: _signUpRequest.attributes.phoneNumber.substring(2)),
+              inputDecoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                hintText: '123-456-7890',
+                labelText: 'Phone Number',
               ),
-              keyboardType: TextInputType.phone,
-              validator: (String phoneNumber) {
-                return FormValidator.isValidPhoneNumber(phoneNumber);
-              },
-              onSaved: (String phoneNumber) {
-                signUpRequest.attributes.phoneNumber = "+1" + phoneNumber;
-              },
+              errorMessage: 'Invalid phone number',
             ),
           ),
           ListTile(
             leading: Icon(Icons.home),
             title: TextFormField(
-              initialValue: signUpRequest.attributes.address,
+              initialValue: _signUpRequest.attributes.address,
               maxLines: 2,
               decoration: InputDecoration(
-                  labelText: "Address",
-                  hintText: "123 Main St.\nSpringfield, VA 22162"),
+                labelText: "Address",
+                hintText: "123 Main St.\nSpringfield, VA 22162",
+              ),
               keyboardType: TextInputType.multiline,
               onSaved: (String address) {
-                signUpRequest.attributes.address = address;
+                _signUpRequest.attributes.address = address;
               },
               validator: (String address) {
                 return FormValidator.isValidAddress(address);
@@ -114,15 +132,16 @@ class SignUpForm extends StatelessWidget {
   }
 
   Future signUp(BuildContext context) async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (SignUpForm._formKey.currentState.validate()) {
+      SignUpForm._formKey.currentState.save();
       try {
-        await auth.signUp(
-            signUpRequest.attributes.email,
-            signUpRequest.password,
-            signUpRequest.attributes.name,
-            signUpRequest.attributes.address,
-            signUpRequest.attributes.phoneNumber);
+        await _auth.signUp(
+            _signUpRequest.attributes.email,
+            _signUpRequest.password,
+            _signUpRequest.attributes.name,
+            _signUpRequest.attributes.address,
+            _signUpRequest.attributes.phoneNumber,
+        );
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
           showDialog(
