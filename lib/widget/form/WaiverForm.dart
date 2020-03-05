@@ -300,18 +300,19 @@ class _WaiverFormState extends State<WaiverForm> {
   }
 
   int _isSigned() {
-    if (FormValidator.isValidName(fields.researchSubjectName) != null ||
-        FormValidator.isValidEmail(fields.researchSubjectEmail) != null) {
+    FormValidator formValidator = new FormValidator();
+    if (formValidator.isValidName(fields.researchSubjectName) != null ||
+        formValidator.isValidEmail(fields.researchSubjectEmail) != null) {
       return -1;
     }
-    if (FormValidator.isValidDate(fields.researchSubjectDate) == null &&
-        FormValidator.isValidFile(fields.researchSubjectSignatureFile) ==
+    if (formValidator.isValidDate(fields.researchSubjectDate) == null &&
+        formValidator.isValidSignature(fields.researchSubjectSignatureFile) ==
             null) {
       return 0;
-    } else if (FormValidator.isValidDate(fields.representativeDate) == null &&
-        FormValidator.isValidFile(fields.representativeSignatureFile) == null &&
-        FormValidator.isValidName(fields.representativeName) == null &&
-        FormValidator.isValidRelationship(fields.representativeRelationship) ==
+    } else if (formValidator.isValidDate(fields.representativeDate) == null &&
+        formValidator.isValidSignature(fields.representativeSignatureFile) == null &&
+        formValidator.isValidName(fields.representativeName) == null &&
+        formValidator.isValidRelationship(fields.representativeRelationship) ==
             null) {
       return 1;
     }

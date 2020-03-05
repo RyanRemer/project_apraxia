@@ -7,10 +7,12 @@ import 'package:project_apraxia/widget/WaveformPainter.dart';
 class Waveform extends StatefulWidget {
   final String soundUri;
 
-  Waveform(this.soundUri);
+  Waveform(this.soundUri, {Key key}) : super(key: key);
 
   @override
-  _WaveformState createState() => _WaveformState(this.soundUri);
+  _WaveformState createState() {
+    return new _WaveformState(this.soundUri);
+    }
 }
 
 class _WaveformState extends State<Waveform> {

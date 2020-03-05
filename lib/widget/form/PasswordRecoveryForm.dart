@@ -8,6 +8,7 @@ class PasswordRecoveryForm extends StatelessWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth _auth = new Auth.instance();
   final PasswordRecoveryRequest _passwordRecoveryRequest = new PasswordRecoveryRequest();
+  final FormValidator formValidator = new FormValidator();
 
   PasswordRecoveryForm({Key key}) : super(key: key);
 
@@ -37,7 +38,7 @@ class PasswordRecoveryForm extends StatelessWidget {
               onSaved: (String password) {
                 _passwordRecoveryRequest.newPassword = password;
               },
-              validator: (String password) => FormValidator.isValidPassword(password),
+              validator: (String password) => formValidator.isValidPassword(password),
             ),
           ),
           RaisedButton(

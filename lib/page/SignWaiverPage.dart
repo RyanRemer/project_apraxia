@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/WaiverFormFields.dart';
 import 'package:project_apraxia/page/SurveyPage.dart';
+import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/form/WaiverForm.dart';
+import 'package:project_apraxia/widget/form_field/DateFormField.dart';
+import 'package:project_apraxia/widget/form_field/SignatureField.dart';
 
 class SignWaiverPage extends StatefulWidget {
   SignWaiverPage({Key key}) : super(key: key);
@@ -19,6 +23,7 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
   static final _formKey = new GlobalKey<FormState>();
   static final _formAKey = new GlobalKey<FormState>();
   static final _formBKey = new GlobalKey<FormState>();
+  final FormValidator validator = new FormValidator();
 
   @override
   void initState() {
@@ -28,105 +33,183 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("HIPAA Waiver Signature"),
-        ),
-        body: ListView(
-          children: <Widget>[
-            Form(
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text(
-                      "Resaerch Subject Info",
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.person),
-                    title: TextFormField(
-                      initialValue: fields.researchSubjectName,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                        labelText: "Research Subject Name",
-                      ),
-                      onChanged: (String name) {
-                        fields.researchSubjectName = name;
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.email),
-                    title: TextFormField(
-                      initialValue: fields.researchSubjectEmail,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration:
-                          InputDecoration(labelText: "Research Subject Email"),
-                      onChanged: (String email) {
-                        fields.researchSubjectEmail = email;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
+      appBar: AppBar(
+        title: Text("HIPAA Waiver Signature"),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Form(
+            key: _formKey,
+            child: Column(
               children: <Widget>[
                 ListTile(
                   title: Text(
-                    "Signature Options",
+                    "Resaerch Subject Info",
                     style: Theme.of(context).textTheme.title,
                   ),
                 ),
-                //TODO: Wording
-                RadioListTile(
-                  title: Text("Research Subject"),
-                  groupValue: fields.hasRepresentative,
-                  onChanged: (value) {
-                    setState(() {
-                      fields.hasRepresentative = false;
-                    });
-                  },
-                  value: false,
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: TextFormField(
+                    initialValue: fields.researchSubjectName,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      labelText: "Research Subject Name",
+                    ),
+                    validator: validator.isValidName,
+                    onSaved: (String value) {
+                      fields.researchSubjectName = value;
+                    },
+                  ),
                 ),
-                RadioListTile(
-                  title: Text("Personal Representative"),
-                  groupValue: fields.hasRepresentative,
-                  onChanged: (value) {
-                    setState(() {
-                      fields.hasRepresentative = true;
-                    });
-                  },
-                  value: true,
-                )
+                ListTile(
+                  leading: Icon(Icons.email),
+                  title: TextFormField(
+                    initialValue: fields.researchSubjectEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration:
+                        InputDecoration(labelText: "Research Subject Email"),
+                    validator: validator.isValidName,
+                    onSaved: (String value) {
+                      fields.researchSubjectEmail = value;
+                    },
+                  ),
+                ),
               ],
             ),
-            fields.hasRepresentative == true
-                ? _buildOptionB(context)
-                : _buildFormA(context),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: new Text("Agree To Waiver"),
-                  ),
-                  onPressed: () => agreeToWaiver(context),
-                )
-              ],
-            )
-          ],
-        ));
+          ),
+          Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  "Signature Options",
+                  style: Theme.of(context).textTheme.title,
+                ),
+              ),
+              RadioListTile(
+                title: Text("Research Subject"),
+                groupValue: fields.hasRepresentative,
+                onChanged: (value) {
+                  _formBKey.currentState.save();
+                  setState(() {
+                    fields.hasRepresentative = false;
+                  });
+                },
+                value: false,
+              ),
+              RadioListTile(
+                title: Text("Personal Representative"),
+                groupValue: fields.hasRepresentative,
+                onChanged: (value) {
+                  _formAKey.currentState.save();
+                  setState(() {
+                    fields.hasRepresentative = true;
+                  });
+                },
+                value: true,
+              )
+            ],
+          ),
+          fields.hasRepresentative == true
+              ? _buildOptionB(context)
+              : _buildFormA(context),
+          ButtonBar(
+            children: <Widget>[
+              RaisedButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new Text("Agree To Waiver"),
+                ),
+                onPressed: () => submitForm(context),
+              )
+            ],
+          )
+        ],
+      ),
+    );
   }
 
-  Future<void> agreeToWaiver(BuildContext context) async {
+  void submitForm(BuildContext context) {
+    // validate forms
+    bool validated = _formKey.currentState.validate();
+    if (fields.hasRepresentative) {
+      validated = validated && _formBKey.currentState.validate();
+    } else {
+      validated = validated && _formAKey.currentState.validate();
+    }
+
+    // save forms
+    if (validated) {
+      _formKey.currentState.save();
+      if (fields.hasRepresentative) {
+        _formBKey.currentState.save();
+      } else {
+        _formAKey.currentState.save();
+      }
+
+      sendWaiver();
+    }
+  }
+
+  Future<void> sendWaiver() async {
+    HttpConnector connector = HttpConnector.instance();
+    try {
+      if (fields.hasRepresentative) {
+        await connector.sendRepresentativeWaiver(
+            fields.representativeSignatureFile,
+            fields.researchSubjectName.trim(),
+            fields.researchSubjectEmail.trim().toLowerCase(),
+            fields.representativeName.trim(),
+            fields.representativeRelationship.trim(),
+            fields.getFormattedRepresentativeDate());
+      } else {
+        await connector.sendSubjectWaiver(
+            fields.researchSubjectSignatureFile,
+            fields.researchSubjectName.trim(),
+            fields.researchSubjectEmail.trim().toLowerCase(),
+            fields.getFormattedSubjectDate());
+      }
+    } catch (error) {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show(
+        "Error Sending Waiver",
+        "There was an error sending the waiver, please try again. If the problem persists back out and use local processing instead.",
+      );
+      throw (error);
+    }
+
+    showSentWaiverDialog();
+  }
+
+  void showSentWaiverDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Sent the Waiver"),
+            content: Text(
+                "A waiver has been sent to ${fields.researchSubjectEmail} and the clinician email."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Continue Test"),
+                onPressed: () {
+                  goToSurveyPage(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> goToSurveyPage(BuildContext context) async {
     IWSDCalculator wsdCalculator;
     if (await HttpConnector.instance().serverConnected()) {
       wsdCalculator = new RemoteWSDCalculator();
     } else {
       wsdCalculator = new LocalWSDCalculator();
     }
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new SurveyPage(
         wsdCalculator: wsdCalculator,
       );
@@ -135,6 +218,7 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
 
   Form _buildOptionB(BuildContext context) {
     return Form(
+      key: _formBKey,
       child: Column(
         children: <Widget>[
           ListTile(
@@ -150,8 +234,9 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
               textCapitalization: TextCapitalization.words,
               decoration:
                   InputDecoration(labelText: "Personal Representative Name"),
-              onChanged: (String name) {
-                fields.representativeName = name;
+              validator: validator.isValidName,
+              onSaved: (String value) {
+                fields.representativeName = value;
               },
             ),
           ),
@@ -161,8 +246,9 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
               initialValue: fields.representativeRelationship,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: "Relationship"),
-              onChanged: (String relationship) {
-                fields.representativeRelationship = relationship;
+              validator: validator.isValidRelationship,
+              onSaved: (String value) {
+                fields.representativeRelationship = value;
               },
             ),
           ),
@@ -172,20 +258,33 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RaisedButton(
-              child: Text("Sign"),
-              onPressed: () {},
-              // Date
-            ),
+              padding: const EdgeInsets.all(8.0),
+              child: SignatureField(
+                value: fields.representativeSignatureFile,
+                validator: validator.isValidSignature,
+                onSaved: (String value) {
+                  fields.representativeSignatureFile = value;
+                },
+              )),
+          DateFormField(
+            initialValue: fields.representativeDate,
+            firstDate: DateTime(now.year, 1),
+            lastDate: DateTime(now.year + 1),
+            validator: validator.isValidDate,
+            onSaved: (DateTime value) {
+              fields.researchSubjectDate = value;
+            },
           )
         ],
       ),
     );
   }
 
+  DateTime get now => new DateTime.now();
+
   Form _buildFormA(BuildContext context) {
     return Form(
+      key: _formAKey,
       child: Column(
         children: <Widget>[
           ListTile(
@@ -195,11 +294,22 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RaisedButton(
-              child: Text("Sign"),
-              onPressed: () {},
-            ),
+              padding: const EdgeInsets.all(8.0),
+              child: SignatureField(
+                value: fields.researchSubjectSignatureFile,
+                validator: validator.isValidSignature,
+                onSaved: (String value) {
+                  fields.researchSubjectSignatureFile = value;
+                },
+              )),
+          DateFormField(
+            initialValue: fields.researchSubjectDate,
+            firstDate: DateTime(now.year, 1),
+            lastDate: DateTime(now.year + 1),
+            validator: validator.isValidDate,
+            onSaved: (DateTime value) {
+              fields.researchSubjectDate = value;
+            },
           )
         ],
       ),

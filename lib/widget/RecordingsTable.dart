@@ -55,6 +55,9 @@ class _RecordingsTableState extends State<RecordingsTable> {
       trailing: PlayButton(
         filepath: recording.soundFile.path,
       ),
+      onTap: (){
+        widget.onSelectRecording(recording);
+      },
     );
   }
 }

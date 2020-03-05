@@ -9,6 +9,7 @@ class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth auth = new Auth.instance();
   final SignUpRequest signUpRequest = new SignUpRequest.test();
+  final FormValidator formValidator = new FormValidator();
 
   SignUpForm({Key key}) : super(key: key);
 
@@ -29,7 +30,7 @@ class SignUpForm extends StatelessWidget {
                 signUpRequest.attributes.email = email;
               },
               validator: (String email) {
-                return FormValidator.isValidEmail(email);
+                return formValidator.isValidEmail(email);
               },
             ),
           ),
@@ -41,7 +42,7 @@ class SignUpForm extends StatelessWidget {
               decoration:
                   InputDecoration(labelText: "Password", hintText: "Password1"),
               validator: (String password) {
-                return FormValidator.isValidPassword(password);
+                return formValidator.isValidPassword(password);
               },
               onSaved: (String password) {
                 signUpRequest.password = password;
@@ -56,7 +57,7 @@ class SignUpForm extends StatelessWidget {
               decoration: InputDecoration(
                   labelText: "Full Name", hintText: "First Last"),
               validator: (String name) {
-                return FormValidator.isValidName(name);
+                return formValidator.isValidName(name);
               },
               onSaved: (String name) {
                 signUpRequest.attributes.name = name;
@@ -73,7 +74,7 @@ class SignUpForm extends StatelessWidget {
               ),
               keyboardType: TextInputType.phone,
               validator: (String phoneNumber) {
-                return FormValidator.isValidPhoneNumber(phoneNumber);
+                return formValidator.isValidPhoneNumber(phoneNumber);
               },
               onSaved: (String phoneNumber) {
                 signUpRequest.attributes.phoneNumber = "+1" + phoneNumber;
@@ -93,7 +94,7 @@ class SignUpForm extends StatelessWidget {
                 signUpRequest.attributes.address = address;
               },
               validator: (String address) {
-                return FormValidator.isValidAddress(address);
+                return formValidator.isValidAddress(address);
               },
             ),
           ),

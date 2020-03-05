@@ -16,6 +16,7 @@ class UpdateUserForm extends StatefulWidget {
 class _UpdateUserFormState extends State<UpdateUserForm> {
   final Auth auth = new Auth.instance();
   UserAttributes attributes = new UserAttributes();
+  final FormValidator formValidator = new FormValidator();
 
 
   _UpdateUserFormState() {
@@ -41,7 +42,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
                 labelText: "Full Name",
               ),
               validator: (String name) {
-                return FormValidator.isValidName(name);
+                return formValidator.isValidName(name);
               },
               onChanged: (String name) {
                 attributes.name = name;
@@ -60,7 +61,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
                 attributes.email = email;
               },
               validator: (String email) {
-                return FormValidator.isValidEmail(email);
+                return formValidator.isValidEmail(email);
               },
             ),
           ),
@@ -73,7 +74,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
               ),
               keyboardType: TextInputType.phone,
               validator: (String phoneNumber){
-                return FormValidator.isValidPhoneNumber(phoneNumber);
+                return formValidator.isValidPhoneNumber(phoneNumber);
               },
               onChanged: (String phoneNumber) {
                 attributes.phoneNumber = "+1" + phoneNumber;
@@ -93,7 +94,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
                 attributes.address = address;
               },
               validator: (String address) {
-                return FormValidator.isValidAddress(address);
+                return formValidator.isValidAddress(address);
               },
             ),
           ),

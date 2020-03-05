@@ -14,7 +14,7 @@ class PlayButton extends StatelessWidget {
     return FlatButton.icon(
       icon: Icon(Icons.play_circle_filled, size: 32.0,),
       label: Text("Play"),
-      onPressed: () =>  isEnabled ? () => play(context) : null,
+      onPressed: isEnabled ? () => play(context) : null,
     );
   }
 

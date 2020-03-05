@@ -22,14 +22,8 @@ class WaiverFormFields {
   }
 
   WaiverFormFields() {
-    researchSubjectName = "";
-    researchSubjectEmail = "";
     hasRepresentative = false;
-    researchSubjectSignatureFile = "";
     researchSubjectDate = new DateTime.now();
-    representativeName = "";
-    representativeRelationship = "";
-    representativeSignatureFile = "";
     representativeDate = new DateTime.now();
   }
 
@@ -38,9 +32,6 @@ class WaiverFormFields {
     researchSubjectEmail = "drakebwade@gmail.com";
     researchSubjectSignatureFile = "/Users/drake_wade/Library/Developer/CoreSimulator/Devices/E16D4309-1732-46EC-8872-818B2A284134/data/Containers/Data/Application/423ECC33-AB8D-498F-8B14-0EDDC0605965/Documents/signature.png";
     researchSubjectDate = new DateTime.now();
-    representativeName = "";
-    representativeRelationship = "";
-    representativeSignatureFile = "";
     representativeDate = new DateTime.now();
   }
 }

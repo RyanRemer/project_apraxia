@@ -41,24 +41,37 @@ class _AmbiancePageState extends State<AmbiancePage> {
           children: <Widget>[
             Expanded(
                 child: Center(
-                  child: Text(
-                      "Press the button below and be quiet for $seconds second."),
-                )),
+              child: Text(
+                  "Press the button below and be quiet for $seconds second."),
+            )),
             Container(
               height: 100,
-              child: Waveform(ambiancePath),
+              child: Waveform(
+                ambiancePath,
+                key: ObjectKey(ambiancePath),
+              ),
             ),
             Expanded(
-              child: FlatButton(
-                color: AppTheme.of(context).accent,
-                shape: CircleBorder(),
-                child: Icon(
-                    isRecording ? Icons.stop : Icons.mic,
-                    color: Colors.white,
-                    size: 40,
-                ),
-                onPressed: onTap,
-              ),
+              child: isRecording
+                  ? FlatButton(
+                      color: AppTheme.of(context).accent,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.more_horiz,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      onPressed: () {})
+                  : FlatButton(
+                      color: AppTheme.of(context).accent,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      onPressed: onTap,
+                    ),
             ),
             Expanded(
               child: ambianceRecorded
@@ -100,7 +113,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
       String fileUri = await recordAmbiance();
       RecordingStorage.singleton().setAmbiance(fileUri);
       await setAmbiance(fileUri);
-    } on PlatformException catch(error) {
+    } on PlatformException catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Permission Denied",
           "In order to record the ambiance of the room we need permission to your microphone and storage. Please grant us permission and restart the app.");
@@ -126,7 +139,8 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
     await Future.delayed(Duration(seconds: seconds));
 
-    String fileUri = await recordController.stopRecording("recordings/ambiance.wav");
+    String fileUri =
+        await recordController.stopRecording("recordings/ambiance.wav");
     return fileUri;
   }
 
