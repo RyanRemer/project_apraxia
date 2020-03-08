@@ -1,8 +1,10 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/UserAttributes.dart';
+import 'package:project_apraxia/widget/ForgotPasswordButton.dart';
 
 class UpdateUserForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
@@ -14,15 +16,16 @@ class UpdateUserForm extends StatefulWidget {
 }
 
 class _UpdateUserFormState extends State<UpdateUserForm> {
-  final Auth auth = new Auth.instance();
-  UserAttributes attributes = new UserAttributes();
+  final Auth _auth = new Auth.instance();
   final FormValidator formValidator = new FormValidator();
+  UserAttributes _attributes = new UserAttributes();
+  bool _validPhoneNumber = true;
 
 
   _UpdateUserFormState() {
-    auth.getUserAttributes().then((initialAttributes) {
+    _auth.getUserAttributes().then((initialAttributes) {
       setState(() {
-        this.attributes = new UserAttributes(attributes: initialAttributes);
+        this._attributes = new UserAttributes(attributes: initialAttributes);
       });
     });
   }
@@ -36,7 +39,7 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
           ListTile(
             leading: Icon(Icons.person),
             title: TextFormField(
-              controller: TextEditingController(text: attributes.name),
+              controller: TextEditingController(text: _attributes.name),
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: "Full Name",
@@ -45,20 +48,20 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
                 return formValidator.isValidName(name);
               },
               onChanged: (String name) {
-                attributes.name = name;
+                _attributes.name = name;
               },
             ),
           ),
           ListTile(
             leading: Icon(Icons.email),
             title: TextFormField(
-              controller: TextEditingController(text: attributes.email),
+              controller: TextEditingController(text: _attributes.email),
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email",
               ),
               onChanged: (String email) {
-                attributes.email = email;
+                _attributes.email = email;
               },
               validator: (String email) {
                 return formValidator.isValidEmail(email);
@@ -67,31 +70,34 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
           ),
           ListTile(
             leading: Icon(Icons.phone),
-            title: TextFormField(
-              controller: TextEditingController(text: attributes.phoneNumber.substring(2)),
-              decoration: InputDecoration(
-                labelText: "Phone Number",
+            title: InternationalPhoneNumberInput.withCustomDecoration(
+              onInputChanged: (PhoneNumber number) {
+                _attributes.phoneNumber = number.phoneNumber;
+              },
+              isEnabled: true,
+              autoValidate: true,
+              formatInput: true,
+              countries: ['US', 'CA'],
+              initialCountry2LetterCode: 'US',
+              textFieldController: TextEditingController(text: _attributes.phoneNumber.substring(2)),
+              inputDecoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Phone Number',
               ),
-              keyboardType: TextInputType.phone,
-              validator: (String phoneNumber){
-                return formValidator.isValidPhoneNumber(phoneNumber);
-              },
-              onChanged: (String phoneNumber) {
-                attributes.phoneNumber = "+1" + phoneNumber;
-              },
+              errorMessage: 'Invalid phone number',
             ),
           ),
           ListTile(
             leading: Icon(Icons.home),
             title: TextFormField(
-              controller: TextEditingController(text: attributes.address),
+              controller: TextEditingController(text: _attributes.address),
               maxLines: 2,
               decoration: InputDecoration(
                 labelText: "Address",
               ),
               keyboardType: TextInputType.multiline,
               onChanged: (String address) {
-                attributes.address = address;
+                _attributes.address = address;
               },
               validator: (String address) {
                 return formValidator.isValidAddress(address);
@@ -101,21 +107,22 @@ class _UpdateUserFormState extends State<UpdateUserForm> {
           RaisedButton(
             child: Text("Save Changes"),
             onPressed: () => this.saveChanges(context),
-          )
+          ),
+          ForgotPasswordButton(),
         ],
       ),
     );
   }
 
   Future saveChanges(BuildContext context) async {
-    if (UpdateUserForm._formKey.currentState.validate()) {
+    if (UpdateUserForm._formKey.currentState.validate() && _validPhoneNumber) {
       UpdateUserForm._formKey.currentState.save();
       try {
-        await auth.updateUserAttributes(
-          attributes.email,
-          attributes.address,
-          attributes.phoneNumber,
-          attributes.name
+        await _auth.updateUserAttributes(
+          _attributes.email,
+          _attributes.address,
+          _attributes.phoneNumber,
+          _attributes.name
         );
         showDialog(
           context: context,

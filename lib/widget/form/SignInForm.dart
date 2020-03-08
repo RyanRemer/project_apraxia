@@ -5,6 +5,7 @@ import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
 import 'package:project_apraxia/page/SignUpPage.dart';
+import 'package:project_apraxia/widget/ForgotPasswordButton.dart';
 
 class SignInForm extends StatelessWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
@@ -56,10 +57,7 @@ class SignInForm extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              FlatButton(
-                child: Text("Forgot Password?"),
-                onPressed: () => sendForgotPassword(context),
-              ),
+              ForgotPasswordButton(),
               FlatButton(
                 child: Text("Continue as Guest"),
                 onPressed: () => guestLogin(context),
@@ -88,13 +86,9 @@ class SignInForm extends StatelessWidget {
   Future signIn(BuildContext context) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
       try {
         await _auth.signIn(signInRequest.email, signInRequest.password);
-        Navigator.push(
-            // context, MaterialPageRoute(builder: (context) => RecordPage()));
-            context,
-            MaterialPageRoute(builder: (context) => LandingPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
           showDialog(

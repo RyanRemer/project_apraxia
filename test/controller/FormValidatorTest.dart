@@ -1,16 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:project_apraxia/controller/FormValidator.dart';
+import 'package:project_apraxia/controller/formValidator.dart';
 
 
 void main() {
+  FormValidator formValidator = new FormValidator();
+
   test("FormValidator can detect valid letters", () {
     List<String> validLetters = [
       "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
       "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     ];
     for (String validLetter in validLetters) {
-      expect(FormValidator.isAlphabetic(validLetter), isTrue);
-      expect(FormValidator.isAlphabetic(validLetter.toUpperCase()), isTrue);
+      expect(formValidator.isAlphabetic(validLetter), isTrue);
+      expect(formValidator.isAlphabetic(validLetter.toUpperCase()), isTrue);
     }
   });
 
@@ -20,7 +22,7 @@ void main() {
       "@", "#", "\$", "%", "^", "&", "*", "(", ")", "-", "_", "[", "}"
     ];
     for (String invalidLetter in invalidLetters) {
-      expect(FormValidator.isAlphabetic(invalidLetter), isFalse);
+      expect(formValidator.isAlphabetic(invalidLetter), isFalse);
     }
   });
 
@@ -29,7 +31,7 @@ void main() {
       "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
     ];
     for (String validNumber in validNumbers) {
-      expect(FormValidator.isNumeric(validNumber), isTrue);
+      expect(formValidator.isNumeric(validNumber), isTrue);
     }
   });
 
@@ -41,7 +43,7 @@ void main() {
       "_", "[", "}"
     ];
     for (String invalidNumber in invalidNumbers) {
-      expect(FormValidator.isNumeric(invalidNumber), isFalse);
+      expect(formValidator.isNumeric(invalidNumber), isFalse);
     }
   });
 
@@ -51,7 +53,7 @@ void main() {
       "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     ];
     for (String validLetter in validLetters) {
-      expect(FormValidator.isUpperCase(validLetter.toUpperCase()), isTrue);
+      expect(formValidator.isUpperCase(validLetter.toUpperCase()), isTrue);
     }
   });
 
@@ -63,7 +65,7 @@ void main() {
       "@", "#", "\$", "%", "^", "&", "*", "(", ")", "-", "_", "[", "}"
     ];
     for (String invalidLetter in invalidLetters) {
-      expect(FormValidator.isUpperCase(invalidLetter), isFalse);
+      expect(formValidator.isUpperCase(invalidLetter), isFalse);
     }
   });
 
@@ -73,7 +75,7 @@ void main() {
       "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     ];
     for (String validLetter in validLetters) {
-      expect(FormValidator.isLowerCase(validLetter), isTrue);
+      expect(formValidator.isLowerCase(validLetter), isTrue);
     }
   });
 
@@ -85,7 +87,7 @@ void main() {
       "@", "#", "\$", "%", "^", "&", "*", "(", ")", "-", "_", "[", "}"
     ];
     for (String invalidLetter in invalidLetters) {
-      expect(FormValidator.isLowerCase(invalidLetter.toUpperCase()), isFalse);
+      expect(formValidator.isLowerCase(invalidLetter.toUpperCase()), isFalse);
     }
   });
 
@@ -97,7 +99,7 @@ void main() {
       "!"
     ];
     for (String validName in validNames) {
-      expect(FormValidator.isValidName(validName), isNull);
+      expect(formValidator.isValidName(validName), isNull);
     }
   });
 
@@ -107,7 +109,7 @@ void main() {
       null
     ];
     for (String invalidName in invalidNames) {
-      expect(FormValidator.isValidName(invalidName), "Name must not be empty.");
+      expect(formValidator.isValidName(invalidName), "Name must not be empty.");
     }
   });
 
@@ -119,7 +121,7 @@ void main() {
       "good3mail@t3st.org"
     ];
     for (String validEmail in validEmails) {
-      expect(FormValidator.isValidEmail(validEmail), isNull);
+      expect(formValidator.isValidEmail(validEmail), isNull);
     }
   });
 
@@ -134,7 +136,7 @@ void main() {
       "google.com"
     ];
     for (String invalidEmail in invalidEmails) {
-      expect(FormValidator.isValidEmail(invalidEmail), "Invalid email address.");
+      expect(formValidator.isValidEmail(invalidEmail), "Invalid email address.");
     }
   });
 
@@ -145,7 +147,7 @@ void main() {
       "1111111111"
     ];
     for (String validPhoneNumber in validPhoneNumbers) {
-      expect(FormValidator.isValidPhoneNumber(validPhoneNumber), isNull);
+      expect(formValidator.isValidPhoneNumber(validPhoneNumber), isNull);
     }
   });
 
@@ -160,7 +162,7 @@ void main() {
       "!@#\$%^()A,"
     ];
     for (String invalidPhoneNumber in invalidPhoneNumbers) {
-      expect(FormValidator.isValidPhoneNumber(invalidPhoneNumber), anyOf([
+      expect(formValidator.isValidPhoneNumber(invalidPhoneNumber), anyOf([
         "Must be 10 digits.",
         "Must not contain any characters besides digits.",
       ]));
@@ -176,7 +178,7 @@ void main() {
       "123 Example Street\nRaleigh, VA 91028"
     ];
     for (String validAddress in validAddresses) {
-      expect(FormValidator.isValidAddress(validAddress), isNull);
+      expect(formValidator.isValidAddress(validAddress), isNull);
     }
   });
 
@@ -186,7 +188,7 @@ void main() {
       null
     ];
     for (String invalidAddress in invalidAddresses) {
-      expect(FormValidator.isValidAddress(invalidAddress), "Address must not be empty.");
+      expect(formValidator.isValidAddress(invalidAddress), "Address must not be empty.");
     }
   });
 
@@ -199,7 +201,7 @@ void main() {
       "123 Example StreetRaleigh, VA 91028"
     ];
     for (String validPassword in validPasswords) {
-      expect(FormValidator.isValidPassword(validPassword), isNull);
+      expect(formValidator.isValidPassword(validPassword), isNull);
     }
   });
 
@@ -221,7 +223,7 @@ void main() {
       "1234567"
     ];
     for (String invalidPassword in invalidPasswords) {
-      expect(FormValidator.isValidPassword(invalidPassword), anyOf([
+      expect(formValidator.isValidPassword(invalidPassword), anyOf([
         "<8 characters.",
         "No upper-case.",
         "No lower-case.",
