@@ -67,7 +67,7 @@ class SignInForm extends StatelessWidget {
                 onPressed: () => goToSignUp(context),
               )
             ],
-          )
+          ),
         ],
       ),
     );
