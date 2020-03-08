@@ -184,8 +184,8 @@ class HttpConnector {
     }
   }
 
-  Future<List<Map<String, String>>> getWaiversOnFile(String subjectEmail) async {
-    Uri uri = Uri.parse(serverURL + "/waiver/" + subjectEmail);
+  Future<Map<String, String>> getWaiverOnFile(String subjectEmail, String subjectName) async {
+    Uri uri = Uri.parse(serverURL + "/waiver/" + subjectEmail + "/" + subjectName);
     http.BaseRequest request = new http.Request('GET', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     try {
@@ -193,16 +193,14 @@ class HttpConnector {
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
       if (response.statusCode == 200) {
-        dynamic rawWaivers = body['waivers'];
-        List<Map<String, String>> output = new List<Map<String, String>>();
-        rawWaivers.map((waiver) {
-          Map<String, String> w = new Map<String, String>();
-          w['date'] = waiver['date'];
-          w['subjectName'] = waiver['subjectName'];
-          w['subjectEmail'] = waiver['subjectEmail'];
-          w['waiverId'] = waiver['waiverId'];
-          output.add(w);
-        }).toList();
+        dynamic rawWaiver = body['waiver'];
+        Map<String, String> output = new Map<String, String>();
+        if (rawWaiver != null) {
+          output['date'] = rawWaiver['date'];
+          output['subjectName'] = rawWaiver['subjectName'];
+          output['subjectEmail'] = rawWaiver['subjectEmail'];
+          output['waiverId'] = rawWaiver['waiverId'];
+        }
         return output;
       }
       String errorMessage = body['errorMessage'];

@@ -16,9 +16,10 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
 
   static final _formKey = new GlobalKey<FormState>();
   final Function(Map<String, String>, BuildContext context) onSelect;
-  List<Map<String, String>> _waivers;
-  String _patientEmail;
+  Map<String, String> _waiver;
   Map<String, String> _selectedWaiver;
+  String _patientEmail;
+  String _patientName;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,20 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
       key: _formKey,
       child: Column(
         children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.person),
+            title: TextFormField(
+              initialValue: _patientName,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(labelText: "Patient Name"),
+              onChanged: (String value) {
+                _patientName = value;
+              },
+              validator: (String value) {
+                return FormValidator.isValidName(value);
+              },
+            ),
+          ),
           ListTile(
             leading: Icon(Icons.email),
             title: TextFormField(
@@ -53,46 +68,22 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
           ),
           Builder(
             builder: (BuildContext context) {
-              if (_waivers == null) {
+              if (_waiver == null) {
                 return Container();
-              } else if (_waivers.isEmpty) {
+              } else if (_waiver.keys.length == 0) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text("No Waivers Found"),
                 );
               } else {
-                final double screenHeight = MediaQuery.of(context).size.height;
-                return Padding(
-                  padding: EdgeInsets.only(top: 24.0, bottom: 24.0),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                          width: 1,
-                          style: BorderStyle.solid,
-                        )
-                    ),
-                    child: SizedBox(
-                      height: screenHeight * 0.35,
-                      child: Scrollbar(
-                        child: ListView.builder(
-                          itemCount: _waivers.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Map<String, String> waiver = _waivers[index];
-                            return RadioListTile(
-                              title: Text("Name: ${waiver["subjectName"]}"),
-                              subtitle: Text("Date Signed: ${waiver["date"]}"),
-                              onChanged: (Map<String, String> value) {
-                                _selectWaiver(waiver);
-                              },
-                              groupValue: _selectedWaiver,
-                              value: waiver,
-                            );
-                          },
-                        ),
-                      )
-                    ),
-                  )
+                return RadioListTile(
+                  title: Text("Name: ${_waiver["subjectName"]}"),
+                  subtitle: Text("Date Signed: ${_waiver["date"]}"),
+                  onChanged: (Map<String, String> value) {
+                    _selectWaiver(_waiver);
+                  },
+                  groupValue: _selectedWaiver,
+                  value: _waiver,
                 );
               }
             }
@@ -115,17 +106,17 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
   Future<void> _search() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      List<Map<String, String>> patientWaivers = await _loadWaivers(_patientEmail);
+      Map<String, String> patientWaivers = await _loadWaivers(_patientEmail, _patientName);
       setState(() {
-        _waivers = patientWaivers;
+        _waiver = patientWaivers;
       });
     }
   }
 
-  Future<List<Map<String, String>>> _loadWaivers(String subjectEmail) async {
+  Future<Map<String, String>> _loadWaivers(String subjectEmail, String subjectName) async {
     HttpConnector connector = new HttpConnector.instance();
     try {
-      List<Map<String, String>> result = await connector.getWaiversOnFile(subjectEmail.trim().toLowerCase());
+      Map<String, String> result = await connector.getWaiverOnFile(subjectEmail.trim().toLowerCase(), subjectName.trim());
       return result;
     } on ServerConnectionException catch (e) {
       ErrorDialog dialog = new ErrorDialog(context);

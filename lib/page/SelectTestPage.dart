@@ -243,7 +243,8 @@ class _SelectTestPageState extends State<SelectTestPage> {
   Future<List<dynamic>> loadPatients(String subjectEmail) async {
     HttpConnector connector = new HttpConnector.instance();
     try {
-      List<dynamic> result = await connector.getWaiversOnFile(subjectEmail.trim().toLowerCase());
+//      List<dynamic> result = await connector.getWaiverOnFile(subjectEmail.trim().toLowerCase());
+      List<dynamic> result = List<dynamic>(0);
       return result;
     } on ServerConnectionException catch (e) {
       ErrorDialog dialog = new ErrorDialog(context);
