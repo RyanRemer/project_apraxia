@@ -7,9 +7,9 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/WaiverFormFields.dart';
 import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
-import 'package:project_apraxia/widget/form/WaiverForm.dart';
-import 'package:project_apraxia/widget/form_field/DateFormField.dart';
-import 'package:project_apraxia/widget/form_field/SignatureField.dart';
+import 'package:project_apraxia/widget/form/RepresentativeSignatureForm.dart';
+import 'package:project_apraxia/widget/form/ResearchSubjectForm.dart';
+import 'package:project_apraxia/widget/form/SubjectSignatureForm.dart';
 
 class SignWaiverPage extends StatefulWidget {
   SignWaiverPage({Key key}) : super(key: key);
@@ -38,81 +38,17 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
       ),
       body: ListView(
         children: <Widget>[
-          Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    "Resaerch Subject Info",
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: TextFormField(
-                    initialValue: fields.researchSubjectName,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      labelText: "Research Subject Name",
-                    ),
-                    validator: validator.isValidName,
-                    onSaved: (String value) {
-                      fields.researchSubjectName = value;
-                    },
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.email),
-                  title: TextFormField(
-                    initialValue: fields.researchSubjectEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration:
-                        InputDecoration(labelText: "Research Subject Email"),
-                    validator: validator.isValidName,
-                    onSaved: (String value) {
-                      fields.researchSubjectEmail = value;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: <Widget>[
-              ListTile(
-                title: Text(
-                  "Signature Options",
-                  style: Theme.of(context).textTheme.title,
-                ),
-              ),
-              RadioListTile(
-                title: Text("Research Subject"),
-                groupValue: fields.hasRepresentative,
-                onChanged: (value) {
-                  _formBKey.currentState.save();
-                  setState(() {
-                    fields.hasRepresentative = false;
-                  });
-                },
-                value: false,
-              ),
-              RadioListTile(
-                title: Text("Personal Representative"),
-                groupValue: fields.hasRepresentative,
-                onChanged: (value) {
-                  _formAKey.currentState.save();
-                  setState(() {
-                    fields.hasRepresentative = true;
-                  });
-                },
-                value: true,
-              )
-            ],
-          ),
+          ResearchSubjectForm(formKey: _formKey, fields: fields),
+          _buildSignatureOptions(context),
           fields.hasRepresentative == true
-              ? _buildOptionB(context)
-              : _buildFormA(context),
+              ? RepresentativeSignatureForm(
+                  formKey: _formBKey,
+                  fields: fields,
+                )
+              : SubjectSignatureForm(
+                  formKey: _formAKey,
+                  fields: fields,
+                ),
           ButtonBar(
             children: <Widget>[
               RaisedButton(
@@ -123,31 +59,59 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
                 onPressed: () => submitForm(context),
               )
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
+  Column _buildSignatureOptions(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(
+            "Signature Options",
+            style: Theme.of(context).textTheme.title,
+          ),
+        ),
+        RadioListTile(
+          title: Text("Research Subject"),
+          groupValue: fields.hasRepresentative,
+          onChanged: (value) {
+            _formBKey.currentState.save();
+            setState(() {
+              fields.hasRepresentative = false;
+            });
+          },
+          value: false,
+        ),
+        RadioListTile(
+          title: Text("Personal Representative"),
+          groupValue: fields.hasRepresentative,
+          onChanged: (value) {
+            _formAKey.currentState.save();
+            setState(() {
+              fields.hasRepresentative = true;
+            });
+          },
+          value: true,
+        )
+      ],
+    );
+  }
+
   void submitForm(BuildContext context) {
-    // validate forms
-    bool validated = _formKey.currentState.validate();
-    if (fields.hasRepresentative) {
-      validated = validated && _formBKey.currentState.validate();
-    } else {
-      validated = validated && _formAKey.currentState.validate();
-    }
-
-    // save forms
-    if (validated) {
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      if (fields.hasRepresentative) {
-        _formBKey.currentState.save();
-      } else {
-        _formAKey.currentState.save();
-      }
 
-      sendWaiver();
+      if (fields.hasRepresentative && _formBKey.currentState.validate()) {
+        _formBKey.currentState.save();
+        sendWaiver();
+      } else if (fields.hasRepresentative == false &&
+          _formAKey.currentState.validate()) {
+        _formAKey.currentState.save();
+        sendWaiver();
+      }
     }
   }
 
@@ -169,6 +133,16 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
             fields.researchSubjectEmail.trim().toLowerCase(),
             fields.getFormattedSubjectDate());
       }
+    } on ServerConnectionException {
+      ErrorDialog dialog = new ErrorDialog(context);
+      dialog.show('Error Connecting to Server',
+          'If the problem persists, back out and use local processing.');
+    } on InternalServerException catch (e) {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show(
+          "Error Generating Waiver",
+          e.message +
+              "\n\nIf the problem persists, back out and use local processing.");
     } catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show(
@@ -181,8 +155,8 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
     showSentWaiverDialog();
   }
 
-  void showSentWaiverDialog() {
-    showDialog(
+  Future<void> showSentWaiverDialog() async {
+    await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
@@ -194,12 +168,14 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
               FlatButton(
                 child: Text("Continue Test"),
                 onPressed: () {
-                  goToSurveyPage(context);
+                  Navigator.pop(context);
                 },
               )
             ],
           );
         });
+
+    goToSurveyPage(context);
   }
 
   Future<void> goToSurveyPage(BuildContext context) async {
@@ -209,109 +185,14 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
     } else {
       wsdCalculator = new LocalWSDCalculator();
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new SurveyPage(
-        wsdCalculator: wsdCalculator,
-      );
-    }));
-  }
-
-  Form _buildOptionB(BuildContext context) {
-    return Form(
-      key: _formBKey,
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text(
-              "Personal Representative Signature",
-              style: Theme.of(context).textTheme.title,
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: TextFormField(
-              initialValue: fields.representativeName,
-              textCapitalization: TextCapitalization.words,
-              decoration:
-                  InputDecoration(labelText: "Personal Representative Name"),
-              validator: validator.isValidName,
-              onSaved: (String value) {
-                fields.representativeName = value;
-              },
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: TextFormField(
-              initialValue: fields.representativeRelationship,
-              textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(labelText: "Relationship"),
-              validator: validator.isValidRelationship,
-              onSaved: (String value) {
-                fields.representativeRelationship = value;
-              },
-            ),
-          ),
-          ListTile(
-            subtitle: Text(
-              "I am giving this permission by signing this HIPAA Authorization on behalf of the Research Participant.",
-            ),
-          ),
-          Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SignatureField(
-                value: fields.representativeSignatureFile,
-                validator: validator.isValidSignature,
-                onSaved: (String value) {
-                  fields.representativeSignatureFile = value;
-                },
-              )),
-          DateFormField(
-            initialValue: fields.representativeDate,
-            firstDate: DateTime(now.year, 1),
-            lastDate: DateTime(now.year + 1),
-            validator: validator.isValidDate,
-            onSaved: (DateTime value) {
-              fields.researchSubjectDate = value;
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  DateTime get now => new DateTime.now();
-
-  Form _buildFormA(BuildContext context) {
-    return Form(
-      key: _formAKey,
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text(
-              "Research Subject Signature",
-              style: Theme.of(context).textTheme.title,
-            ),
-          ),
-          Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SignatureField(
-                value: fields.researchSubjectSignatureFile,
-                validator: validator.isValidSignature,
-                onSaved: (String value) {
-                  fields.researchSubjectSignatureFile = value;
-                },
-              )),
-          DateFormField(
-            initialValue: fields.researchSubjectDate,
-            firstDate: DateTime(now.year, 1),
-            lastDate: DateTime(now.year + 1),
-            validator: validator.isValidDate,
-            onSaved: (DateTime value) {
-              fields.researchSubjectDate = value;
-            },
-          )
-        ],
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return new SurveyPage(
+            wsdCalculator: wsdCalculator,
+          );
+        },
       ),
     );
   }

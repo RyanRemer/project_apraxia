@@ -24,31 +24,33 @@ class _SignatureFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state.hasError) {
-      return Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              state.errorText,
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-          RaisedButton(
-            child: Text("Sign Again"),
-            onPressed: () => sign(context),
-          ),
-        ],
-      );
-    }
-    if (state.value != null) {
-      return Image.file(new File(state.value));
-    } else {
-      return RaisedButton(
-        child: Text("Sign"),
-        onPressed: () => sign(context),
-      );
-    }
+    return Column(
+      children: <Widget>[
+        state.hasError
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  state.errorText,
+                  style: TextStyle(color: Colors.red),
+                ),
+              )
+            : Container(),
+        state.value != null
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  child: Image.file(
+                    new File(state.value),
+                  ),
+                  onTap: () => sign(context),
+                ),
+              )
+            : RaisedButton(
+                child: Text("Sign"),
+                onPressed: () => sign(context),
+              ),
+      ],
+    );
   }
 
   Future<void> sign(BuildContext context) async {
