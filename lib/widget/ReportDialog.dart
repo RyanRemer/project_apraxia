@@ -14,7 +14,6 @@ class ReportDialog extends StatefulWidget {
 
 class _ReportDialogState extends State<ReportDialog> {
   final HttpConnector _connector = new HttpConnector.instance();
-  final FormValidator formValidator = new FormValidator();
   static GlobalKey<FormState> _formKey = new GlobalKey();
   String _name = "";
   String _email;
@@ -56,7 +55,7 @@ class _ReportDialogState extends State<ReportDialog> {
                     if (value == "") {
                       return null;
                     }
-                    return formValidator.isValidName(value);
+                    return FormValidator.isValidName(value);
                   },
                 ),
                 TextFormField(
@@ -68,7 +67,7 @@ class _ReportDialogState extends State<ReportDialog> {
                     _email = value;
                   },
                   validator: (String value) {
-                    return formValidator.isValidEmail(value);
+                    return FormValidator.isValidEmail(value);
                   },
                 ),
               ]

@@ -13,7 +13,6 @@ class SubjectSignatureForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formAKey;
   final WaiverFormFields fields;
-  final FormValidator validator = new FormValidator();
   final DateTime now = new DateTime.now();
 
   @override
@@ -32,7 +31,7 @@ class SubjectSignatureForm extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: SignatureField(
                 value: fields.researchSubjectSignatureFile,
-                validator: validator.isValidSignature,
+                validator: FormValidator.isValidSignature,
                 onSaved: (String value) {
                   fields.researchSubjectSignatureFile = value;
                 },
@@ -41,7 +40,7 @@ class SubjectSignatureForm extends StatelessWidget {
             initialValue: fields.researchSubjectDate,
             firstDate: DateTime(now.year, 1),
             lastDate: DateTime(now.year + 1),
-            validator: validator.isValidDate,
+            validator: FormValidator.isValidDate,
             onSaved: (DateTime value) {
               fields.researchSubjectDate = value;
             },

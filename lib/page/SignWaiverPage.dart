@@ -23,7 +23,6 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
   static final _formKey = new GlobalKey<FormState>();
   static final _formAKey = new GlobalKey<FormState>();
   static final _formBKey = new GlobalKey<FormState>();
-  final FormValidator validator = new FormValidator();
 
   @override
   void initState() {

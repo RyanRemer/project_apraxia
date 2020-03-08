@@ -13,7 +13,6 @@ class RepresentativeSignatureForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formBKey;
   final WaiverFormFields fields;
-  final FormValidator validator = new FormValidator();
   final DateTime now = DateTime.now();
 
   @override
@@ -35,7 +34,7 @@ class RepresentativeSignatureForm extends StatelessWidget {
               textCapitalization: TextCapitalization.words,
               decoration:
                   InputDecoration(labelText: "Personal Representative Name"),
-              validator: validator.isValidName,
+              validator: FormValidator.isValidName,
               onSaved: (String value) {
                 fields.representativeName = value;
               },
@@ -47,7 +46,7 @@ class RepresentativeSignatureForm extends StatelessWidget {
               initialValue: fields.representativeRelationship,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: "Relationship"),
-              validator: validator.isValidRelationship,
+              validator: FormValidator.isValidRelationship,
               onSaved: (String value) {
                 fields.representativeRelationship = value;
               },
@@ -62,7 +61,7 @@ class RepresentativeSignatureForm extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: SignatureField(
                 value: fields.representativeSignatureFile,
-                validator: validator.isValidSignature,
+                validator: FormValidator.isValidSignature,
                 onSaved: (String value) {
                   fields.representativeSignatureFile = value;
                 },
@@ -71,7 +70,7 @@ class RepresentativeSignatureForm extends StatelessWidget {
             initialValue: fields.representativeDate,
             firstDate: DateTime(now.year, 1),
             lastDate: DateTime(now.year + 1),
-            validator: validator.isValidDate,
+            validator: FormValidator.isValidDate,
             onSaved: (DateTime value) {
               fields.researchSubjectDate = value;
             },

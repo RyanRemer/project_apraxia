@@ -17,7 +17,6 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final SignUpRequest signUpRequest = new SignUpRequest.test();
-  final FormValidator formValidator = new FormValidator();
   final Auth _auth = new Auth.instance();
   final SignUpRequest _signUpRequest = new SignUpRequest.test();
 
@@ -40,7 +39,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 _signUpRequest.attributes.email = email;
               },
               validator: (String email) {
-                return formValidator.isValidEmail(email);
+                return FormValidator.isValidEmail(email);
               },
             ),
           ),
@@ -54,7 +53,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 hintText: "Password1",
               ),
               validator: (String password) {
-                return formValidator.isValidPassword(password);
+                return FormValidator.isValidPassword(password);
               },
               onSaved: (String password) {
                 _signUpRequest.password = password;
@@ -71,7 +70,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 hintText: "First Last",
               ),
               validator: (String name) {
-                return formValidator.isValidName(name);
+                return FormValidator.isValidName(name);
               },
               onSaved: (String name) {
                 _signUpRequest.attributes.name = name;
@@ -112,7 +111,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 _signUpRequest.attributes.address = address;
               },
               validator: (String address) {
-                return formValidator.isValidAddress(address);
+                return FormValidator.isValidAddress(address);
               },
             ),
           ),

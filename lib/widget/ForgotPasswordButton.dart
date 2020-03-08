@@ -16,7 +16,6 @@ class ForgotPasswordButton extends StatefulWidget {
 
 class _ForgotPasswordButtonState extends State<ForgotPasswordButton> {
   final Auth _auth = new Auth.instance();
-  final FormValidator formValidator = new FormValidator();
   static GlobalKey<FormState> _formKey = new GlobalKey();
   String _email;
 
@@ -61,7 +60,7 @@ class _ForgotPasswordButtonState extends State<ForgotPasswordButton> {
                         _email = value;
                       },
                       validator: (String value) {
-                        return formValidator.isValidEmail(value);
+                        return FormValidator.isValidEmail(value);
                       },
                     ),
                   ]

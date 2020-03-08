@@ -11,7 +11,6 @@ class ResearchSubjectForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey;
   final WaiverFormFields fields;
-  final FormValidator validator = new FormValidator();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class ResearchSubjectForm extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: "Research Subject Name",
               ),
-              validator: validator.isValidName,
+              validator: FormValidator.isValidName,
               onSaved: (String value) {
                 fields.researchSubjectName = value;
               },
@@ -46,7 +45,7 @@ class ResearchSubjectForm extends StatelessWidget {
               keyboardType: TextInputType.emailAddress,
               decoration:
                   InputDecoration(labelText: "Research Subject Email"),
-              validator: validator.isValidName,
+              validator: FormValidator.isValidName,
               onSaved: (String value) {
                 fields.researchSubjectEmail = value;
               },

@@ -19,7 +19,6 @@ class SurveyForm extends StatefulWidget {
 
 class _SurveyFormState extends State<SurveyForm> {
   final SurveyFormFields fields = new SurveyFormFields();
-  final FormValidator formValidator = new FormValidator();
   bool loading = false;
   List<String> _genderOptions = ['Female', 'Male', 'Other', 'Prefer not to disclose'];
   bool _doNotDiscloseAge = false;
@@ -66,7 +65,7 @@ class _SurveyFormState extends State<SurveyForm> {
                 keyboardType: TextInputType.numberWithOptions(),
                 validator: (String age) {
                   if (!_doNotDiscloseAge) {
-                    return formValidator.isValidAge(age);
+                    return FormValidator.isValidAge(age);
                   }
                   return null;
                 },
@@ -164,7 +163,7 @@ class _SurveyFormState extends State<SurveyForm> {
                   });
                 },
                 validator: (String s) {
-                  return formValidator.isValidImpression(s);
+                  return FormValidator.isValidImpression(s);
                 },
               ),
             ),

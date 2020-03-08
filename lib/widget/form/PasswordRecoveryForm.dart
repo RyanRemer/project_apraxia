@@ -7,8 +7,8 @@ import 'package:project_apraxia/controller/Auth.dart';
 class PasswordRecoveryForm extends StatelessWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
   final Auth _auth = new Auth.instance();
-  final PasswordRecoveryRequest _passwordRecoveryRequest = new PasswordRecoveryRequest();
-  final FormValidator formValidator = new FormValidator();
+  final PasswordRecoveryRequest _passwordRecoveryRequest =
+      new PasswordRecoveryRequest();
 
   PasswordRecoveryForm({Key key}) : super(key: key);
 
@@ -38,7 +38,8 @@ class PasswordRecoveryForm extends StatelessWidget {
               onSaved: (String password) {
                 _passwordRecoveryRequest.newPassword = password;
               },
-              validator: (String password) => formValidator.isValidPassword(password),
+              validator: (String password) =>
+                  FormValidator.isValidPassword(password),
             ),
           ),
           RaisedButton(
@@ -55,35 +56,34 @@ class PasswordRecoveryForm extends StatelessWidget {
       _formKey.currentState.save();
 
       try {
-        await _auth.confirmNewPassword(_passwordRecoveryRequest.verificationCode, _passwordRecoveryRequest.newPassword);
-        showDialog (
-          context: context,
-          builder: (context) =>
-              AlertDialog(
-                title: Text("Success"),
-                content: Text("You have successfully changed your password."),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("Return to sign in"),
-                    onPressed: () => returnToSignIn(context),
-                  )
-                ],
-              )
-        );
+        await _auth.confirmNewPassword(
+            _passwordRecoveryRequest.verificationCode,
+            _passwordRecoveryRequest.newPassword);
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text("Success"),
+                  content: Text("You have successfully changed your password."),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Return to sign in"),
+                      onPressed: () => returnToSignIn(context),
+                    )
+                  ],
+                ));
       } on CognitoClientException catch (error) {
         showDialog(
           context: context,
-          builder: (context) =>
-              AlertDialog(
-                title: Text("Confirmation Error"),
-                content: Text(error.message),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("Okay"),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
+          builder: (context) => AlertDialog(
+            title: Text("Confirmation Error"),
+            content: Text(error.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          ),
         );
       }
     }

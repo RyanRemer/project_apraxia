@@ -6,28 +6,28 @@ class FormValidator {
   static final int _zeroValue = "0".codeUnitAt(0);
   static final int _nineValue = "9".codeUnitAt(0);
 
-  bool isAlphabetic(String s) {
+  static bool isAlphabetic(String s) {
     int c = s.codeUnitAt(0);
     return (c >= _capAValue && c <= _capZValue ||
         c >= _lowAValue && c <= _lowZValue);
   }
 
-  bool isNumeric(String s) {
+  static bool isNumeric(String s) {
     int c = s.codeUnitAt(0);
     return (c >= _zeroValue && c <= _nineValue);
   }
 
-  bool isUpperCase(String s) {
+  static bool isUpperCase(String s) {
     int c = s.codeUnitAt(0);
     return (c >= _capAValue && c <= _capZValue);
   }
 
-  bool isLowerCase(String s) {
+  static bool isLowerCase(String s) {
     int c = s.codeUnitAt(0);
     return (c >= _lowAValue && c <= _lowZValue);
   }
 
-  String isValidEmail(String s) {
+  static String isValidEmail(String s) {
     if (s == null ||
         !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(s)) {
@@ -36,14 +36,14 @@ class FormValidator {
     return null;
   }
 
-  String isValidName(String s) {
+  static String isValidName(String s) {
     if (s == null || s.isEmpty) {
       return "Name must not be empty.";
     }
     return null;
   }
 
-  String isValidPassword(String s) {
+  static String isValidPassword(String s) {
     String output = "";
     if (s == null || s.length < 8) {
       output += "<8 characters.";
@@ -87,7 +87,7 @@ class FormValidator {
     return output;
   }
 
-  String isValidPhoneNumber(String s) {
+  static String isValidPhoneNumber(String s) {
     String output = "";
     if (s == null || s.length != 10) {
       output += "Must be 10 digits.";
@@ -108,35 +108,35 @@ class FormValidator {
     return output;
   }
 
-  String isValidAddress(String s) {
+  static String isValidAddress(String s) {
     if (s == null || s.isEmpty) {
       return "Address must not be empty.";
     }
     return null;
   }
 
-  String isValidSignature(String s) {
+  static String isValidSignature(String s) {
     if (s == null || s.isEmpty) {
       return "There must be a signature.";
     }
     return null;
   }
 
-  String isValidRelationship(String s) {
+  static String isValidRelationship(String s) {
     if (s == null || s.isEmpty) {
       return "Must be a valid relationship.";
     }
     return null;
   }
 
-  String isValidDate(DateTime dateTime) {
+  static String isValidDate(DateTime dateTime) {
     if (dateTime == null) {
       return "Date must not be empty";
     }
     return null;
   }
 
-  String isValidAge(String s) {
+  static String isValidAge(String s) {
     if (s == null || s.trim() == "") {
       return "Age must not be empty";
     }
@@ -153,7 +153,7 @@ class FormValidator {
     }
   }
 
-  String isValidImpression(String s) {
+  static String isValidImpression(String s) {
     if (s == null || s.trim() == "") {
       return null;
     }
