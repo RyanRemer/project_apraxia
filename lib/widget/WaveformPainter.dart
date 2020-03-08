@@ -31,11 +31,10 @@ class WaveformPainter extends CustomPainter {
   List<double> normalizeData(List<double> data) {
     List<double> newData = new List();
 
-    var maxValue = data.reduce(max);
+    var maxValue = 0.5;
     
     for (var i = 0; i < data.length; i++) {
       var currVal = data[i];
-      // divide all by the max
       newData.add(currVal / maxValue);
     }
 

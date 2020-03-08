@@ -54,7 +54,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
             Expanded(
               child: isRecording
                   ? FlatButton(
-                      color: AppTheme.of(context).accent,
+                      color: AppTheme.of(context).primaryLight,
                       shape: CircleBorder(),
                       child: Icon(
                         Icons.more_horiz,
@@ -63,7 +63,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
                       ),
                       onPressed: () {})
                   : FlatButton(
-                      color: AppTheme.of(context).accent,
+                      color: AppTheme.of(context).primaryLight,
                       shape: CircleBorder(),
                       child: Icon(
                         Icons.mic,
@@ -80,7 +80,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "If there are any spikes in amplitude then try again.\nOtherwise press continue.",
+                            "If there are spikes, record again.\nOtherwise press continue.",
                             textAlign: TextAlign.center,
                           ),
                         ),
