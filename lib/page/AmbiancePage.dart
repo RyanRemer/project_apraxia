@@ -56,7 +56,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
             Expanded(
               child: isRecording
                   ? FlatButton(
-                      color: AppTheme.of(context).primaryLight,
+                      color: AppTheme.of(context).primary,
                       shape: CircleBorder(),
                       child: Icon(
                         Icons.more_horiz,
@@ -65,7 +65,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
                       ),
                       onPressed: () {})
                   : FlatButton(
-                      color: AppTheme.of(context).primaryLight,
+                      color: AppTheme.of(context).primary,
                       shape: CircleBorder(),
                       child: Icon(
                         Icons.mic,
