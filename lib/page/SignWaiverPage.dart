@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
@@ -132,6 +131,9 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
             fields.researchSubjectEmail.trim().toLowerCase(),
             fields.getFormattedSubjectDate());
       }
+
+      showSentWaiverDialog();
+
     } on ServerConnectionException {
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show('Error Connecting to Server',
@@ -142,6 +144,7 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
           "Error Generating Waiver",
           e.message +
               "\n\nIf the problem persists, back out and use local processing.");
+      throw(e);
     } catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show(
@@ -150,8 +153,6 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
       );
       throw (error);
     }
-
-    showSentWaiverDialog();
   }
 
   Future<void> showSentWaiverDialog() async {

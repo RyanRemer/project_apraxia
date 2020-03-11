@@ -19,8 +19,12 @@ class SurveyForm extends StatefulWidget {
 
 class _SurveyFormState extends State<SurveyForm> {
   final SurveyFormFields fields = new SurveyFormFields();
-  bool loading = false;
-  List<String> _genderOptions = ['Female', 'Male', 'Other', 'Prefer not to disclose'];
+  List<String> _genderOptions = [
+    'Female',
+    'Male',
+    'Other',
+    'Prefer not to disclose'
+  ];
   bool _doNotDiscloseAge = false;
   bool _aphasia = false;
   bool _apraxia = false;
@@ -33,51 +37,45 @@ class _SurveyFormState extends State<SurveyForm> {
   Widget build(BuildContext context) {
     return Form(
       key: SurveyForm._formKey,
-      child: loading
-      ? Expanded(
-        child: Center(child: CircularProgressIndicator(),)
-      )
-      : Expanded(
-              child: ListView(
+      child: Expanded(
+        child: ListView(
           children: <Widget>[
             ListTile(
               leading: Text("Patient gender:"),
               title: DropdownButton<String>(
-                hint: Text("Please select an option"),
-                items: _genderOptions.map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                value: fields.gender,
-                onChanged: (String value) {
-                  setState(() {
-                    fields.gender = value;
-                  });
-                }
-              ),
+                  hint: Text("Please select an option"),
+                  items: _genderOptions.map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                  value: fields.gender,
+                  onChanged: (String value) {
+                    setState(() {
+                      fields.gender = value;
+                    });
+                  }),
             ),
             ListTile(
               leading: Text("Patient age:"),
               title: TextFormField(
-                initialValue: fields.age,
-                keyboardType: TextInputType.numberWithOptions(),
-                validator: (String age) {
-                  if (!_doNotDiscloseAge) {
-                    return FormValidator.isValidAge(age);
-                  }
-                  return null;
-                },
-                onChanged: (String value) {
-                  setState(() {
+                  initialValue: fields.age,
+                  keyboardType: TextInputType.numberWithOptions(),
+                  validator: (String age) {
+                    if (!_doNotDiscloseAge) {
+                      return FormValidator.isValidAge(age);
+                    }
+                    return null;
+                  },
+                  onChanged: (String value) {
+                    setState(() {
+                      fields.age = value;
+                    });
+                  },
+                  onSaved: (String value) {
                     fields.age = value;
-                  });
-                },
-                onSaved: (String value) {
-                  fields.age = value;
-                }
-              ),
+                  }),
             ),
             ListTile(
               title: Text("Patient does not wish to disclose age:"),
@@ -93,11 +91,8 @@ class _SurveyFormState extends State<SurveyForm> {
                 },
               ),
             ),
-
             ListTile(
-              leading: Text("Clinical impression (check all that apply):")
-            ),
-
+                leading: Text("Clinical impression (check all that apply):")),
             ListTile(
               title: Text("Aphasia"),
               trailing: Checkbox(
@@ -141,32 +136,33 @@ class _SurveyFormState extends State<SurveyForm> {
               ),
             ),
             ListTile(
-              title: Text("Other (specify)"),
-              trailing: Checkbox(
-                value: _other,
-                onChanged: (bool value) {
-                  setState(() {
-                    _other = value;
-                    if (value) {
-                      _none = false;
-                    }
-                  });
-                },
-              )
-            ),
-            !_other ? Container() : ListTile(
-              title: TextFormField(
-                initialValue: _otherImpression,
-                onChanged: (String value) {
-                  setState(() {
-                    _otherImpression = value;
-                  });
-                },
-                validator: (String s) {
-                  return FormValidator.isValidImpression(s);
-                },
-              ),
-            ),
+                title: Text("Other (specify)"),
+                trailing: Checkbox(
+                  value: _other,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _other = value;
+                      if (value) {
+                        _none = false;
+                      }
+                    });
+                  },
+                )),
+            !_other
+                ? Container()
+                : ListTile(
+                    title: TextFormField(
+                      initialValue: _otherImpression,
+                      onChanged: (String value) {
+                        setState(() {
+                          _otherImpression = value;
+                        });
+                      },
+                      validator: (String s) {
+                        return FormValidator.isValidImpression(s);
+                      },
+                    ),
+                  ),
             ListTile(
               title: Text("None"),
               trailing: Checkbox(
@@ -184,13 +180,20 @@ class _SurveyFormState extends State<SurveyForm> {
                 },
               ),
             ),
-            RaisedButton(
-              child: Text("Submit"),
-              onPressed: () => this.submit(context),
+            ButtonBar(
+              children: <Widget>[
+                RaisedButton(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Submit"),
+                  ),
+                  onPressed: () => this.submit(context),
+                )
+              ],
             )
           ],
         ),
-      )
+      ),
     );
   }
 
@@ -223,16 +226,23 @@ class _SurveyFormState extends State<SurveyForm> {
       HttpConnector connector = new HttpConnector.instance();
 
       try {
-        String evalId = await connector.createEvaluation(fields.age, gender, fields.impression);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AmbiancePage(wsdCalculator: widget.wsdCalculator, evalId: evalId,)));
+        String evalId = await connector.createEvaluation(
+            fields.age, gender, fields.impression);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AmbiancePage(
+                      wsdCalculator: widget.wsdCalculator,
+                      evalId: evalId,
+                    )));
       } on ServerConnectionException {
         ErrorDialog errorDialog = new ErrorDialog(context);
         errorDialog.show("Error Connecting to Server",
-            "The server is currently down. Switching to local processing.");
+            "The server is currently down.");
       } on InternalServerException {
         ErrorDialog errorDialog = new ErrorDialog(context);
         errorDialog.show("Error Connecting to Server",
-            "An unexpected server error occurred. Switching to local processing.");
+            "An unexpected server error occurred.");
       }
     }
   }

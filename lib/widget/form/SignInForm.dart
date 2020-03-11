@@ -1,9 +1,9 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/model/SignInRequest.dart';
-import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
+import 'package:project_apraxia/page/PasswordRecoveryPage.dart';
 import 'package:project_apraxia/page/SignUpPage.dart';
 import 'package:project_apraxia/widget/ForgotPasswordButton.dart';
 
@@ -88,7 +88,7 @@ class SignInForm extends StatelessWidget {
       _formKey.currentState.save();
       try {
         await _auth.signIn(signInRequest.email, signInRequest.password);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LandingPage()));
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
           showDialog(

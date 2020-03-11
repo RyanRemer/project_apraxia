@@ -40,7 +40,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
               children: <Widget>[
                 Text(" - Test is done on the local device"),
                 Text(" - HIPAA waiver is not required"),
-                Text(" - Audio processing is limited by the physical device"),
+                Text(" - Audio processing is limited and less accurate"),
               ],
             ),
             actions: <Widget>[
@@ -61,6 +61,7 @@ class _SelectTestPageState extends State<SelectTestPage> {
                 Text(" - Audio processing done on a secure server"),
                 Text(" - HIPAA waiver is required"),
                 Text(" - Client data is shared for research purposes"),
+                Text(" - Superior audio processing"),
               ],
             ),
             actions: <Widget>[

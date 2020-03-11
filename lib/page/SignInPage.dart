@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/page/LandingPage.dart';
-import 'package:project_apraxia/page/SignUpPage.dart';
-import 'package:project_apraxia/widget/form/Logo.dart';
+import 'package:project_apraxia/widget/Logo.dart';
 import 'package:project_apraxia/widget/form/SignInForm.dart';
 
 class SignInPage extends StatefulWidget {

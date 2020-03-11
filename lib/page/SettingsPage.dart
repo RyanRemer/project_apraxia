@@ -54,7 +54,10 @@ class SettingsPage extends StatelessWidget {
       return [
         UpdateUserForm(),
         CustomPromptLoader(),
-        InvalidateWaiverForm()
+        Padding(
+          padding: EdgeInsets.all(32.0),
+          child: InvalidateWaiverForm()
+        )
       ];
     }
     else {

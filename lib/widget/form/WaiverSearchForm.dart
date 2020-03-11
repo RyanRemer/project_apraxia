@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/controller/FormValidator.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
-import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
-import 'package:project_apraxia/model/Waiver.dart';
-import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 class WaiverSearchForm extends StatefulWidget {
-  WaiverSearchForm({Key key}) : super(key: key);
+  final Function(Map<String, String>, BuildContext context) onSelect;
+  WaiverSearchForm({Key key, @required this.onSelect}) : super(key: key);
 
   @override
-  _WaiverSearchFormState createState() => _WaiverSearchFormState();
+  _WaiverSearchFormState createState() => _WaiverSearchFormState(onSelect: this.onSelect);
 }
 
 class _WaiverSearchFormState extends State<WaiverSearchForm> {
+  _WaiverSearchFormState({@required this.onSelect});
+
   static final _formKey = new GlobalKey<FormState>();
-  List<Waiver> waivers;
-  String _patientName;
+  final Function(Map<String, String>, BuildContext context) onSelect;
+  Map<String, String> _waiver;
+  Map<String, String> _selectedWaiver;
   String _patientEmail;
+  String _patientName;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +31,14 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
             leading: Icon(Icons.person),
             title: TextFormField(
               initialValue: _patientName,
+              keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: "Patient Name"),
-              onChanged: (String name) {
-                _patientName = name;
+              onChanged: (String value) {
+                _patientName = value;
+              },
+              validator: (String value) {
+                return FormValidator.isValidName(value);
               },
             ),
           ),
@@ -44,6 +51,9 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
               onChanged: (String email) {
                 _patientEmail = email;
               },
+              validator: (String value) {
+                return FormValidator.isValidEmail(value);
+              },
             ),
           ),
           ButtonBar(
@@ -53,75 +63,62 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Search"),
                 ),
-                onPressed: search,
+                onPressed: _search,
               ),
             ],
           ),
           Builder(
             builder: (BuildContext context) {
-              if (waivers == null) {
+              if (_waiver == null) {
                 return Container();
-              } else if (waivers.isEmpty) {
+              } else if (_waiver.keys.length == 0) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text("No Waivers Found"),
                 );
               } else {
-                return Column(
-                  children: waivers.map((waiver) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: Icon(Icons.person),
-                            title: Text(
-                                "${waiver.subjectName}\n${waiver.subjectEmail}"),
-                            onTap: () => selectWaiver(waiver),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                return RadioListTile(
+                  title: Text("Name: ${_waiver["subjectName"]}"),
+                  subtitle: Text("Date Signed: ${_waiver["date"]}"),
+                  onChanged: (Map<String, String> value) {
+                    _selectWaiver(_waiver);
+                  },
+                  groupValue: _selectedWaiver,
+                  value: _waiver,
                 );
               }
-            },
+            }
           ),
         ],
       ),
     );
   }
 
-  void selectWaiver(Waiver waiver) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return SurveyPage(
-        wsdCalculator: new RemoteWSDCalculator(),
-      );
-    }));
+  void _selectWaiver(Map<String, String> waiver) {
+    setState(() {
+      _selectedWaiver = waiver;
+    });
+    onSelect(waiver, context);
+    setState(() {
+      _selectedWaiver = null;
+    });
   }
 
-  Future<void> search() async {
+  Future<void> _search() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
-      var patientWaviers = await loadWaivers(_patientName, _patientEmail);
+      Map<String, String> patientWaivers = await _loadWaivers(_patientEmail, _patientName);
       setState(() {
-        waivers = patientWaviers;
+        _waiver = patientWaivers;
       });
     }
   }
 
-  Future<List<Waiver>> loadWaivers(
-      String subjectName, String subjectEmail) async {
+  Future<Map<String, String>> _loadWaivers(String subjectEmail, String subjectName) async {
     HttpConnector connector = new HttpConnector.instance();
     try {
-      List waiverMaps = await connector.getWaiversOnFile(
-          subjectName.trim(), subjectEmail.trim().toLowerCase());
-
-      return List<Waiver>.generate(waiverMaps.length, (index) {
-        return Waiver.fromMap(waiverMaps[index]);
-      });
+      Map<String, String> result = await connector.getWaiverOnFile(subjectEmail.trim().toLowerCase(), subjectName.trim());
+      return result;
     } on ServerConnectionException catch (e) {
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show('Error Contacting Server', e.message);

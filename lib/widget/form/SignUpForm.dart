@@ -88,7 +88,8 @@ class _SignUpFormState extends State<SignUpForm> {
               formatInput: true,
               countries: ['US', 'CA'],
               initialCountry2LetterCode: 'US',
-              textFieldController: TextEditingController(text: _signUpRequest.attributes.phoneNumber.substring(2)),
+              textFieldController: TextEditingController(
+                  text: _signUpRequest.attributes.phoneNumber.substring(2)),
               inputDecoration: InputDecoration(
                 border: UnderlineInputBorder(),
                 hintText: '123-456-7890',
@@ -136,11 +137,11 @@ class _SignUpFormState extends State<SignUpForm> {
       SignUpForm._formKey.currentState.save();
       try {
         await _auth.signUp(
-            _signUpRequest.attributes.email,
-            _signUpRequest.password,
-            _signUpRequest.attributes.name,
-            _signUpRequest.attributes.address,
-            _signUpRequest.attributes.phoneNumber,
+          _signUpRequest.attributes.email,
+          _signUpRequest.password,
+          _signUpRequest.attributes.name,
+          _signUpRequest.attributes.address,
+          _signUpRequest.attributes.phoneNumber,
         );
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
@@ -179,6 +180,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void goToSignIn(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
   }
 }

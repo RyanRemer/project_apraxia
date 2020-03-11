@@ -10,6 +10,8 @@ import 'package:project_apraxia/page/Waveform.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
+import 'Waveform.dart';
+
 class AmbiancePage extends StatefulWidget {
   final IWSDCalculator wsdCalculator;
   final String evalId;

@@ -6,7 +6,7 @@ import 'package:project_apraxia/page/SettingsPage.dart';
 import 'package:project_apraxia/page/SelectTestPage.dart';
 import 'package:project_apraxia/page/HowToPage.dart';
 import 'package:project_apraxia/controller/Auth.dart';
-import 'package:project_apraxia/widget/form/Logo.dart';
+import 'package:project_apraxia/widget/Logo.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -102,7 +102,7 @@ void goToHowToPage(BuildContext context) {
 
 void goToAboutPage(BuildContext context) {
   Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => AboutPage()));
+    .push(MaterialPageRoute(builder: (context) => AboutPage()));
 }
 
 void signOut(BuildContext context) {
