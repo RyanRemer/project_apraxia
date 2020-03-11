@@ -55,6 +55,7 @@ class HowToPage extends StatelessWidget {
                             color: Colors.black,
                           )
                         ),
+                        //TODO: Update Page
                         child: Image(
                           image: AssetImage('assets/help/recording_page.png'),
                           width: imageWidth,
@@ -62,8 +63,8 @@ class HowToPage extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        top: imageHeight * 0.025,
-                        right: imageWidth * 0.046,
+                        top: imageHeight * 0.03,
+                        right: imageWidth * 0.155,
                         child: Tooltip(
                           message: "Plays someone speaking the prompt for the word",
                           preferBelow: false,
@@ -87,7 +88,7 @@ class HowToPage extends StatelessWidget {
                           message: "Selects the best recording",
                           preferBelow: false,
                           child: Container(
-                            height: imageWidth * 0.1,
+                            height: imageWidth * 0.12,
                             width: imageWidth * 0.1,
                             decoration: BoxDecoration(
                               border: Border.all(
@@ -100,8 +101,8 @@ class HowToPage extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        top: imageHeight * 0.14,
-                        right: imageWidth * 0.046,
+                        top: imageHeight * 0.145,
+                        right: imageWidth * 0.155,
                         child: Tooltip(
                           message: "Plays the recording of attempt",
                           preferBelow: false,
@@ -119,7 +120,7 @@ class HowToPage extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        bottom: imageHeight * 0.0125,
+                        bottom: imageHeight * 0.02,
                         right: imageWidth * 0.07,
                         child: Tooltip(
                           message: "Moves to the next prompt",
@@ -138,8 +139,8 @@ class HowToPage extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        bottom: imageHeight * 0.0125,
-                        left: imageWidth * 0.07,
+                        bottom: imageHeight * 0.02,
+                        left: imageWidth * 0.09,
                         child: Tooltip(
                           message: "Moves to the previous prompt",
                           preferBelow: false,

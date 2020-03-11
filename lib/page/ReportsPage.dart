@@ -85,7 +85,7 @@ class _ReportsPageState extends State<ReportsPage> {
         ErrorDialog errorDialog = new ErrorDialog(context);
         errorDialog.show("Error Connecting to Server",
             "The server is currently down. Switching to local processing.");
-      } on InternalServerException catch(e) {
+      } on InternalServerException catch (e) {
         wsdCalculator = new LocalWSDCalculator();
         newAttempt = await wsdCalculator.addAttempt(
             selectedRecordings[prompt].soundFile.path,
@@ -93,7 +93,8 @@ class _ReportsPageState extends State<ReportsPage> {
             prompt.syllableCount,
             widget.evaluationId);
         ErrorDialog errorDialog = new ErrorDialog(context);
-        errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
+        errorDialog.show("Internal Server Error",
+            e.message + "\nSwitching to local processing.");
       }
 
       runningTotal += newAttempt.wsd;
@@ -102,13 +103,13 @@ class _ReportsPageState extends State<ReportsPage> {
 
     // For added dramatic effect if it's running locally
     if (wsdCalculator is LocalWSDCalculator) {
-      Future.delayed(new Duration(seconds: 1), () {
-        this.setState(() {
-          loading = false;
-          averageWSD = runningTotal / prompts.length;
-        });
-      });
+      await Future.delayed(new Duration(seconds: 1), () {});
     }
+
+    this.setState(() {
+      loading = false;
+      averageWSD = runningTotal / prompts.length;
+    });
   }
 
   @override
@@ -138,7 +139,8 @@ class _ReportsPageState extends State<ReportsPage> {
                     itemBuilder: (context, position) {
                       return Card(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
+                          padding: const EdgeInsets.only(
+                              left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
                           child: Row(
                             children: <Widget>[
                               Row(
@@ -151,45 +153,61 @@ class _ReportsPageState extends State<ReportsPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   DropdownButton<Recording>(
-                                      items: RecordingStorage.singleton().getRecordings(prompts[position]).map((Recording value) {
+                                      items: RecordingStorage.singleton()
+                                          .getRecordings(prompts[position])
+                                          .map((Recording value) {
                                         return new DropdownMenuItem<Recording>(
                                           value: value,
                                           child: new Text(value.name),
                                         );
                                       }).toList(),
-                                      value: selectedRecordings[prompts[position]],
+                                      value:
+                                          selectedRecordings[prompts[position]],
                                       onChanged: (Recording value) async {
-                                        selectedRecordings[prompts[position]] = value;
+                                        selectedRecordings[prompts[position]] =
+                                            value;
                                         await calculateWSDs();
-                                      }
-                                  ),
-                                  PlayButton(filepath: selectedRecordings[prompts[position]].soundFile.path),
-                                  IconButton(icon: Icon(Icons.clear), onPressed: () {
-                                    String promptName = prompts[position].word;
-                                    showDialog(context: this.context, builder: (context){
-                                      return AlertDialog(
-                                        title: Text("Confirmation"),
-                                        content: Text("Are you sure you want to delete the prompt for '$promptName' and delete it from the report?"),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                            child: Text("No"),
-                                            onPressed: () => Navigator.pop(context),
-                                          ),
-                                          FlatButton(
-                                            child: Text("Yes"),
-                                            onPressed: () async {
-                                              await removePrompt(prompts[position]);
-                                              Navigator.pop(context);
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    });
-                                  }),
+                                      }),
+                                  PlayButton(
+                                      filepath:
+                                          selectedRecordings[prompts[position]]
+                                              .soundFile
+                                              .path),
+                                  IconButton(
+                                      icon: Icon(Icons.clear),
+                                      onPressed: () {
+                                        String promptName =
+                                            prompts[position].word;
+                                        showDialog(
+                                            context: this.context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text("Confirmation"),
+                                                content: Text(
+                                                    "Are you sure you want to delete the prompt for '$promptName' and delete it from the report?"),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    child: Text("No"),
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                  ),
+                                                  FlatButton(
+                                                    child: Text("Yes"),
+                                                    onPressed: () async {
+                                                      await removePrompt(
+                                                          prompts[position]);
+                                                      Navigator.pop(context);
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                      }),
                                   Container(
-                                    child: Text(calculatedWSDs[prompts[position]]
-                                        .wsd
-                                        .toStringAsFixed(2)),
+                                    child: Text(
+                                        calculatedWSDs[prompts[position]]
+                                            .wsd
+                                            .toStringAsFixed(2)),
                                     width: 45.0,
                                   )
                                 ],
@@ -245,7 +263,8 @@ class _ReportsPageState extends State<ReportsPage> {
   }
 
   Future<void> updateAttempt(Attempt attempt) async {
-    return wsdCalculator.updateAttempt(widget.evaluationId, attempt.attemptId, false);
+    return wsdCalculator.updateAttempt(
+        widget.evaluationId, attempt.attemptId, false);
   }
 
   void deleteLocalFiles() {

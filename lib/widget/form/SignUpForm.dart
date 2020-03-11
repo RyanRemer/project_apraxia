@@ -6,7 +6,6 @@ import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-
 class SignUpForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
 
@@ -17,6 +16,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  final SignUpRequest signUpRequest = new SignUpRequest.test();
   final Auth _auth = new Auth.instance();
   final SignUpRequest _signUpRequest = new SignUpRequest.test();
 
@@ -88,7 +88,8 @@ class _SignUpFormState extends State<SignUpForm> {
               formatInput: true,
               countries: ['US', 'CA'],
               initialCountry2LetterCode: 'US',
-              textFieldController: TextEditingController(text: _signUpRequest.attributes.phoneNumber.substring(2)),
+              textFieldController: TextEditingController(
+                  text: _signUpRequest.attributes.phoneNumber.substring(2)),
               inputDecoration: InputDecoration(
                 border: UnderlineInputBorder(),
                 hintText: '123-456-7890',
@@ -136,15 +137,15 @@ class _SignUpFormState extends State<SignUpForm> {
       SignUpForm._formKey.currentState.save();
       try {
         await _auth.signUp(
-            _signUpRequest.attributes.email,
-            _signUpRequest.password,
-            _signUpRequest.attributes.name,
-            _signUpRequest.attributes.address,
-            _signUpRequest.attributes.phoneNumber,
+          _signUpRequest.attributes.email,
+          _signUpRequest.password,
+          _signUpRequest.attributes.name,
+          _signUpRequest.attributes.address,
+          _signUpRequest.attributes.phoneNumber,
         );
       } on CognitoClientException catch (error) {
         if (error.name == "UserNotConfirmedException") {
-          showDialog(
+          await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: Text("Account Unconfirmed"),
@@ -153,11 +154,12 @@ class _SignUpFormState extends State<SignUpForm> {
               actions: <Widget>[
                 FlatButton(
                   child: Text("Okay"),
-                  onPressed: () => goToSignIn(context),
+                  onPressed: () => Navigator.pop(context),
                 )
               ],
             ),
           );
+          goToSignIn(context);
         } else {
           showDialog(
             context: context,

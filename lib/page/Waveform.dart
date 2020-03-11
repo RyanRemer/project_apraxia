@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
+import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/WaveformPainter.dart';
 
 class Waveform extends StatefulWidget {
-  final Recording selectedRecording;
+  final String soundUri;
 
-  Waveform(this.selectedRecording);
+  Waveform(this.soundUri, {Key key}) : super(key: key);
 
   @override
-  _WaveformState createState() => _WaveformState(this.selectedRecording);
+  _WaveformState createState() {
+    return new _WaveformState(this.soundUri);
+    }
 }
 
 class _WaveformState extends State<Waveform> {
+  final IWSDCalculator wsdCalculator = new LocalWSDCalculator();
   Future<List<double>> amplitudes;
-  final Recording selectedRecording;
 
-  _WaveformState(this.selectedRecording) {
-    if (selectedRecording == null) {
+  _WaveformState(String soundUri) {
+    if (soundUri == null) {
       this.amplitudes = null;
     } else {
-      IWSDCalculator wsdCalculator = new LocalWSDCalculator();
-      this.amplitudes = wsdCalculator.getAmplitudes(selectedRecording.soundFile.path);
+      this.amplitudes = wsdCalculator.getAmplitudes(soundUri);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,8 @@ class _WaveformState extends State<Waveform> {
               builder: (BuildContext context, BoxConstraints constraints) {
             return CustomPaint(
               size: Size(constraints.biggest.width, constraints.biggest.height),
-              painter: WaveformPainter(snapshot.data, color: Theme.of(context).primaryColor),
+              painter: WaveformPainter(snapshot.data,
+                  color: AppTheme.of(context).primaryLight),
             );
           });
         } else {

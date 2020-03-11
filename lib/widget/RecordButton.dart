@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalFileController.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
+import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 typedef RecordCallback = void Function(File soundFile);
@@ -38,7 +39,7 @@ class _RecordButtonState extends State<RecordButton> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         FlatButton(
-          color: Colors.red,
+          color: AppTheme.of(context).accent,
           shape: CircleBorder(),
           child: Padding(
             padding: const EdgeInsets.all(20.0),

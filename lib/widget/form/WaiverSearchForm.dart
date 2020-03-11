@@ -32,6 +32,7 @@ class _WaiverSearchFormState extends State<WaiverSearchForm> {
             title: TextFormField(
               initialValue: _patientName,
               keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(labelText: "Patient Name"),
               onChanged: (String value) {
                 _patientName = value;

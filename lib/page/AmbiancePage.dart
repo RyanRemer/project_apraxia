@@ -7,9 +7,8 @@ import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/page/Waveform.dart';
+import 'package:project_apraxia/widget/AppTheme.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
-import 'package:project_apraxia/model/Recording.dart';
-import 'dart:io';
 
 import 'Waveform.dart';
 
@@ -44,25 +43,37 @@ class _AmbiancePageState extends State<AmbiancePage> {
           children: <Widget>[
             Expanded(
                 child: Center(
-                  child: Text(
-                      "Press the button below and be quiet for $seconds second."),
-                )),
-            ambianceRecorded ?
+              child: Text(
+                  "Press the button below and be quiet for $seconds second."),
+            )),
             Container(
               height: 100,
-              child: Waveform(Recording(name: "ambiance", soundFile: File(ambiancePath))),
-            ) : Container(height: 100),
-            Expanded(
-              child: FlatButton(
-                color: Colors.red,
-                shape: CircleBorder(),
-                child: Icon(
-                    isRecording ? Icons.stop : Icons.mic,
-                    color: Colors.white,
-                    size: 40,
-                ),
-                onPressed: onTap,
+              child: Waveform(
+                ambiancePath,
+                key: ObjectKey(ambiancePath),
               ),
+            ),
+            Expanded(
+              child: isRecording
+                  ? FlatButton(
+                      color: AppTheme.of(context).primary,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.more_horiz,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      onPressed: () {})
+                  : FlatButton(
+                      color: AppTheme.of(context).primary,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      onPressed: onTap,
+                    ),
             ),
             Expanded(
               child: ambianceRecorded
@@ -71,7 +82,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "If there are any spikes in amplitude then try again.\nOtherwise press continue.",
+                            "If there are spikes, record again.\nOtherwise press continue.",
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -104,7 +115,7 @@ class _AmbiancePageState extends State<AmbiancePage> {
       String fileUri = await recordAmbiance();
       RecordingStorage.singleton().setAmbiance(fileUri);
       await setAmbiance(fileUri);
-    } on PlatformException catch(error) {
+    } on PlatformException catch (error) {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Permission Denied",
           "In order to record the ambiance of the room we need permission to your microphone and storage. Please grant us permission and restart the app.");
@@ -130,7 +141,8 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
     await Future.delayed(Duration(seconds: seconds));
 
-    String fileUri = await recordController.stopRecording("recordings/ambiance.wav");
+    String fileUri =
+        await recordController.stopRecording("recordings/ambiance.wav");
     return fileUri;
   }
 
