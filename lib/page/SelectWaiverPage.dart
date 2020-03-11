@@ -1,31 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/HttpConnector.dart';
-import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
-import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SurveyPage.dart';
 import 'package:project_apraxia/page/WaiverPage.dart';
-import 'package:project_apraxia/widget/ErrorDialog.dart';
+import 'package:project_apraxia/widget/form/WaiverSearchForm.dart';
 
-class SelectWaiverPage extends StatefulWidget {
-  SelectWaiverPage({Key key}) : super(key: key);
-
-  @override
-  _SelectWaiverPageState createState() => _SelectWaiverPageState();
-}
-
-class _SelectWaiverPageState extends State<SelectWaiverPage> {
-  bool _waiver = true;
-  List<dynamic> _patients = new List<dynamic>(0);
-  bool _newPatient = true;
-  int _oldPatientSelected = -1;
-  String _patientName = '';
-  String _patientEmail = '';
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class SelectWaiverPage extends StatelessWidget {
+  const SelectWaiverPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,170 +13,74 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
       appBar: AppBar(
         title: Text("Select Waiver"),
       ),
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            child: Container(),
-            padding: EdgeInsets.only(top: 16.0),
-          ),
-          ListTile(
-            title: Text('Skip HIPAA waiver and use basic processing', style: Theme.of(context).textTheme.title),
-            leading: Radio(
-              value: false,
-              groupValue: _waiver,
-              onChanged: (bool value) {
-                setState(() {
-                  _waiver = value;
-                  _newPatient = false;
-                  _oldPatientSelected = -1;
-                });
-              },
+      body: Padding(
+        padding: EdgeInsets.all(32.0),
+        child: Column(
+          children: <Widget>[
+            Align(
+              child: Text("Either:", style: Theme.of(context).textTheme.subhead),
+              alignment: Alignment.topLeft,
             ),
-          ),
-          ListTile(
-            title: Text('Select or sign waiver and use better processing', style: Theme.of(context).textTheme.title),
-            leading: Radio(
-              value: true,
-              groupValue: _waiver,
-              onChanged: (bool value) {
-                setState(() { _waiver = value; });
-              },
+            Align(
+              child: Text(" 1. Search for and select a waiver on file, or", style: Theme.of(context).textTheme.subhead),
+              alignment: Alignment.topLeft,
             ),
-          ),
-          _waiver ? Padding(
-            padding: EdgeInsets.only(left: 32.0, top: 8.0, right: 32.0),
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: const Text('New patient'),
-                  leading: Radio(
-                    value: true,
-                    groupValue: _newPatient,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _newPatient = value;
-                        _oldPatientSelected = -1;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Select a waiver from patients on file'),
-                  leading: Radio(
-                    value: false,
-                    groupValue: _newPatient,
-                    onChanged: (bool value) {
-                      setState(() { _newPatient = value; });
-                    },
-                  ),
-                ),
-                _newPatient ? Container() :
-                Column(
-                  children: <Widget>[
-                    ListTile(
-                        title: TextFormField(
-                          initialValue: _patientName,
-                          decoration: InputDecoration(labelText: "Patient Name"),
-                          onChanged: (String name) {
-                            _patientName = name;
-                          },
-                        )
-                    ),
-                    ListTile(
-                        title: TextFormField(
-                          initialValue: _patientEmail,
-                          decoration: InputDecoration(labelText: "Patient Email"),
-                          onChanged: (String email) {
-                            _patientEmail = email;
-                          },
-                        )
-                    ),
-                    RaisedButton(
-                        child: const Text("Search"),
-                        onPressed: () async {
-                          var tmp = await loadPatients(_patientName, _patientEmail);
-                          if (tmp != null) {
-                            if (tmp.length > 0) {
-                              setState(() {
-                                _patients = tmp;
-                              });
-                            }
-                            else {
-                              ErrorDialog dialog = new ErrorDialog(context);
-                              dialog.show("No waivers found",
-                                  "There are no waivers on file for this name and email address. Please try another.");
-                            }
-                          }
-                        }
-                    ),
-                    (_patients.length > 0) ?
-                    ListTile(
-                      title: Text('Name: ' + _patients[0]['subjectName'] + '\nEmail: ' + _patients[0]['subjectEmail']),
-                      leading: Radio(
-                        value: 0,
-                        groupValue: _oldPatientSelected,
-                        onChanged: (int value) {
-                          setState(() {
-                            _oldPatientSelected = value;
-                          });
-                        },
-                      ),
-                    ) : Container()
-                  ],
-                )
-              ],
+            Align(
+              child: Text(" 2. Sign a new one to proceed.", style: Theme.of(context).textTheme.subhead),
+              alignment: Alignment.topLeft,
+            ),
+            Align(
+              child: Text(""),
+              alignment: Alignment.topLeft,
+            ),
+            WaiverSearchForm(onSelect: onWaiverSelected),
+            RaisedButton(
+              child: Text("New HIPAA Waiver"),
+              onPressed: () => _goToWaiverPage(context),
             )
-          ) : Container(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ButtonBar(
-              children: <Widget>[
-                _waiver ? Container() :
-                RaisedButton(
-                  child: Text("Skip Waiver - Basic Processing"),
-                  onPressed: () => _startLocalTest(context),
-                ),
-                (_waiver && _newPatient) ?
-                RaisedButton(
-                  child: Text("Sign New Waiver"),
-                  onPressed: () => _goToWaiverPage(context),
-                ) : Container(),
-                (_waiver && !_newPatient && _oldPatientSelected != -1) ?
-                RaisedButton(
-                  child: Text("Use This Waiver"),
-                  onPressed: () => _startRemoteTest(context),
-                ) : Container(),
-              ],
-              alignment: MainAxisAlignment.center,
-            )
-          )
-        ],
+          ],
+        ),
       )
     );
   }
 
-  Future<List<dynamic>> loadPatients(String subjectName, String subjectEmail) async {
-    HttpConnector connector = new HttpConnector.instance();
-    try {
-      List<dynamic> result = await connector.getWaiversOnFile(
-          subjectName.trim(), subjectEmail.trim().toLowerCase());
-      return result;
-    } on ServerConnectionException catch (e) {
-      ErrorDialog dialog = new ErrorDialog(context);
-      dialog.show('Error Contacting Server', e.message);
-    } on InternalServerException catch (e) {
-      ErrorDialog dialog = new ErrorDialog(context);
-      dialog.show('Internal Server Error', e.message);
-    }
-    return null;
+  void onWaiverSelected(Map<String, String> waiver, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Confirm Waiver Selection"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text("Are you sure you want to begin a test using the waiver with the following information?"),
+            Text(""),
+            Text("Name: ${waiver['subjectName']}"),
+            Text("Email: ${waiver['subjectEmail']}"),
+            Text("Date Signed: ${waiver['date']}")
+          ]
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("No"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }
+          ),
+          RaisedButton(
+            child: Text("Yes"),
+            onPressed: () => _goToSurveyPage(context),
+          )
+        ],
+      ),
+    );
   }
 
-  void _startLocalTest(BuildContext context) {
+  void _goToSurveyPage(BuildContext context) {
+    Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return AmbiancePage(
-        wsdCalculator: new LocalWSDCalculator(),
-        evalId: "",
-      );
+      return SurveyPage(wsdCalculator: new RemoteWSDCalculator());
     }));
   }
 
@@ -205,13 +89,4 @@ class _SelectWaiverPageState extends State<SelectWaiverPage> {
       return WaiverPage();
     }));
   }
-
-  void _startRemoteTest(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return SurveyPage(
-        wsdCalculator: new RemoteWSDCalculator(),
-      );
-    }));
-  }
-
 }

@@ -6,6 +6,7 @@ import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
+
 class SignUpForm extends StatefulWidget {
   static GlobalKey<FormState> _formKey = new GlobalKey();
 
@@ -114,9 +115,16 @@ class _SignUpFormState extends State<SignUpForm> {
               },
             ),
           ),
-          RaisedButton(
-            child: Text("Sign Up"),
-            onPressed: () => this.signUp(context),
+          ButtonBar(
+            children: <Widget>[
+              RaisedButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Sign Up"),
+                ),
+                onPressed: () => this.signUp(context),
+              )
+            ],
           )
         ],
       ),
@@ -140,7 +148,8 @@ class _SignUpFormState extends State<SignUpForm> {
             context: context,
             builder: (context) => AlertDialog(
               title: Text("Account Unconfirmed"),
-              content: Text("Your account is created but your email is not yet verified. You will receive an email shortly with a verification link in it. Click on the link to verify your email address and then sign in."),
+              content: Text(
+                  "Your account is created but your email is not yet verified. You will receive an email shortly with a verification link in it. Click on the link to verify your email address and then sign in."),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Okay"),
@@ -149,21 +158,19 @@ class _SignUpFormState extends State<SignUpForm> {
               ],
             ),
           );
-        }
-        else {
+        } else {
           showDialog(
             context: context,
-            builder: (context) =>
-                AlertDialog(
-                  title: Text("Sign Up Error"),
-                  content: Text(error.message),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text("Okay"),
-                      onPressed: () => Navigator.pop(context),
-                    )
-                  ],
-                ),
+            builder: (context) => AlertDialog(
+              title: Text("Sign Up Error"),
+              content: Text(error.message),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Okay"),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ),
           );
         }
       }
@@ -171,7 +178,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void goToSignIn(BuildContext context) {
-    Navigator.of(context).pop();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => SignInPage()));
   }
 }

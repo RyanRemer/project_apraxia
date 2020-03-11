@@ -14,10 +14,8 @@ class Waveform extends StatefulWidget {
 }
 
 class _WaveformState extends State<Waveform> {
-
   Future<List<double>> amplitudes;
   final Recording selectedRecording;
-
 
   _WaveformState(this.selectedRecording) {
     if (selectedRecording == null) {
@@ -40,7 +38,7 @@ class _WaveformState extends State<Waveform> {
               builder: (BuildContext context, BoxConstraints constraints) {
             return CustomPaint(
               size: Size(constraints.biggest.width, constraints.biggest.height),
-              painter: WaveformPainter(snapshot.data),
+              painter: WaveformPainter(snapshot.data, color: Theme.of(context).primaryColor),
             );
           });
         } else {
