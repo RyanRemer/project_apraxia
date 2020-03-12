@@ -13,8 +13,8 @@ class SendReportButton extends StatefulWidget {
 class _SendReportButtonState extends State<SendReportButton> {
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.send),
+    return RaisedButton(
+      child: Text("Email Report"),
       onPressed: () async => await promptForInfo(context),
     );
   }

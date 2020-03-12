@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
@@ -9,6 +10,7 @@ import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
+import 'package:project_apraxia/widget/SendReportButton.dart';
 
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
@@ -86,7 +88,7 @@ class _ReportsPageState extends State<ReportsPage> {
         ErrorDialog errorDialog = new ErrorDialog(context);
         errorDialog.show("Error Connecting to Server",
             "The server is currently down. Switching to local processing.");
-      } on InternalServerException catch(e) {
+      } on InternalServerException catch (e) {
         wsdCalculator = new LocalWSDCalculator();
         newAttempt = await wsdCalculator.addAttempt(
             selectedRecordings[prompt].soundFile.path,
@@ -94,7 +96,8 @@ class _ReportsPageState extends State<ReportsPage> {
             prompt.syllableCount,
             widget.evaluationId);
         ErrorDialog errorDialog = new ErrorDialog(context);
-        errorDialog.show("Internal Server Error", e.message + "\nSwitching to local processing.");
+        errorDialog.show("Internal Server Error",
+            e.message + "\nSwitching to local processing.");
       }
 
       runningTotal += newAttempt.wsd;
@@ -145,7 +148,8 @@ class _ReportsPageState extends State<ReportsPage> {
                     itemBuilder: (context, position) {
                       return Card(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
+                          padding: const EdgeInsets.only(
+                              left: 16.0, right: 16.0, top: 4.0, bottom: 4.0),
                           child: Row(
                             children: <Widget>[
                               Row(
@@ -154,16 +158,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                     value: prompts[position].enabled,
                                     onChanged: (val) {
                                       setState(() {
-                                        prompts[position].enabled = val;
-                                        if(prompts[position].enabled == true) {
-                                          runningTotal += calculatedWSDs[prompts[position]].wsd;
-                                          numPrompts++;
-                                          averageWSD = runningTotal / numPrompts;
-                                        } else {
-                                          runningTotal -= calculatedWSDs[prompts[position]].wsd;
-                                          numPrompts--;
-                                          averageWSD = runningTotal / numPrompts;
-                                        }
+                                        recalculateWSD(position, val);
                                       });
                                     },
                                   ),
@@ -174,11 +169,16 @@ class _ReportsPageState extends State<ReportsPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  PlayButton(filepath: selectedRecordings[prompts[position]].soundFile.path),
+                                  PlayButton(
+                                      filepath:
+                                          selectedRecordings[prompts[position]]
+                                              .soundFile
+                                              .path),
                                   Container(
-                                    child: Text(calculatedWSDs[prompts[position]]
-                                        .wsd
-                                        .toStringAsFixed(2)),
+                                    child: Text(
+                                        calculatedWSDs[prompts[position]]
+                                            .wsd
+                                            .toStringAsFixed(2)),
                                     width: 55.0,
                                   )
                                 ],
@@ -206,14 +206,40 @@ class _ReportsPageState extends State<ReportsPage> {
                           averageWSD.toStringAsFixed(2),
                           style: TextStyle(fontSize: 36),
                         ),
+                        checkIfBackend()
                       ],
                     )),
-                RaisedButton(
-                  child: Text("Complete Test"),
-                  onPressed: completeTest,
-                )
+                
               ],
             ));
+  }
+
+  Widget checkIfBackend() {
+    if (wsdCalculator is RemoteWSDCalculator) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+        Spacer(),
+        RaisedButton(
+          child: Text("Complete Test"),
+          onPressed: completeTest,
+        ),
+        Spacer(),
+        SendReportButton(
+          evalId: widget.evaluationId,
+        ),
+        Spacer()
+      ]);
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+        RaisedButton(
+          child: Text("Complete Test"),
+          onPressed: completeTest,
+        )
+      ]);
+    }
   }
 
   void completeTest() {
@@ -233,8 +259,33 @@ class _ReportsPageState extends State<ReportsPage> {
     calculateWSDs();
   }
 
-  Future<void> updateAttempt(Attempt attempt) async {
-    return wsdCalculator.updateAttempt(widget.evaluationId, attempt.attemptId, false);
+  Future<void> updateAttempt(Attempt attempt, bool included) async {
+    return wsdCalculator.updateAttempt(
+        widget.evaluationId, attempt.attemptId, included);
+  }
+
+  void recalculateWSD(int position, bool val) {
+    prompts[position].enabled = val;
+    try {
+      updateAttempt(calculatedWSDs[prompts[position]],prompts[position].enabled);
+    } on ServerConnectionException {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Error Connecting to Server",
+          "The server is currently down. Switching to local processing.");
+    } on InternalServerException catch (e) {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Internal Server Error",
+          e.message + "\nSwitching to local processing.");
+    }
+    if (prompts[position].enabled == true) {
+      runningTotal += calculatedWSDs[prompts[position]].wsd;
+      numPrompts++;
+      averageWSD = runningTotal / numPrompts;
+    } else {
+      runningTotal -= calculatedWSDs[prompts[position]].wsd;
+      numPrompts--;
+      averageWSD = runningTotal / numPrompts;
+    }
   }
 
   void deleteLocalFiles() {
