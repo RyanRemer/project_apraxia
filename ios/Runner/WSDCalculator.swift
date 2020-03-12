@@ -15,12 +15,11 @@ class WSDCalculator {
 	
 	static let sharedInstance = WSDCalculator()
 	
-	private init() {
-		
-	}
+	private init() {}
 	
-	func getAmplitudes(fileName: String) -> [Double] {
-		////get multisyllabic word array and rate
+	// Get amplitudes for the given file
+	func getAmplitudes(for fileName: String) -> [Double] {
+		//get multisyllabic word array and rate
 		
 		let currentWordResponse = getCurrentWordArrayAndRate(for: fileName)
 		let currentWordArray = currentWordResponse.0
@@ -34,44 +33,28 @@ class WSDCalculator {
 	
 	// Calculates the WSD of the given file with syllable count
 	func calculateWSD(for fileName: String, with syllableCount: Int) -> Double {
-		
-		print("in calculate WSD \(fileName)")
-		
-		////get multisyllabic word array and rate
+		//get multisyllabic word array and rate
 		
 		let currentWordResponse = getCurrentWordArrayAndRate(for: fileName)
 		let currentWordArray = currentWordResponse.0
 		let currentWordRate = currentWordResponse.1
 		
-//		print("ARRAY IS: \(currentMultisyllabicWordArray)")
-//		print("RATE IS: \(currentMultisyllabicWordRate)")
-		
-		////get absolute value of multisyllabic word array
+		//get absolute value of multisyllabic word array
 		
 		let currentWordArrayAbsValue = getAbsoluteValueArray(for: currentWordArray)
-		
-//		let threshold = getAmbienceFileThreshold()
 		let threshold = ambianceThreshold
-
 		let leveledOutCurrentWordArray = levelArrayOut(array: currentWordArrayAbsValue)
-
 		let countAboveThreshold = getCountAboveThreshold(for: leveledOutCurrentWordArray, with: threshold)
-
-//		print("COUNT ABOVE THRESHOLD IS: \(countAboveThreshold)")
 
 		let speechInMS = (Double(countAboveThreshold) / currentWordRate) * 1000
 		
-		print("SPEECH IN MS: \(speechInMS)")
-		
 		let calculatedWSD = speechInMS / Double(syllableCount)
-		
-		print("WSD: \(calculatedWSD)")
 		
 		return calculatedWSD
 	}
 	
 	// Takes in the audio file URL and returns the array of floats, rate, and frame count
-	func loadAudioSignal(audioURL: URL) -> (signal: [Float], rate: Double, frameCount: Int) {
+	func loadAudioSignal(for audioURL: URL) -> (signal: [Float], rate: Double, frameCount: Int) {
 		let file = try! AVAudioFile(forReading: audioURL)
 		let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: file.fileFormat.sampleRate, channels: file.fileFormat.channelCount, interleaved: false)!
 		let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: UInt32(file.length))
@@ -85,13 +68,11 @@ class WSDCalculator {
 	// Takes in the file name and finds it in the system and then returns
 	// the array of floats and rate for the word
 	func getCurrentWordArrayAndRate(for fileName: String) -> ([Float], Double) {
-
 		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 		
 		let documentDirectory = urls as URL
 		
 		var documentDirectoryString = documentDirectory.absoluteString
-		print("documentDirectoryString: \(documentDirectoryString)")
 		
 		if (!fileName.hasPrefix("file://")) {
 			let start = documentDirectoryString.index(documentDirectoryString.startIndex, offsetBy: 7)
@@ -104,34 +85,26 @@ class WSDCalculator {
 				
 		let soundURL = documentDirectory.appendingPathComponent(wavFile)
 		
-		let currentMultisyllabicWordResponse = loadAudioSignal(audioURL: soundURL)
+		let currentMultisyllabicWordResponse = loadAudioSignal(for: soundURL)
 		
 		return (currentMultisyllabicWordResponse.signal, currentMultisyllabicWordResponse.rate)
 	}
 	
 	// Takes in the ambiance recording file and returns the threshold for the ambiance
 	func getAmbianceFileThreshold(fileName: String) -> Float {
-		////get ambiance array
-		
+		//get ambiance array
 		let ambianceFileArray = getThresholdFileArray(fileName: fileName)
 		
-		////get threshold from the ambiance array
-		
+		//get threshold from the ambiance array
 		let threshold = getThreshold(for: getAbsoluteValueArray(for: ambianceFileArray))
 		
-		print("THRESHOLD IS: \(threshold)")
 		//Set the ambiance threshold in the singleton to the calculated one
 		ambianceThreshold = threshold
 		return threshold
 	}
 	
-	//
 	func getThresholdFileArray(fileName: String) -> [Float] {
-//		let ambienceUrl = Bundle.main.url(forResource: "ambience", withExtension: "wav")
 		let response = getCurrentWordArrayAndRate(for: fileName)
-		
-//		let ambienceResponse = loadAudioSignal(audioURL: ambienceUrl!)
-//		return ambienceResponse.signal
 		return response.0
 	}
 	
