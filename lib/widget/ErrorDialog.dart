@@ -4,8 +4,8 @@ class ErrorDialog {
   BuildContext context;
   ErrorDialog(this.context);
 
-  void show(String title, String content){
-    showDialog(context: this.context, builder: (context){
+  Future show(String title, String content){
+    return showDialog(context: this.context, builder: (context){
       return AlertDialog(
         title: Text(title),
         content: Text(content),

@@ -51,7 +51,7 @@ class PromptAreaState extends State<PromptArea> {
         ),
         Padding(padding: EdgeInsets.only(top: 8),),
         Expanded(
-            child: Waveform(widget.selectedRecording),
+            child: Waveform(widget?.selectedRecording?.soundFile?.path),
           ),
         Expanded(
           child: Center(

@@ -45,7 +45,6 @@ class _RecordingsTableState extends State<RecordingsTable> {
   ListTile _buildRecording(Recording recording) {
     return ListTile(
       leading: Radio(
-        activeColor: Colors.blue,
         value: recording,
         groupValue: widget.selectedRecording,
         onChanged: (Recording value) {
@@ -56,6 +55,9 @@ class _RecordingsTableState extends State<RecordingsTable> {
       trailing: PlayButton(
         filepath: recording.soundFile.path,
       ),
+      onTap: (){
+        widget.onSelectRecording(recording);
+      },
     );
   }
 }

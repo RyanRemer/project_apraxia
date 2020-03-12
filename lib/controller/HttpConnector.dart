@@ -119,12 +119,12 @@ class HttpConnector {
     File signatureFile = File(signatureFileName);
     Uri uri = Uri.parse(serverURL + "/waiver/subject");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
-    request.files.add(await http.MultipartFile.fromPath('researchSubjectSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
+    request.files.add(await http.MultipartFile.fromPath('subjectSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     request.fields.addEntries([
-      MapEntry<String, String>('researchSubjectName', subjectName),
-      MapEntry<String, String>('researchSubjectEmail', subjectEmail),
-      MapEntry<String, String>('researchSubjectDate', subjectDate),
+      MapEntry<String, String>('subjectName', subjectName),
+      MapEntry<String, String>('subjectEmail', subjectEmail),
+      MapEntry<String, String>('dateSigned', subjectDate),
       MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
     try {
@@ -157,11 +157,11 @@ class HttpConnector {
     request.files.add(await http.MultipartFile.fromPath('representativeSignature', signatureFile.path, contentType: new MediaType('application', 'x-tar')));
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     request.fields.addEntries([
-      MapEntry<String, String>('researchSubjectName', subjectName),
-      MapEntry<String, String>('researchSubjectEmail', subjectEmail),
+      MapEntry<String, String>('subjectName', subjectName),
+      MapEntry<String, String>('subjectEmail', subjectEmail),
       MapEntry<String, String>('representativeName', repName),
-      MapEntry<String, String>('representativeRelationship', repRelationship),
-      MapEntry<String, String>('representativeDate', repDate),
+      MapEntry<String, String>('relationship', repRelationship),
+      MapEntry<String, String>('dateSigned', repDate),
       MapEntry<String, String>('clinicianEmail', auth.userEmail),
     ]);
     try {
@@ -184,8 +184,8 @@ class HttpConnector {
     }
   }
 
-  Future<List<dynamic>> getWaiversOnFile(String subjectName, String subjectEmail) async {
-    Uri uri = Uri.parse(serverURL + "/waiver/" + subjectName + "/" + subjectEmail);
+  Future<Map<String, String>> getWaiverOnFile(String subjectEmail, String subjectName) async {
+    Uri uri = Uri.parse(serverURL + "/waiver?subjectEmail=" + subjectEmail + "&subjectName=" + subjectName);
     http.BaseRequest request = new http.Request('GET', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     try {
@@ -193,7 +193,15 @@ class HttpConnector {
       String responseBody = await response.stream.bytesToString();
       Map body = jsonDecode(responseBody);
       if (response.statusCode == 200) {
-        return body['waivers'];
+        dynamic rawWaiver = body['waiver'];
+        Map<String, String> output = new Map<String, String>();
+        if (rawWaiver != null) {
+          output['date'] = rawWaiver['date'];
+          output['subjectName'] = rawWaiver['subjectName'];
+          output['subjectEmail'] = rawWaiver['subjectEmail'];
+          output['waiverId'] = rawWaiver['waiverId'];
+        }
+        return output;
       }
       String errorMessage = body['errorMessage'];
       if (errorMessage != null) {
@@ -208,8 +216,8 @@ class HttpConnector {
     }
   }
 
-  Future<bool> invalidateWaiver(String subjectName, String subjectEmail) async {
-    Uri uri = Uri.parse(serverURL + "/invalidate/waiver/" + subjectName + "/" + subjectEmail);
+  Future<bool> invalidateWaiver(String waiverId) async {
+    Uri uri = Uri.parse(serverURL + "/waiver/" + waiverId + "/invalidate");
     http.BaseRequest request = new http.Request('PUT', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     try {
@@ -260,11 +268,10 @@ class HttpConnector {
   }
 
   Future<void> sendReport(String email, String name, String evalId) async {
-    Uri uri = Uri.parse(serverURL + "/sendReport");
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evalId + "/report");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     request.fields.addEntries([
-      MapEntry<String, String>('evalId', evalId),
       MapEntry<String, String>('name', name),
       MapEntry<String, String>('email', email),
     ]);

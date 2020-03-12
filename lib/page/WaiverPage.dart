@@ -33,10 +33,9 @@ class _WaiverPageState extends State<WaiverPage> {
                 }
                 else {
                   List<dynamic> hipaaData = snapshot.data;
-                  return ListView.builder(itemBuilder: (BuildContext context, int index) {
-                    if (index >= hipaaData.length) {
-                      return null;
-                    }
+                  return ListView.builder(
+                    itemCount: hipaaData.length,
+                    itemBuilder: (BuildContext context, int index) {
                     dynamic map = hipaaData[index];
                     if (map["text"] == null) {
                       return Divider();
@@ -70,11 +69,13 @@ class _WaiverPageState extends State<WaiverPage> {
             child: ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                  child: Text("Sign Waiver"),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Sign Waiver"),
+                  ),
                   onPressed: () => _goToSignWaiverPage(context),
                 ),
               ],
-              alignment: MainAxisAlignment.center,
             )
           )
         ],

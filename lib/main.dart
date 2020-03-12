@@ -8,22 +8,26 @@
 /// controller - the logic controllers
 ///
 
-
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
-
+import 'package:project_apraxia/widget/AppTheme.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    AppTheme appTheme = new AppTheme();
+
+    return ListTileTheme(
+      iconColor: appTheme.accent,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'appraxia',
+        theme: appTheme.themeData,
+        home: SignInPage(),
       ),
-      home: SignInPage(),
     );
   }
+
 }

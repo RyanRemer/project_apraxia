@@ -119,6 +119,11 @@ class _ReportsPageState extends State<ReportsPage> {
         averageWSD = runningTotal / prompts.length;
       });
     }
+
+    this.setState(() {
+      loading = false;
+      averageWSD = runningTotal / prompts.length;
+    });
   }
 
   @override
@@ -179,7 +184,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                         calculatedWSDs[prompts[position]]
                                             .wsd
                                             .toStringAsFixed(2)),
-                                    width: 55.0,
+                                    width: 45.0,
                                   )
                                 ],
                               ),

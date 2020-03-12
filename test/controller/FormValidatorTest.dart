@@ -3,6 +3,8 @@ import 'package:project_apraxia/controller/FormValidator.dart';
 
 
 void main() {
+
+
   test("FormValidator can detect valid letters", () {
     List<String> validLetters = [
       "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
