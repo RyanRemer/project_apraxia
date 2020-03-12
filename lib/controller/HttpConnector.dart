@@ -217,7 +217,7 @@ class HttpConnector {
   }
 
   Future<bool> invalidateWaiver(String waiverId) async {
-    Uri uri = Uri.parse(serverURL + "/waiver/invalidate/" + waiverId);
+    Uri uri = Uri.parse(serverURL + "/waiver/" + waiverId + "/invalidate");
     http.BaseRequest request = new http.Request('PUT', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     try {
