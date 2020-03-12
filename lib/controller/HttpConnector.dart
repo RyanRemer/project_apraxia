@@ -268,7 +268,7 @@ class HttpConnector {
   }
 
   Future<void> sendReport(String email, String name, String evalId) async {
-    Uri uri = Uri.parse(serverURL + "/sendReport/" + evalId);
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evalId + "/report");
     http.MultipartRequest request = new http.MultipartRequest('POST', uri);
     request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
     request.fields.addEntries([
