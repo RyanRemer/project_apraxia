@@ -183,8 +183,10 @@ class _ReportsPageState extends State<ReportsPage> {
                                     child: Text(
                                         calculatedWSDs[prompts[position]]
                                             .wsd
-                                            .toStringAsFixed(2)),
-                                    width: 45.0,
+                                            .toStringAsFixed(2),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                    width: 60.0,
                                   )
                                 ],
                               ),
