@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
@@ -9,6 +10,7 @@ import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
+import 'package:project_apraxia/widget/SendReportButton.dart';
 
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
@@ -37,6 +39,8 @@ class _ReportsPageState extends State<ReportsPage> {
   Map<Prompt, Attempt> calculatedWSDs;
   IWSDCalculator wsdCalculator;
   double averageWSD;
+  double runningTotal = 0.0;
+  int numPrompts = 0;
 
   _ReportsPageState(this.wsdReport, this.prompts, this.wsdCalculator) {
     loading = false;
@@ -66,7 +70,6 @@ class _ReportsPageState extends State<ReportsPage> {
       loading = true;
     });
 
-    double runningTotal = 0.0;
     for (final prompt in prompts) {
       Attempt newAttempt;
       try {
@@ -98,12 +101,23 @@ class _ReportsPageState extends State<ReportsPage> {
       }
 
       runningTotal += newAttempt.wsd;
+      numPrompts++;
       calculatedWSDs[prompt] = newAttempt;
     }
 
     // For added dramatic effect if it's running locally
     if (wsdCalculator is LocalWSDCalculator) {
-      await Future.delayed(new Duration(seconds: 1), () {});
+      Future.delayed(new Duration(seconds: 1), () {
+        this.setState(() {
+          loading = false;
+          averageWSD = runningTotal / prompts.length;
+        });
+      });
+    } else {
+      this.setState(() {
+        loading = false;
+        averageWSD = runningTotal / prompts.length;
+      });
     }
 
     this.setState(() {
@@ -145,6 +159,14 @@ class _ReportsPageState extends State<ReportsPage> {
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
+                                  Checkbox(
+                                    value: prompts[position].enabled,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        recalculateWSD(position, val);
+                                      });
+                                    },
+                                  ),
                                   Text(prompts[position].word),
                                 ],
                               ),
@@ -152,63 +174,19 @@ class _ReportsPageState extends State<ReportsPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  DropdownButton<Recording>(
-                                      items: RecordingStorage.singleton()
-                                          .getRecordings(prompts[position])
-                                          .map((Recording value) {
-                                        return new DropdownMenuItem<Recording>(
-                                          value: value,
-                                          child: new Text(value.name),
-                                        );
-                                      }).toList(),
-                                      value:
-                                          selectedRecordings[prompts[position]],
-                                      onChanged: (Recording value) async {
-                                        selectedRecordings[prompts[position]] =
-                                            value;
-                                        await calculateWSDs();
-                                      }),
                                   PlayButton(
                                       filepath:
                                           selectedRecordings[prompts[position]]
                                               .soundFile
                                               .path),
-                                  IconButton(
-                                      icon: Icon(Icons.clear),
-                                      onPressed: () {
-                                        String promptName =
-                                            prompts[position].word;
-                                        showDialog(
-                                            context: this.context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text("Confirmation"),
-                                                content: Text(
-                                                    "Are you sure you want to delete the prompt for '$promptName' and delete it from the report?"),
-                                                actions: <Widget>[
-                                                  FlatButton(
-                                                    child: Text("No"),
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                  ),
-                                                  FlatButton(
-                                                    child: Text("Yes"),
-                                                    onPressed: () async {
-                                                      await removePrompt(
-                                                          prompts[position]);
-                                                      Navigator.pop(context);
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            });
-                                      }),
                                   Container(
                                     child: Text(
                                         calculatedWSDs[prompts[position]]
                                             .wsd
-                                            .toStringAsFixed(2)),
-                                    width: 45.0,
+                                            .toStringAsFixed(2),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                    width: 60.0,
                                   )
                                 ],
                               ),
@@ -235,14 +213,40 @@ class _ReportsPageState extends State<ReportsPage> {
                           averageWSD.toStringAsFixed(2),
                           style: TextStyle(fontSize: 36),
                         ),
+                        checkIfBackend()
                       ],
                     )),
-                RaisedButton(
-                  child: Text("Complete Test"),
-                  onPressed: completeTest,
-                )
+                
               ],
             ));
+  }
+
+  Widget checkIfBackend() {
+    if (wsdCalculator is RemoteWSDCalculator) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+        Spacer(),
+        RaisedButton(
+          child: Text("Complete Test"),
+          onPressed: completeTest,
+        ),
+        Spacer(),
+        SendReportButton(
+          evalId: widget.evaluationId,
+        ),
+        Spacer()
+      ]);
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+        RaisedButton(
+          child: Text("Complete Test"),
+          onPressed: completeTest,
+        )
+      ]);
+    }
   }
 
   void completeTest() {
@@ -262,9 +266,33 @@ class _ReportsPageState extends State<ReportsPage> {
     calculateWSDs();
   }
 
-  Future<void> updateAttempt(Attempt attempt) async {
+  Future<void> updateAttempt(Attempt attempt, bool included) async {
     return wsdCalculator.updateAttempt(
-        widget.evaluationId, attempt.attemptId, false);
+        widget.evaluationId, attempt.attemptId, included);
+  }
+
+  void recalculateWSD(int position, bool val) {
+    prompts[position].enabled = val;
+    try {
+      updateAttempt(calculatedWSDs[prompts[position]],prompts[position].enabled);
+    } on ServerConnectionException {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Error Connecting to Server",
+          "The server is currently down. Switching to local processing.");
+    } on InternalServerException catch (e) {
+      ErrorDialog errorDialog = new ErrorDialog(context);
+      errorDialog.show("Internal Server Error",
+          e.message + "\nSwitching to local processing.");
+    }
+    if (prompts[position].enabled == true) {
+      runningTotal += calculatedWSDs[prompts[position]].wsd;
+      numPrompts++;
+      averageWSD = runningTotal / numPrompts;
+    } else {
+      runningTotal -= calculatedWSDs[prompts[position]].wsd;
+      numPrompts--;
+      averageWSD = runningTotal / numPrompts;
+    }
   }
 
   void deleteLocalFiles() {

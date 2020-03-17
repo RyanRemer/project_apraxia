@@ -21,8 +21,6 @@ import AVFoundation
 				if let fileNameArray = call.arguments as? [Any] {
 					let fileName = fileNameArray[0] as! String
 					let syllableCount = fileNameArray[1] as! Int
-//					print("file name is: \(fileName)")
-//					print("syllable count is: \(syllableCount)")
 					let wsdCalculator = WSDCalculator.sharedInstance
 					if wsdCalculator.ambianceThreshold == -1.0 {
 						result(FlutterError(code: "NO THRESHOLD",
@@ -36,9 +34,8 @@ import AVFoundation
 			} else if call.method == "stopRecord" {
 				let fileName = RecordManager.sharedInstance.stopRecord()
 				result(fileName)
-
 			} else if call.method == "startRecorder" {
-				RecordManager.sharedInstance.beginRecord(recordType: RecordType.Wav)
+				RecordManager.sharedInstance.startRecord(recordType: RecordType.Wav)
 			} else if call.method == "calculateAmbiance" {
 				// the file name is coming in and storing ambiance in swift
 				if let fileNameArray = call.arguments as? [String] {
@@ -49,7 +46,7 @@ import AVFoundation
 			} else if call.method == "getAmplitude" {
 				if let fileNameArray = call.arguments as? [String] {
 					let wsdCalculator = WSDCalculator.sharedInstance
-					result(wsdCalculator.getAmplitudes(fileName: fileNameArray[0]))
+					result(wsdCalculator.getAmplitudes(for: fileNameArray[0]))
 				}
 			}
 		}

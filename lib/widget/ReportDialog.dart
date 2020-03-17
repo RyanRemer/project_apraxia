@@ -127,12 +127,21 @@ class _ReportDialogState extends State<ReportDialog> {
               )
       );
     } on InternalServerException catch (e) {
+      setState(() {
+        _loading = false;
+      });
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show("Internal Server Error", e.message + "\n\nPlease try again. If the problem persists, please record the information manually.");
     } on ServerConnectionException {
+      setState(() {
+        _loading = false;
+      });
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show("Error Conecting to Server", "Please try again. If the problem persists, please record the information manually.");
     } on Exception {
+      setState(() {
+        _loading = false;
+      });
       ErrorDialog dialog = new ErrorDialog(context);
       dialog.show("Unknown Error", "An unknown error occurred while sending the report. Please try again. If the problem persists, please record the information manually.");
     }
