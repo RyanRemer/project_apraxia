@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/interface/IWSDCalculator.dart';
+import 'package:project_apraxia/widget/ConfirmationDialog.dart';
 import 'package:project_apraxia/widget/form/SurveyForm.dart';
 
 class SurveyPage extends StatefulWidget {
@@ -22,15 +23,24 @@ class _SurveyPageState extends State<SurveyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Demographic Survey"),
-      ),
-      body: Column(
-        children: <Widget>[
-          SurveyForm(wsdCalculator: wsdCalculator,)
-        ],
-      )
+    return WillPopScope(
+      onWillPop: () {
+        return ConfirmationDialog(context).show(
+          "End Test",
+          "Your waiver has already been submitted, are you sure you want to go back?",
+        );
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("Demographic Survey"),
+          ),
+          body: Column(
+            children: <Widget>[
+              SurveyForm(
+                wsdCalculator: wsdCalculator,
+              )
+            ],
+          )),
     );
   }
 }

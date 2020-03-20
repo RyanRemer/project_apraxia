@@ -25,8 +25,9 @@ class _SearchWaiverPageState extends State<SearchWaiverPage> {
     );
   }
 
-  void onWaiverSelected(Map<String, String> waiver, BuildContext context) {
-    showDialog(
+  Future<void> onWaiverSelected(
+      Map<String, String> waiver, BuildContext context) async {
+    bool beginTest = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Confirm Waiver Selection"),
@@ -44,21 +45,23 @@ class _SearchWaiverPageState extends State<SearchWaiverPage> {
             ]),
         actions: <Widget>[
           FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
+            child: Text("No"),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
           RaisedButton(
             child: Text("Yes"),
-            onPressed: () => _goToSurveyPage(context),
+            onPressed: () => Navigator.of(context).pop(true),
           )
         ],
       ),
     );
+
+    if (beginTest){
+      _goToSurveyPage(context);
+    }
   }
 
   void _goToSurveyPage(BuildContext context) {
-    Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return SurveyPage(wsdCalculator: new RemoteWSDCalculator());
     }));

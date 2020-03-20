@@ -9,6 +9,7 @@
 ///
 
 import 'package:flutter/material.dart';
+import 'package:project_apraxia/page/LandingPage.dart';
 import 'package:project_apraxia/page/SignInPage.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
 
@@ -25,7 +26,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'appraxia',
         theme: appTheme.themeData,
-        home: SignInPage(),
+        initialRoute: "/",
+        routes: {
+          '/' : (context) => SignInPage(),
+          '/landing-page' : (context) => LandingPage(),
+        },
       ),
     );
   }

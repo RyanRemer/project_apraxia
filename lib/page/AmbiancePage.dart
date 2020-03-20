@@ -8,6 +8,7 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/page/Waveform.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
+import 'package:project_apraxia/widget/ConfirmationDialog.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 import 'Waveform.dart';
@@ -33,75 +34,90 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Record Ambiance"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Expanded(
-                child: Center(
-              child: Text(
-                  "Press the button below and be quiet for $seconds second."),
-            )),
-            Container(
-              height: 100,
-              child: Waveform(
-                ambiancePath,
-                key: ObjectKey(ambiancePath),
+    return WillPopScope(
+      onWillPop: () async {
+        bool confirmed = await ConfirmationDialog(context).show(
+          "End Test Confirmation",
+          "Going back now will end the test and remove all attempts. Are you sure you want to go back?"
+        );
+
+        if (confirmed) {
+          RecordController recordController = new RecordController();
+          recordController.removeDirectory("recordings");
+        }
+
+        return confirmed;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Record Ambiance"),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(
+                  child: Center(
+                child: Text(
+                    "Press the button below and be quiet for $seconds second."),
+              )),
+              Container(
+                height: 100,
+                child: Waveform(
+                  ambiancePath,
+                  key: ObjectKey(ambiancePath),
+                ),
               ),
-            ),
-            Expanded(
-              child: isRecording
-                  ? FlatButton(
-                      color: AppTheme.of(context).primary,
-                      shape: CircleBorder(),
-                      child: Icon(
-                        Icons.more_horiz,
-                        color: Colors.white,
-                        size: 40,
+              Expanded(
+                child: isRecording
+                    ? FlatButton(
+                        color: AppTheme.of(context).primary,
+                        shape: CircleBorder(),
+                        child: Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                        onPressed: () {})
+                    : FlatButton(
+                        color: AppTheme.of(context).primary,
+                        shape: CircleBorder(),
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                        onPressed: onTap,
                       ),
-                      onPressed: () {})
-                  : FlatButton(
-                      color: AppTheme.of(context).primary,
-                      shape: CircleBorder(),
-                      child: Icon(
-                        Icons.mic,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                      onPressed: onTap,
-                    ),
-            ),
-            Expanded(
-              child: ambianceRecorded
-                  ? Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "If there are spikes, record again.\nOtherwise press continue.",
-                            textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: ambianceRecorded
+                    ? Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "If there are spikes, record again.\nOtherwise press continue.",
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                        RaisedButton(
-                          child: Text("Continue"),
-                          onPressed: startTest,
-                        ),
-                      ],
-                    )
-                  : Container(),
-            )
-          ],
+                          RaisedButton(
+                            child: Text("Continue"),
+                            onPressed: startTest,
+                          ),
+                        ],
+                      )
+                    : Container(),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
   void startTest() {
-    Navigator.pushReplacement(
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => RecordPage(

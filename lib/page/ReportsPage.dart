@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
@@ -213,7 +215,7 @@ class _ReportsPageState extends State<ReportsPage> {
                           averageWSD.toStringAsFixed(2),
                           style: TextStyle(fontSize: 36),
                         ),
-                        checkIfBackend()
+                        _buildCompleteTestButton()
                       ],
                     )),
                 
@@ -221,7 +223,7 @@ class _ReportsPageState extends State<ReportsPage> {
             ));
   }
 
-  Widget checkIfBackend() {
+  Widget _buildCompleteTestButton() {
     if (wsdCalculator is RemoteWSDCalculator) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -251,7 +253,10 @@ class _ReportsPageState extends State<ReportsPage> {
 
   void completeTest() {
     deleteLocalFiles();
-    Navigator.pop(context);
+    SchedulerBinding.instance.addPostFrameCallback((_) { 
+      Navigator.popUntil(context, ModalRoute.withName('/landing-page'));
+    });
+    
   }
 
   Future<void> removePrompt(Prompt prompt) async {
@@ -298,11 +303,9 @@ class _ReportsPageState extends State<ReportsPage> {
   void deleteLocalFiles() {
     RecordingStorage _recordingStorage = RecordingStorage.singleton();
     _recordingStorage.getAmbianceFile().deleteSync();
-    for (Prompt prompt in prompts) {
-      for (Recording recording in _recordingStorage.getRecordings(prompt)) {
-        recording.soundFile.deleteSync();
-      }
-      _recordingStorage.updateRecordings(prompt, []);
-    }
+    _recordingStorage.clear();
+
+    RecordController recordController = new RecordController();
+    recordController.removeDirectory("recordings");               
   }
 }
