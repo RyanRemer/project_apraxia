@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
-import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SelectWaiverPage.dart';
-import 'package:project_apraxia/page/SurveyPage.dart';
-import 'package:project_apraxia/page/WaiverPage.dart';
-import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/form/ActionCard.dart';
 
 class SelectTestPage extends StatefulWidget {

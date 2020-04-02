@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/page/AboutPage.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SettingsPage.dart';
@@ -102,12 +103,15 @@ void goToHowToPage(BuildContext context) {
 
 void goToAboutPage(BuildContext context) {
   Navigator.of(context)
-    .push(MaterialPageRoute(builder: (context) => AboutPage()));
+      .push(MaterialPageRoute(builder: (context) => AboutPage()));
 }
 
 void signOut(BuildContext context) {
   Auth auth = Auth.instance();
   auth.signOut();
-//  TODO: Delete any files generated
+
+  RecordController recordController = new RecordController();
+  recordController.removeDirectory("recordings");
+
   Navigator.pop(context);
 }

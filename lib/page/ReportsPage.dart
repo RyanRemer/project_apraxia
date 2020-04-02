@@ -288,8 +288,7 @@ class _ReportsPageState extends State<ReportsPage> {
   void recalculateWSD(int position, bool val) {
     prompts[position].enabled = val;
     try {
-      updateAttempt(
-          calculatedWSDs[prompts[position]], prompts[position].enabled);
+      updateAttempt(calculatedWSDs[prompts[position]], prompts[position].enabled);
     } on ServerConnectionException {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Connecting to Server",
