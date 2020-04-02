@@ -34,96 +34,87 @@ class _AmbiancePageState extends State<AmbiancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        bool confirmed = await ConfirmationDialog(context).show(
-          "End Test Confirmation",
-          "Going back now will end the test and remove all attempts. Are you sure you want to go back?"
-        );
-
-        if (confirmed) {
-          RecordController recordController = new RecordController();
-          recordController.removeDirectory("recordings");
-        }
-
-        return confirmed;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Record Ambiance"),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Expanded(
-                  child: Center(
-                child: Text(
-                    "Press the button below and be quiet for $seconds second."),
-              )),
-              Container(
-                height: 100,
-                child: Waveform(
-                  ambiancePath,
-                  key: ObjectKey(ambiancePath),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Record Ambiance"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(
+                child: Center(
+              child: Text(
+                  "Press the button below and be quiet for $seconds second."),
+            )),
+            Container(
+              height: 100,
+              child: Waveform(
+                ambiancePath,
+                key: ObjectKey(ambiancePath),
               ),
-              Expanded(
-                child: isRecording
-                    ? FlatButton(
-                        color: AppTheme.of(context).primary,
-                        shape: CircleBorder(),
-                        child: Icon(
-                          Icons.more_horiz,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        onPressed: () {})
-                    : FlatButton(
-                        color: AppTheme.of(context).primary,
-                        shape: CircleBorder(),
-                        child: Icon(
-                          Icons.mic,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                        onPressed: onTap,
+            ),
+            Expanded(
+              child: isRecording
+                  ? FlatButton(
+                      color: AppTheme.of(context).primary,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.more_horiz,
+                        color: Colors.white,
+                        size: 40,
                       ),
-              ),
-              Expanded(
-                child: ambianceRecorded
-                    ? Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "If there are spikes, record again.\nOtherwise press continue.",
-                              textAlign: TextAlign.center,
-                            ),
+                      onPressed: () {})
+                  : FlatButton(
+                      color: AppTheme.of(context).primary,
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                      onPressed: onTap,
+                    ),
+            ),
+            Expanded(
+              child: ambianceRecorded
+                  ? Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "If there are spikes, record again.\nOtherwise press continue.",
+                            textAlign: TextAlign.center,
                           ),
-                          RaisedButton(
-                            child: Text("Continue"),
-                            onPressed: startTest,
-                          ),
-                        ],
-                      )
-                    : Container(),
-              )
-            ],
-          ),
+                        ),
+                        RaisedButton(
+                          child: Text("Continue"),
+                          onPressed: startTest,
+                        ),
+                      ],
+                    )
+                  : Container(),
+            )
+          ],
         ),
       ),
     );
   }
 
   void startTest() {
+    // remove any recordings that may have slipped by
+    RecordController recordController = new RecordController();
+    recordController.removeDirectory("recordings");
+
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RecordPage(
-                  wsdCalculator: wsdCalculator,
-                  evaluationId: this.widget.evalId,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecordPage(
+          wsdCalculator: wsdCalculator,
+          evaluationId: this.widget.evalId,
+        ),
+      ),
+    );
   }
 
   Future<void> onTap() async {

@@ -55,7 +55,6 @@ class HowToPage extends StatelessWidget {
                             color: Colors.black,
                           )
                         ),
-                        //TODO: Update Page
                         child: Image(
                           image: AssetImage('assets/help/recording_page.png'),
                           width: imageWidth,
