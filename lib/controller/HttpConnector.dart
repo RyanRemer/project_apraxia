@@ -5,6 +5,7 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/Attempt.dart';
+import 'package:project_apraxia/model/Evaluation.dart';
 
 
 class HttpConnector {
@@ -305,6 +306,32 @@ class HttpConnector {
     } catch (error) {
       return false;
     }
+  }
+
+  Future<List<Evaluation>> getEvaluations() async {
+    //TODO: Get actual response from server
+    await Future.delayed(Duration(seconds: 3));
+    String response = "{\"evaluations\":[{\"evaluationId\": \"EV-1234\",\"age\": \"50\",\"gender\": \"male\", \"impression\": \"apraxia,aphasia\",\"dateCreated\": \"25/12/2042\"}]}";
+    
+    var jsonResponse = jsonDecode(response);
+    List jsonEvaluations = jsonResponse["evaluations"];
+
+    return List.generate(jsonEvaluations.length, (int i){
+      return Evaluation.fromMap(jsonEvaluations[i]);
+    });
+  }
+
+  Future<List<Attempt>> getAttempts(String evaluationId) async {
+    //TODO: Get actual response from server
+     await Future.delayed(Duration(seconds: 3));
+    String response = "{\"attempts\":[{\"attemptId\": \"AT-1234\",\"evaluationId\": \"EV-1234\",\"word\": \"gingerbread\",\"wsd\": 256.79,\"duration\": 770.37,\"active\": true,\"dateCreated\": \"25/12/2042\"}]}";
+
+    var jsonReponse = jsonDecode(response);
+    List jsonAttempts = jsonReponse["attempts"];
+
+    return List.generate(jsonAttempts.length, (int i){
+      return Attempt.fromMap(jsonAttempts[i]);
+    });
   }
 }
 
