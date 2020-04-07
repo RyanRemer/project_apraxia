@@ -309,29 +309,63 @@ class HttpConnector {
   }
 
   Future<List<Evaluation>> getEvaluations() async {
-    //TODO: Get actual response from server
-    await Future.delayed(Duration(seconds: 3));
-    String response = "{\"evaluations\":[{\"evaluationId\": \"EV-1234\",\"age\": \"50\",\"gender\": \"male\", \"impression\": \"apraxia,aphasia\",\"dateCreated\": \"25/12/2042\"}]}";
-    
-    var jsonResponse = jsonDecode(response);
-    List jsonEvaluations = jsonResponse["evaluations"];
-
-    return List.generate(jsonEvaluations.length, (int i){
-      return Evaluation.fromMap(jsonEvaluations[i]);
-    });
+    Uri uri = Uri.parse(serverURL + "/evaluation");
+    http.BaseRequest request = new http.Request('GET', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        List<dynamic> rawEvaluations = body['evaluations'];
+        List<Evaluation> output = List<Evaluation>();
+        for (Map<String, dynamic> rawEvaluation in rawEvaluations) {
+          Evaluation evaluation = Evaluation.fromMap(rawEvaluation);
+          output.add(evaluation);
+        }
+        return output;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
   }
 
   Future<List<Attempt>> getAttempts(String evaluationId) async {
-    //TODO: Get actual response from server
-     await Future.delayed(Duration(seconds: 3));
-    String response = "{\"attempts\":[{\"attemptId\": \"AT-1234\",\"evaluationId\": \"EV-1234\",\"word\": \"gingerbread\",\"wsd\": 256.79,\"duration\": 770.37,\"active\": true,\"dateCreated\": \"25/12/2042\"}]}";
-
-    var jsonReponse = jsonDecode(response);
-    List jsonAttempts = jsonReponse["attempts"];
-
-    return List.generate(jsonAttempts.length, (int i){
-      return Attempt.fromMap(jsonAttempts[i]);
-    });
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + "/attempts");
+    http.BaseRequest request = new http.Request('GET', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        List<dynamic> rawAttempts = body['attempts'];
+        List<Attempt> output = List<Attempt>();
+        for (Map<String, dynamic> rawAttempt in rawAttempts) {
+          Attempt evaluation = Attempt.fromMap(rawAttempt);
+          output.add(evaluation);
+        }
+        return output;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
   }
 }
 
