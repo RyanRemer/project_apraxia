@@ -28,6 +28,7 @@ dependencies:
   intl: ^0.16.1
   intl_phone_number_input: ^0.3.0
   url_launcher: ^5.4.2
+  flutter_launcher_icons: ^0.7.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -37,6 +38,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito:
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon512.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -55,6 +61,7 @@ flutter:
     - assets/prompts/
     - assets/hipaa_waiver.json
     - assets/logo/
+    - assets/icon/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
