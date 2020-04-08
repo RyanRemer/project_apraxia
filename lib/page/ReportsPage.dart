@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/controller/RemoteWSDCalculator.dart';
 import 'package:project_apraxia/data/RecordingStorage.dart';
 import 'package:project_apraxia/data/WsdReport.dart';
@@ -8,6 +10,8 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/model/Attempt.dart';
 import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
+import 'package:project_apraxia/page/LandingPage.dart';
+import 'package:project_apraxia/widget/ConfirmationDialog.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 import 'package:project_apraxia/widget/SendReportButton.dart';
@@ -181,9 +185,9 @@ class _ReportsPageState extends State<ReportsPage> {
                                               .path),
                                   Container(
                                     child: Text(
-                                        calculatedWSDs[prompts[position]]
-                                            .wsd
-                                            .toStringAsFixed(2),
+                                      calculatedWSDs[prompts[position]]
+                                          .wsd
+                                          .toStringAsFixed(2),
                                       textAlign: TextAlign.end,
                                     ),
                                     width: 60.0,
@@ -213,45 +217,55 @@ class _ReportsPageState extends State<ReportsPage> {
                           averageWSD.toStringAsFixed(2),
                           style: TextStyle(fontSize: 36),
                         ),
-                        checkIfBackend()
+                        _buildCompleteTestButton()
                       ],
                     )),
-                
               ],
             ));
   }
 
-  Widget checkIfBackend() {
+  Widget _buildCompleteTestButton() {
     if (wsdCalculator is RemoteWSDCalculator) {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-        Spacer(),
-        RaisedButton(
-          child: Text("Complete Test"),
-          onPressed: completeTest,
-        ),
-        Spacer(),
-        SendReportButton(
-          evalId: widget.evaluationId,
-        ),
-        Spacer()
-      ]);
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Spacer(),
+            RaisedButton(
+              child: Text("Complete Test"),
+              onPressed: completeTest,
+            ),
+            Spacer(),
+            SendReportButton(
+              evalId: widget.evaluationId,
+            ),
+            Spacer()
+          ]);
     } else {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-        RaisedButton(
-          child: Text("Complete Test"),
-          onPressed: completeTest,
-        )
-      ]);
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              child: Text("Complete Test"),
+              onPressed: completeTest,
+            )
+          ]);
     }
   }
 
-  void completeTest() {
-    deleteLocalFiles();
-    Navigator.pop(context);
+  Future<void> completeTest() async {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog(context);
+    bool endTest = await confirmationDialog.show(
+      "Confirm End of Test",
+      "To protect the information of your clients, all recording data will be removed from the device after the test. Confirm that you want to end the test and remove all recordings.",
+    );
+
+    if (endTest) {
+      deleteLocalFiles();
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LandingPage()),
+          ModalRoute.withName('/'));
+    }
   }
 
   Future<void> removePrompt(Prompt prompt) async {
@@ -274,7 +288,7 @@ class _ReportsPageState extends State<ReportsPage> {
   void recalculateWSD(int position, bool val) {
     prompts[position].enabled = val;
     try {
-      updateAttempt(calculatedWSDs[prompts[position]],prompts[position].enabled);
+      updateAttempt(calculatedWSDs[prompts[position]], prompts[position].enabled);
     } on ServerConnectionException {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Connecting to Server",
@@ -298,11 +312,9 @@ class _ReportsPageState extends State<ReportsPage> {
   void deleteLocalFiles() {
     RecordingStorage _recordingStorage = RecordingStorage.singleton();
     _recordingStorage.getAmbianceFile().deleteSync();
-    for (Prompt prompt in prompts) {
-      for (Recording recording in _recordingStorage.getRecordings(prompt)) {
-        recording.soundFile.deleteSync();
-      }
-      _recordingStorage.updateRecordings(prompt, []);
-    }
+    _recordingStorage.clear();
+
+    RecordController recordController = new RecordController();
+    recordController.removeDirectory("recordings");
   }
 }

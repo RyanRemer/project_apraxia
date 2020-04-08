@@ -185,7 +185,7 @@ class _SignWaiverPageState extends State<SignWaiverPage> {
     } else {
       wsdCalculator = new LocalWSDCalculator();
     }
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) {

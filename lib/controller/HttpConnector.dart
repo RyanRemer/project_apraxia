@@ -10,7 +10,7 @@ import 'package:project_apraxia/model/Evaluation.dart';
 
 class HttpConnector {
   static HttpConnector _instance = HttpConnector._();
-  static String serverURL = "https://52.41.34.29:8080";
+  static String serverURL = "https://apraxiator.us-west-2.elasticbeanstalk.com";
 //  static String serverURL = "https://localhost:8080";
   static Auth auth = new Auth.instance();
   IOClient client;

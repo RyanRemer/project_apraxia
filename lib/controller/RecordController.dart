@@ -35,4 +35,15 @@ class RecordController {
   Future removeFile(String filename) async {
     await recorder.removeRecorderFile(filename);
   }
+
+  Future removeDirectory(String filepath) async {
+    String localUri = await localFileController.getLocalRef(filepath);
+    Directory directory = new Directory(localUri);
+
+    if (directory.existsSync()){
+      int numFiles = directory.listSync().length;
+      directory.deleteSync(recursive: true);
+      print("Deleted: $numFiles files");
+    }
+  }
 }

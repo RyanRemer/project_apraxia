@@ -27,4 +27,8 @@ class RecordingStorage {
   void updateRecordings(Prompt prompt, List<Recording> recordings){
     recordingMap[prompt] = recordings;
   }
+
+  void clear() {
+    recordingMap.clear();
+  }
 }

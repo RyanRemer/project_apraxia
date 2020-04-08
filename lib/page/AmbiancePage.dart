@@ -8,6 +8,7 @@ import 'package:project_apraxia/interface/IWSDCalculator.dart';
 import 'package:project_apraxia/page/RecordPage.dart';
 import 'package:project_apraxia/page/Waveform.dart';
 import 'package:project_apraxia/widget/AppTheme.dart';
+import 'package:project_apraxia/widget/ConfirmationDialog.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 
 import 'Waveform.dart';
@@ -101,13 +102,15 @@ class _AmbiancePageState extends State<AmbiancePage> {
   }
 
   void startTest() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RecordPage(
-                  wsdCalculator: wsdCalculator,
-                  evaluationId: this.widget.evalId,
-                )));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecordPage(
+          wsdCalculator: wsdCalculator,
+          evaluationId: this.widget.evalId,
+        ),
+      ),
+    );
   }
 
   Future<void> onTap() async {
