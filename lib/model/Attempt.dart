@@ -1,22 +1,22 @@
 class Attempt {
-  String _attemptId;
-  double _wsd;
+  String attemptId;
+  String evaluationId;
+  String word;
+  double wsd;
+  double duration;
+  bool active;
+  String dateCreated;
 
-  Attempt(this._attemptId, this._wsd);
 
-  // ignore: unnecessary_getters_setters
-  double get wsd => _wsd;
+  Attempt(this.attemptId, this.wsd);
 
-  // ignore: unnecessary_getters_setters
-  set wsd(double value) {
-    _wsd = value;
-  }
-
-  // ignore: unnecessary_getters_setters
-  String get attemptId => _attemptId;
-
-  // ignore: unnecessary_getters_setters
-  set attemptId(String value) {
-    _attemptId = value;
+  Attempt.fromMap(Map<String, dynamic> map) {
+    this.attemptId = map["attemptId"];
+    this.evaluationId = map["evaluationId"];
+    this.word = map["word"];
+    this.wsd = map["wsd"];
+    this.duration = map["duration"];
+    this.active = map["active"];
+    this.dateCreated = map["dateCreated"];
   }
 }

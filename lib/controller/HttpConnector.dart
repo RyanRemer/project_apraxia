@@ -5,6 +5,7 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 import 'package:project_apraxia/controller/Auth.dart';
 import 'package:project_apraxia/model/Attempt.dart';
+import 'package:project_apraxia/model/Evaluation.dart';
 
 
 class HttpConnector {
@@ -304,6 +305,66 @@ class HttpConnector {
       return false;
     } catch (error) {
       return false;
+    }
+  }
+
+  Future<List<Evaluation>> getEvaluations() async {
+    Uri uri = Uri.parse(serverURL + "/evaluation");
+    http.BaseRequest request = new http.Request('GET', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        List<dynamic> rawEvaluations = body['evaluations'];
+        List<Evaluation> output = List<Evaluation>();
+        for (Map<String, dynamic> rawEvaluation in rawEvaluations) {
+          Evaluation evaluation = Evaluation.fromMap(rawEvaluation);
+          output.add(evaluation);
+        }
+        return output;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
+    }
+  }
+
+  Future<List<Attempt>> getAttempts(String evaluationId) async {
+    Uri uri = Uri.parse(serverURL + "/evaluation/" + evaluationId + "/attempts");
+    http.BaseRequest request = new http.Request('GET', uri);
+    request.headers.addEntries([MapEntry('TOKEN', await auth.getJWT())]);
+    try {
+      http.StreamedResponse response = await client.send(request);
+      String responseBody = await response.stream.bytesToString();
+      Map body = jsonDecode(responseBody);
+      if (response.statusCode == 200) {
+        List<dynamic> rawAttempts = body['attempts'];
+        List<Attempt> output = List<Attempt>();
+        for (Map<String, dynamic> rawAttempt in rawAttempts) {
+          Attempt evaluation = Attempt.fromMap(rawAttempt);
+          output.add(evaluation);
+        }
+        return output;
+      }
+      String errorMessage = body['errorMessage'];
+      if (errorMessage != null) {
+        throw new InternalServerException(message: errorMessage);
+      }
+      throw new InternalServerException();
+    } catch (error) {
+      if (error is InternalServerException) {
+        throw error;
+      }
+      throw new ServerConnectionException();
     }
   }
 }
