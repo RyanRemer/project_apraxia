@@ -1,5 +1,3 @@
-import 'package:project_apraxia/data/ConvertDate.dart';
-
 class Attempt {
   String attemptId;
   String evaluationId;
@@ -7,7 +5,7 @@ class Attempt {
   double wsd;
   double duration;
   bool active;
-  DateTime dateCreated;
+  String dateCreated;
 
 
   Attempt(this.attemptId, this.wsd);
@@ -19,6 +17,6 @@ class Attempt {
     this.wsd = map["wsd"];
     this.duration = map["duration"];
     this.active = map["active"];
-    this.dateCreated = convertDate(map["dateCreated"]);
+    this.dateCreated = map["dateCreated"];
   }
 }

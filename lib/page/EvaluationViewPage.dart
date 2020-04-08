@@ -50,7 +50,7 @@ class _EvaluationViewPageState extends State<EvaluationViewPage> {
           ),
           ListTile(
             title: Text("Date Created"),
-            trailing: Text(dateFormat.format(widget.evaluation.dateCreated)),
+            trailing: Text(widget.evaluation.dateCreated),
           ),
           const Divider(),
           _buildAttempts(),

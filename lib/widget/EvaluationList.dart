@@ -14,7 +14,6 @@ class EvaluationList extends StatefulWidget {
 class _EvaluationListState extends State<EvaluationList> {
   HttpConnector httpConnector = new HttpConnector.instance();
   Future<List<Evaluation>> fetchEvaluations;
-  DateFormat dateFormat = new DateFormat.yMMMMEEEEd();
 
   _EvaluationListState() {
     fetchEvaluations = httpConnector.getEvaluations();
@@ -54,7 +53,7 @@ class _EvaluationListState extends State<EvaluationList> {
 
             return Card(
               child: ListTile(
-                title: Text(dateFormat.format(evaluation.dateCreated)),
+                title: Text(evaluation.dateCreated),
                 trailing: Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   Navigator.push(
