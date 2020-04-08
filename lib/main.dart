@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'appraxia',
         theme: appTheme.themeData,
-        home: SignInPage(),
+        initialRoute: "/",
+        routes: {
+          '/' : (context) => SignInPage(),
+        },
       ),
     );
   }
