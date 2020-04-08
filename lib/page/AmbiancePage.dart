@@ -102,10 +102,6 @@ class _AmbiancePageState extends State<AmbiancePage> {
   }
 
   void startTest() {
-    // remove any recordings that may have slipped by
-    RecordController recordController = new RecordController();
-    recordController.removeDirectory("recordings");
-
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
+import 'package:project_apraxia/controller/RecordController.dart';
 import 'package:project_apraxia/page/AmbiancePage.dart';
 import 'package:project_apraxia/page/SelectWaiverPage.dart';
 import 'package:project_apraxia/widget/form/ActionCard.dart';
@@ -72,6 +73,10 @@ class _SelectTestPageState extends State<SelectTestPage> {
   }
 
   void _startLocalTest(BuildContext context) {
+    // remove any recordings that may have slipped by
+    RecordController recordController = new RecordController();
+    recordController.removeDirectory("recordings");
+    
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AmbiancePage(
         wsdCalculator: new LocalWSDCalculator(),
@@ -81,6 +86,10 @@ class _SelectTestPageState extends State<SelectTestPage> {
   }
 
   void selectWaiver(BuildContext context) {
+    // remove any recordings that may have slipped by
+    RecordController recordController = new RecordController();
+    recordController.removeDirectory("recordings");
+
     Navigator.push(context, MaterialPageRoute( builder: (context){
       return SelectWaiverPage();
     }));
