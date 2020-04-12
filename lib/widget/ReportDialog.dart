@@ -81,7 +81,10 @@ class _ReportDialogState extends State<ReportDialog> {
           },
         ),
         RaisedButton(
-            child: Text('Send Report'),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Send Report'),
+            ),
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();

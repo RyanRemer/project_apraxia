@@ -12,8 +12,10 @@ import 'package:project_apraxia/model/Prompt.dart';
 import 'package:project_apraxia/model/Recording.dart';
 import 'package:project_apraxia/page/LandingPage.dart';
 import 'package:project_apraxia/widget/ConfirmationDialog.dart';
+import 'package:project_apraxia/widget/DiagnosisDialog.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
+import 'package:project_apraxia/widget/ReportDialog.dart';
 import 'package:project_apraxia/widget/SendReportButton.dart';
 
 class ReportsPage extends StatefulWidget {
@@ -148,6 +150,14 @@ class _ReportsPageState extends State<ReportsPage> {
         : Scaffold(
             appBar: AppBar(
               title: Text("Reports Page"),
+              actions: <Widget>[
+                wsdCalculator is RemoteWSDCalculator
+                  ? IconButton(
+                    icon: Icon(Icons.email),
+                    onPressed: () => showEmailDialog(context, widget.evaluationId),
+                  )
+                  :Container()
+              ],
             ),
             body: Column(
               children: <Widget>[
@@ -202,54 +212,52 @@ class _ReportsPageState extends State<ReportsPage> {
                     itemCount: prompts.length,
                   ),
                 ),
-                Expanded(
-                    flex: 1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Average WSD",
-                              style: TextStyle(fontSize: 24)),
-                        ),
-                        Text(
-                          averageWSD.toStringAsFixed(2),
-                          style: TextStyle(fontSize: 36),
-                        ),
-                        _buildCompleteTestButton()
-                      ],
-                    )),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child:
+                            Text("Average WSD", style: TextStyle(fontSize: 24)),
+                      ),
+                      Text(
+                        averageWSD.toStringAsFixed(2),
+                        style: TextStyle(fontSize: 36),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          RaisedButton(
+                            child: Text("View Results"),
+                            onPressed: viewResults,
+                          ),
+                          RaisedButton(
+                            child: Text("Complete Test"),
+                            onPressed: completeTest,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                )
               ],
             ));
   }
 
-  Widget _buildCompleteTestButton() {
-    if (wsdCalculator is RemoteWSDCalculator) {
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Spacer(),
-            RaisedButton(
-              child: Text("Complete Test"),
-              onPressed: completeTest,
-            ),
-            Spacer(),
-            SendReportButton(
-              evalId: widget.evaluationId,
-            ),
-            Spacer()
-          ]);
-    } else {
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: Text("Complete Test"),
-              onPressed: completeTest,
-            )
-          ]);
-    }
+  void viewResults() {
+    DiagnosisDialog diagnosisDialog = new DiagnosisDialog(context);
+    diagnosisDialog.show(this.averageWSD);
+  }
+
+  Future<void> showEmailDialog(BuildContext context, String evalId) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ReportDialog(evalId: evalId);
+        });
   }
 
   Future<void> completeTest() async {
@@ -288,7 +296,8 @@ class _ReportsPageState extends State<ReportsPage> {
   void recalculateWSD(int position, bool val) {
     prompts[position].enabled = val;
     try {
-      updateAttempt(calculatedWSDs[prompts[position]], prompts[position].enabled);
+      updateAttempt(
+          calculatedWSDs[prompts[position]], prompts[position].enabled);
     } on ServerConnectionException {
       ErrorDialog errorDialog = new ErrorDialog(context);
       errorDialog.show("Error Connecting to Server",
