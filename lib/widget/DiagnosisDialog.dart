@@ -11,16 +11,34 @@ class DiagnosisDialog {
       return SimpleDialog(
         title: Text("Diagnosis Suggestion"),
         children: <Widget>[
-          ListTile(
-            title: Text(getDiagnosisText(wsd)),
+          Padding(
+            padding: const EdgeInsets.only(left: 24.0, right: 16.0),
+            child: Text(getDiagnosisText(wsd)),
           ),
-          ListTile(
-            leading: Icon(Icons.link),
-            title: Text("View Research"),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: (){
-              launch("https://pubs.asha.org/doi/abs/10.1044/2018_AJSLP-MSC18-18-0107");
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                  child: Text("Okay"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                RaisedButton(
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.link),
+                      Text(" View Research"),
+                    ],
+                  ),
+                  onPressed: () {
+                    launch("https://pubs.asha.org/doi/abs/10.1044/2018_AJSLP-MSC18-18-0107");
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       );
@@ -29,10 +47,10 @@ class DiagnosisDialog {
 
   String getDiagnosisText(double wsd){
     if (wsd > 320){
-      return "A WSD that is above 320 suggests that the subject is likely to have apraxia of speach.";
+      return "A WSD that is above 320 suggests that the subject is likely to have apraxia of speech.";
     }
     else {
-      return "A WSD that is below 320 suggests that the subject does not have apraxia of speach.";
+      return "A WSD that is below 320 suggests that the subject does not have apraxia of speech.";
     }
   }
 }

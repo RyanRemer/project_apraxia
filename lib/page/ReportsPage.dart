@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:project_apraxia/controller/HttpConnector.dart';
 import 'package:project_apraxia/controller/LocalWSDCalculator.dart';
 import 'package:project_apraxia/controller/RecordController.dart';
@@ -16,7 +15,6 @@ import 'package:project_apraxia/widget/DiagnosisDialog.dart';
 import 'package:project_apraxia/widget/ErrorDialog.dart';
 import 'package:project_apraxia/widget/PlayButton.dart';
 import 'package:project_apraxia/widget/ReportDialog.dart';
-import 'package:project_apraxia/widget/SendReportButton.dart';
 
 class ReportsPage extends StatefulWidget {
   final WsdReport wsdReport;
@@ -152,8 +150,13 @@ class _ReportsPageState extends State<ReportsPage> {
               title: Text("Reports Page"),
               actions: <Widget>[
                 wsdCalculator is RemoteWSDCalculator
-                  ? IconButton(
-                    icon: Icon(Icons.email),
+                  ? RaisedButton(
+                    child: Row(
+                      children: <Widget>[
+                        Text("Send "),
+                        Icon(Icons.email),
+                      ],
+                    ),
                     onPressed: () => showEmailDialog(context, widget.evaluationId),
                   )
                   :Container()
@@ -231,7 +234,7 @@ class _ReportsPageState extends State<ReportsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           RaisedButton(
-                            child: Text("View Results"),
+                            child: Text("Diagnosis Suggestion"),
                             onPressed: viewResults,
                           ),
                           RaisedButton(
