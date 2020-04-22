@@ -101,15 +101,23 @@
     "top_margin": 0.0,
     "bot_margin": 4.0,
     "right_margin": 16.0,
-    "left_margin": 16.0
+    "left_margin": 20.0
   },
   {
-    "text": "2. If you sign this form, this is the health information about you that the people or groups listed in #1 may give to the researchers to use in this research study: Diagnoses of any communication disorders\"",
+    "text": "2. If you sign this form, this is the health information about you that the people or groups listed in #1 may give to the researchers to use in this research study:",
     "style": "body1",
     "top_margin": 4.0,
     "bot_margin": 4.0,
     "right_margin": 16.0,
     "left_margin": 16.0
+  },
+  {
+    "text": "Diagnoses of any communication disorders",
+    "style": "body1",
+    "top_margin": 0.0,
+    "bot_margin": 4.0,
+    "right_margin": 16.0,
+    "left_margin": 20.0
   },
   {
     "text": "3. The HIPAA protections that apply to your medical records will not apply to your information when it is in the research study records. Your information in the research study records may also be shared with, used by or seen by collaborating researchers, the sponsor of the research study, the sponsor’s representatives, and certain employees of the university or government agencies (like the FDA) if needed to oversee the research study. HIPAA rules do not usually apply to those people or groups. If any of these people or groups reviews your research record, they may also need to review portions of your original medical record relevant to the situation. The informed consent document describes the procedures in this research study that will be used to protect your personal information. You can also ask the researchers any questions about what they will do with your personal information and how they will protect your personal information in this research study.",
@@ -136,7 +144,7 @@
     "left_margin": 16.0
   },
   {
-    "text": "6. This HIPAA authorization will not stop unless you stop it in writing.",
+    "text": "6. This HIPAA authorization will\nnot stop unless you explicitly invalidate it.",
     "style": "body1",
     "top_margin": 4.0,
     "bot_margin": 4.0,
@@ -144,7 +152,7 @@
     "left_margin": 16.0
   },
   {
-    "text": "7. You have the right to stop this HIPAA authorization at any time. You must do that in writing. You may give your written stop of this HIPAA authorization directly to Principal Investigator or researcher or you may mail it to the department mailing address listed at the top of this form, or you may give it to one of the researchers in this study and tell the researcher to send it to any person or group the researcher has given a copy of this HIPAA authorization. Stopping this HIPAA authorization will not stop information sharing that has already happened.",
+    "text": "7. You have the right to stop this HIPAA authorization at any time. You may provide your explicit consent to stop the authorization in the mobile application under the \"Waivers\" tab on the \"Settings\" page. You may also do so in writing by giving your written stop of this HIPAA authorization directly to Principal Investigator or researcher, or you may mail it to the department mailing address listed at the top of this form, or you may give it to one of the researchers in this study and tell the researcher to send it to any person or group the researcher has given a copy of this HIPAA authorization. Stopping this HIPAA authorization will not stop information sharing that has already happened.",
     "style": "body1",
     "top_margin": 4.0,
     "bot_margin": 4.0,
@@ -152,7 +160,7 @@
     "left_margin": 16.0
   },
   {
-    "text": "8. You will be emailed a copy of this signed HIPAA authorization.",
+    "text": "8. You and the owner of this account (likely your clinician) will be emailed a copy of this signed HIPAA authorization.",
     "style": "body1",
     "top_margin": 4.0,
     "bot_margin": 4.0,
